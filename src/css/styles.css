@@ -228,3 +228,137 @@ button.logout:hover {
     background-color: #c0392b;
     /* Darker red for hover */
 }
+
+.create-project-container {
+    display: flex;
+    height: 100vh; /* Full page height */
+    padding: 20px;
+    gap: 20px;
+}
+
+.tree-view-container {
+    flex-grow: 1; /* Makes it take up most of the screen */
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    width: 300px; /* Keeps the form compact */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ======================== */
+/* Project Tree View Styles */
+/* ======================== */
+
+.project-tree {
+    width: 90%; /* Makes the tree view take most of the page */
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--background-light, #f9f9f9); /* Uses existing background color if defined */
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tree-node {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+ul.project-list {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--task-background, #ffffff); /* Use existing theme if available */
+    border-radius: 5px;
+    margin: 5px 0;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease-in-out;
+}
+
+.task-item:hover {
+    background: #f0f0f0;
+}
+
+.task-id {
+    color: gray;
+    font-size: 0.9rem;
+}
+
+.create-task-btn {
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 8px 12px;
+    background: green;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+    transition: background 0.2s ease-in-out;
+}
+
+.create-task-btn:hover {
+    background: darkgreen;
+}
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.popup-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.popup-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.delete-task-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #e74c3c;
+}
+
+.delete-task-btn:hover {
+    color: #c0392b;
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+}

@@ -1,16 +1,16 @@
-// Function to retrieve access token from localStorage
+import { createContext, useContext, useState, useEffect } from "react";
 
 const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
+const AuthContext = createContext();
 
 // Function to make authenticated requests
 const makeAuthenticatedRequest = async (route, options = {}) => {
   const url = `${API_BASE_URL}${route}`;
-  // let access_token = localStorage.getItem("access_token");
   let access_token = null;
 
   try {
     access_token = await getAccessTokenWithRefresh();
-  } catch (error) {
+  } catch {
     redirectLogin();
     console.warn("Session expired. Redirecting to login.");
     return null;
@@ -27,7 +27,7 @@ const makeAuthenticatedRequest = async (route, options = {}) => {
   if (response.status === 401) {
     access_token = await refreshAccessToken();
     if (!access_token) {
-      // redirectLogin();
+      redirectLogin();
       console.warn("Session expired. Redirecting to login.");
       return null;
     }
@@ -43,7 +43,6 @@ const redirectLogin = () => {
   setTimeout(() => {
     window.location.href = "/";
   }, 2000);
-  // console.warn("Session expired. Redirecting to login.");
 }
 
 const getAccessTokenWithRefresh = async () => {
@@ -90,43 +89,6 @@ const refreshAccessToken = async () => {
   }
 };
 
-// const refreshAccessToken = async () => {
-//   const refresh_token = localStorage.getItem("refresh_token");
-
-//   if (!refresh_token) {
-//     throw new Error("No refresh token found");
-//   }
-
-//   const fetch_body = JSON.stringify({ refresh_token: refresh_token });
-//   console.log("Sending refresh token request:", fetch_body); // Log the request data
-
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/refresh/`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: fetch_body,
-//     });
-
-//     if (response.ok) {
-//       const data = await response.json();
-//       if (data.access_token) {
-//         localStorage.setItem("access_token", data.access_token);
-//         return data.access_token;
-//       } else {
-//         throw new Error("Failed to refresh access token");
-//       }
-//     } else {
-//       console.error("Failed to refresh token:", response.statusText);
-//       throw new Error("Failed to refresh token");
-//     }
-//   } catch (error) {
-//     console.error("Error refreshing token:", error);
-//     return null;
-//   }
-// };
-
 
 // Function to handle user login and save the tokens
 const handleLogin = async (username, password) => {
@@ -164,6 +126,61 @@ const handleLogin = async (username, password) => {
   }
 };
 
+// Auth Provider to wrap around the app
+const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(checkLoginStatus());
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(checkLoginStatus());
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const login = async (username, password) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/login/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ username, password }),
+      });
+
+      if (!response.ok) throw new Error("Login failed");
+
+      const data = await response.json();
+      if (data.access_token && data.refresh_token) {
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
+        setIsLoggedIn(true);
+      } else {
+        throw new Error("Invalid response format");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed. Please try again.");
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Custom hook for authentication
+
 
 const checkLoginStatus = () => {
   let token = null;
@@ -174,12 +191,30 @@ const checkLoginStatus = () => {
     // TODO: add this back
     window.location.href = "/"; // Redirect to login if both tokens are expired
     console.warn("Session expired. Redirecting to login.");
+    alert("Session expired. Please log in again.");
+    return false;
   }
-  console.log("Checking if user is logged in. Token:", token);  // ! debugging
+  // alert("Session is still active.");
+  // console.log("Checking if user is logged in. Token:", token);  // ! debugging
   // console.log(!!token);
   return !!token;
 };
 
 
 // Export functions
-export { handleLogin, getAccessToken, refreshAccessToken, getAccessTokenWithRefresh, makeAuthenticatedRequest, checkLoginStatus, redirectLogin };  
+const useAuth = () => useContext(AuthContext);
+
+// export { handleLogin, getAccessToken, refreshAccessToken, getAccessTokenWithRefresh, makeAuthenticatedRequest, checkLoginStatus, redirectLogin };
+
+
+export {
+  AuthProvider,
+  useAuth,
+  handleLogin,
+  getAccessToken,
+  refreshAccessToken,
+  getAccessTokenWithRefresh,
+  makeAuthenticatedRequest,
+  checkLoginStatus,
+  redirectLogin,
+};
