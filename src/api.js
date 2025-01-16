@@ -22,9 +22,6 @@ const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
 
 export const fetchProjects = async () => {
     try {
-        // const response = await fetch(`${API_BASE_URL}/get_projects/`, {
-        //     headers: { Authorization: `Bearer ${token}` }
-        // });
         const response = await makeAuthenticatedRequest("/projects/get_projects");
         const json = await response.json();
         const projects = json.assigned_projects;
@@ -35,21 +32,29 @@ export const fetchProjects = async () => {
         if (error.status === 404) {
             return [];
         }
-        console.error("Error in fetchProjects:", error);
-        throw error;  // Make sure this is thrown to propagate to the `loadProjects` error handling
+        // console.error("Error in fetchProjects:", error);
+        throw error;
     }
 };
 
 export const fetchProjectDetails = async (project_id) => {
-    try {
-        // const response = await fetch(`${API_BASE_URL}/get_project/${project_id}/`, {
-        //     headers: { Authorization: `Bearer ${token}` }
-        // });
+
+    // try {
         const response = await makeAuthenticatedRequest(`/projects/${project_id}/`);
         const json = await response.json();
         return json;
-    } catch (error) {
-        console.error("Error in fetchProjectDetails:", error);
-        throw error;
-    }
+    // } catch (error) {
+        // console.error("Error in fetchProjectDetails:", error);
+        // throw error;
+    // }
+}
+
+export const createProject = async (projectData) => {
+    const response = await makeAuthenticatedRequest("/projects/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(projectData),
+    });
+
+    return response;
 }

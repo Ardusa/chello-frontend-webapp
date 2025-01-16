@@ -1,0 +1,28 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.dashboard-container .dashboard-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.dashboard-container .dashboard-title {
+    margin-bottom: 20px;
+}
+
+.dashboard-container .project-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.dashboard-container .no-projects {
+    color: #777;
+}

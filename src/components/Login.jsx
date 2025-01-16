@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleLogin } from "../services/AuthService"; // Import the handleLogin from AuthService
-import logo from "../assets/logo.png"; // Assuming the logo is stored in src/assets
+import { handleLogin, checkLoginStatus } from "../services/AuthService";
+import logo from "../assets/logo.png";
+import "../css/styles.css";
+import "../css/login.css";
 
 const Login = () => {
     const [id, setId] = useState("");
@@ -12,22 +14,28 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page refresh on form submit
         try {
-            // Call the imported handleLogin from AuthService
             await handleLogin(id, password);
-            navigate("/dashboard"); // Redirect to the dashboard after login
+            navigate("/dashboard");
             console.log("Login successful");
         } catch (error) {
             console.error("Login failed:", error);
         }
     };
 
+    useEffect(() => {
+        const checkStatus = async () => {
+            if (await checkLoginStatus()) {
+                console.log("User is already logged in");
+                navigate("/dashboard");
+            }
+        };
+        checkStatus();
+    }, []);
+
     return (
         <div className="centered-container">
             <div className="login-container">
-                {/* Logo */}
                 <img src={logo} alt="Chello Logo" className="logo" />
-
-                {/* Cool-looking "Chello" Text */}
                 <h1>Chello</h1>
 
                 <h2>Login</h2>
@@ -46,14 +54,14 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit" className="submit-btn">
-                        <span className="arrow">→</span>
-                    </button>
+
+                    <button type="submit" className="arrow forward-btn"></button>
+                    <button type="button" onClick={() => navigate("/register")} className="register-btn">Register Now!</button>
                 </form>
             </div>
-            <button type="button" onClick={() => navigate("/register")}>Register Now!</button>
         </div>
     );
-};
+
+}
 
 export default Login;

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+// import { Alert } from 'react-alert'
 
 const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
 const AuthContext = createContext();
@@ -8,13 +9,8 @@ const makeAuthenticatedRequest = async (route, options = {}) => {
   const url = `${API_BASE_URL}${route}`;
   let access_token = null;
 
-  try {
-    access_token = await getAccessTokenWithRefresh();
-  } catch {
-    redirectLogin();
-    console.warn("Session expired. Redirecting to login.");
-    return null;
-  }
+  // if the token we currently store is not actually in storage then redirect the user to login
+  access_token = await getAccessTokenWithRefresh();
 
   options.headers = {
     ...options.headers,
@@ -23,13 +19,16 @@ const makeAuthenticatedRequest = async (route, options = {}) => {
 
   const response = await fetch(url, options);
 
-  // If unauthorized, try refreshing
+
+  // if the access token sent in the payload happened to be expired, we need to attempt to refresh it using the refresh token
+  // if the refresh token that is stored is expired, we need to send the user to login
   if (response.status === 401) {
-    access_token = await refreshAccessToken();
-    if (!access_token) {
-      redirectLogin();
-      console.warn("Session expired. Redirecting to login.");
-      return null;
+    try {
+      await refreshAccessToken();
+      access_token = getAccessToken();
+    } catch (error) {
+      console.warn("Session expired.", error);
+      throw error;
     }
 
     options.headers.Authorization = `Bearer ${access_token}`;
@@ -39,25 +38,44 @@ const makeAuthenticatedRequest = async (route, options = {}) => {
   return response;
 };
 
-const redirectLogin = () => {
-  setTimeout(() => {
-    window.location.href = "/";
-  }, 2000);
-}
+
+const checkLoginStatus = async () => {
+  try {
+    try {
+      await refreshAccessToken();
+      let response = await makeAuthenticatedRequest("/verify-login/");
+      if (!response.ok) throw new Error("Session expired");
+    } catch (error) {
+      alert("Session expired. Please log in again.");
+      console.log("User is not logged in");
+      return false;
+    }
+
+    return true;
+  }
+
+  catch {
+    console.log("Error in checkLoginStatus", error);
+    return false;
+  }
+};
 
 const getAccessTokenWithRefresh = async () => {
   try {
     return getAccessToken(); // Try getting the current access token
   } catch (error) {
-    return await refreshAccessToken(); // Await the refreshed token
+    await refreshAccessToken();
+    return getAccessToken(); // Await the refreshed token
   }
 };
 
 
 const getAccessToken = () => {
   const access_token = localStorage.getItem("access_token");
-  // console.log("Access token:", access_token);  // ! Debugging
-  if (!access_token) throw new Error("No access token found");
+  if (!access_token) {
+    console.log("No access token found");
+    throw new Error("No access token found");
+  }
   return access_token;
 };
 
@@ -79,13 +97,13 @@ const refreshAccessToken = async () => {
     if (!response.ok) throw new Error("Refresh token expired");
 
     const data = await response.json();
-    if (!data.access_token) throw new Error("Failed to refresh access token");
+    if (!data) throw new Error("Failed to refresh access token");
 
     localStorage.setItem("access_token", data.access_token);
-    return data.access_token;
+    localStorage.setItem("refresh_token", data.refresh_token);
   } catch (error) {
-    console.error("Error refreshing token:", error.message);
-    return null; // Return null to indicate failure
+    console.log("Refreshing token failed:", error.message);
+    throw error;
   }
 };
 
@@ -115,7 +133,6 @@ const handleLogin = async (username, password) => {
     if (data.access_token && data.refresh_token) {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
-
     } else {
       throw new Error("Invalid response format: Missing tokens");
     }
@@ -124,6 +141,11 @@ const handleLogin = async (username, password) => {
     alert("Login failed. Please try again.");
     throw new Error("Login failed");
   }
+};
+
+const handleLogout = () => {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
 };
 
 // Auth Provider to wrap around the app
@@ -166,46 +188,20 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const handleLogout2 = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setIsLoggedIn(false);
-  };
+  }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, handleLogout2 }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook for authentication
-
-
-const checkLoginStatus = () => {
-  let token = null;
-
-  try {
-    token = getAccessTokenWithRefresh();
-  } catch (error) {
-    // TODO: add this back
-    window.location.href = "/"; // Redirect to login if both tokens are expired
-    console.warn("Session expired. Redirecting to login.");
-    alert("Session expired. Please log in again.");
-    return false;
-  }
-  // alert("Session is still active.");
-  // console.log("Checking if user is logged in. Token:", token);  // ! debugging
-  // console.log(!!token);
-  return !!token;
-};
-
-
-// Export functions
 const useAuth = () => useContext(AuthContext);
-
-// export { handleLogin, getAccessToken, refreshAccessToken, getAccessTokenWithRefresh, makeAuthenticatedRequest, checkLoginStatus, redirectLogin };
-
 
 export {
   AuthProvider,
@@ -216,5 +212,5 @@ export {
   getAccessTokenWithRefresh,
   makeAuthenticatedRequest,
   checkLoginStatus,
-  redirectLogin,
+  handleLogout,
 };

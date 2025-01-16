@@ -1,24 +1,12 @@
-/* :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-  
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-  
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    width: 100%;
-    height: 100%;
-    min-height: fit-content;
-    justify-content: center;
-    align-items: center;
-} */
+:root {
+    --green-button-color: #3ca332;
+    --green-button-hover-color: #026f09;
+    --blue-button-color: #4285F4;
+    --blue-button-hover-color: #063a8e;
+    --red-button-color: #ff0000;
+    --red-button-hover-color: #720202;
+}
 
-/* Centering content */
 .centered-container {
     display: flex;
     flex-direction: column;
@@ -27,338 +15,144 @@
     height: 100vh;
     width: 100%;
     text-align: center;
-    /* Center text */
     background-color: #f5f5f5;
-    /* Light background color */
     font-family: 'Arial', sans-serif;
-    /* Clean, modern font */
     margin: 0 auto;
-    /* Centers content */
     padding: 20px;
-    /* Adds some spacing */
     box-sizing: border-box;
-    /* Prevents width issues */
 }
 
-/* Wrap the login form in a container */
-.login-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    text-align: center;
-    /* Center text */
-    background-color: #f5f5f5;
-    /* Light background color */
-    font-family: 'Poppins', sans-serif; /* Apply Poppins font to the whole page */
-    /* Clean, modern font */
-    margin: 0 auto;
-    /* Centers content */
-    box-sizing: border-box;
-    /* Prevents width issues */
-    justify-content: center;
-    align-items: center;
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1); /* Adds shadow for better visibility */
-    width: 100%;
-    max-height: fit-content;
-    max-width: 500px; /* Ensures the form doesn't stretch too much */
-}
-
-.login-container h2 {
-    font-family: 'Poppins', sans-serif; /* Use Poppins for the Login heading */
-    font-weight: 600; /* Make the font weight bold */
-}
-
-.logo {
-    font-family: 'Poppins', sans-serif; /* If you have text in the logo, use Poppins */
-    font-size: 36px; /* Adjust the size as needed */
-    width: 150px; /* Adjust the width of the logo */
-    height: auto;
-    margin-bottom: 20px; /* Add some space between the logo and the form */
-}
-
-/* Style for headings */
-/* h2 { */
-    /* font-size: 36px; */
-    /* Increase font size for the titles */
-    /* color: #2c3e50; */
-    /* Dark color for titles */
-    /* margin-bottom: 20px; */
-    /* Space between title and form */
-/* } */
-
-/* Style for buttons */
 button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    color: #fff;
-    background-color: #14a84b;
-    /* Blue background color */
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 24px;
     border: none;
-    border-radius: 5px;
+    border-radius: 30px;
     cursor: pointer;
+    color: white;
+    outline: none;
+    padding: 12px 24px;
+    margin: 20px 0px 0px;
     transition: background-color 0.3s ease;
 }
 
-/* Hover effect for the button */
 button:hover {
-    background-color: #024d05;
-    /* Darker blue for hover */
+    transition: background-color 0.35s ease;
 }
 
-.submit-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #4285F4; /* Google blue */
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 30px; /* Rounded corners */
-    border: none;
-    cursor: pointer;
-    outline: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+button:focus {
+    outline: 5px;
 }
 
-.submit-btn:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.register-section {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.register-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.register-btn:hover {
-    background-color: #0056b3;
-}
-
-/* Arrow styling */
-.arrow {
-    margin-left: 8px;
-    font-size: 24px;
-    transition: transform 0.5s ease;
-}
-
-/* Swoosh effect when button is clicked */
-.submit-btn:active .arrow {
-    transform: translateX(10px);
-}
-
-/* Ensure the arrow is centered inside the button */
-.submit-btn span {
-    display: inline-block;
-    margin-left: 8px;
-}
-
-/* Style for input fields */
 input {
-    margin: 10px 0;
     padding: 10px;
-    width: 250px;
-    font-size: 16px;
+    font-size: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin: 10px 30px;
 }
 
 input:focus {
-    outline: none;
+    outline: 5px;
     border-color: #3498db;
-    /* Blue border on focus */
 }
 
-/* Style for the project list */
-ul {
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
-    max-width: 400px;
-    /* Limit the width of the project list */
-    margin-top: 20px;
-}
-
-/* Style for each list item */
-li {
-    background-color: #ecf0f1;
-    /* Light gray background for each item */
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    text-align: left;
-}
-
-/* Add spacing for the login form */
 form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
 }
+/* 
+span.arrow {
+    font-size: 40px;
+    margin: 0px 20px;
+    padding: 2px 50px 6px;
+} */
 
-/* Style for the logout button */
-button.logout {
-    margin-top: 30px;
-    padding: 12px 24px;
-    font-size: 18px;
-    color: #fff;
-    background-color: #e74c3c;
-    /* Red background for logout */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+/* button.forward-arrow-btn {
+    margin: 0px 20px;
+} */
 
-button.logout:hover {
-    background-color: #c0392b;
-    /* Darker red for hover */
-}
 
-.create-project-container {
-    display: flex;
-    height: 100vh; /* Full page height */
-    padding: 20px;
-    gap: 20px;
-}
-
-.tree-view-container {
-    flex-grow: 1; /* Makes it take up most of the screen */
-    background-color: #f4f4f4;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-container {
-    width: 300px; /* Keeps the form compact */
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* ======================== */
-/* Project Tree View Styles */
-/* ======================== */
-
-.project-tree {
-    width: 90%; /* Makes the tree view take most of the page */
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: var(--background-light, #f9f9f9); /* Uses existing background color if defined */
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.tree-node {
-    font-size: 1.4rem;
+button.arrow.forward-btn {
+    background-color: var(--blue-button-color);
     font-weight: bold;
-    margin-bottom: 10px;
+    padding: 12px 30px;
+    /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
 }
 
-ul.project-list {
-    list-style-type: none;
-    padding-left: 20px;
+button.arrow.forward-btn::before {
+    content: '→';
+    font-size: 40px;
+    /* margin-right: 10px; */
+    margin: 0px 0px 0px 3px;
+    padding: 2px 50px 6px;
 }
 
-.task-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 12px;
-    background: var(--task-background, #ffffff); /* Use existing theme if available */
-    border-radius: 5px;
-    margin: 5px 0;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    transition: background 0.2s ease-in-out;
+button.arrow.forward-btn:active {
+    /* animation: moveForward 0.5s ease forwards !important; */
+    transition: 0.75s cubic-bezier(1, -0.01, 0.58, 1)
 }
 
-.task-item:hover {
-    background: #f0f0f0;
+button.arrow.forward-btn:hover {
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+    background-color: var(--blue-button-hover-color);
 }
 
-.task-id {
-    color: gray;
-    font-size: 0.9rem;
+
+/* button.forward-arrow-btn {
+    margin-left: 3px;
+    transition: transform 0.5s ease !important;
 }
 
-.create-task-btn {
-    color: white;
+button.submit-btn:hover {
+    animation: moveBack 0.5s ease forwards !important;
+} */
+
+button.arrow.backward-btn {
+    background-color: var(--red-button-color);
     font-weight: bold;
-    cursor: pointer;
-    padding: 8px 12px;
-    background: green;
-    border-radius: 5px;
-    margin-top: 10px;
-    text-align: center;
-    transition: background 0.2s ease-in-out;
+    padding: 12px 30px;
+    /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
 }
 
-.create-task-btn:hover {
-    background: darkgreen;
+button.arrow.backward-btn::before {
+    content: '←';
+    font-size: 40px;
+    /* margin-right: 10px; */
+    margin: 0px 0px 0px 3px;
+    padding: 2px 50px 6px;
 }
 
-/* Popup Styles */
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+button.arrow.backward-btn:active {
+    /* animation: moveForward 0.5s ease forwards !important; */
+    transition: 0.75s cubic-bezier(1, -0.01, 0.58, 1)
 }
 
-.popup-content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+button.arrow.backward-btn:hover {
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+    background-color: var(--red-button-hover-color);
 }
 
-.popup-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
+
+@keyframes moveBack {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-20px);
+    }
 }
 
-.delete-task-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: #e74c3c;
-}
+@keyframes moveForward {
+    0% {
+        transform: translateX(0);
+    }
 
-.delete-task-btn:hover {
-    color: #c0392b;
-}
-
-.cancel-btn {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-.cancel-btn:hover {
-    background-color: #c0392b;
+    100% {
+        transform: translateX(40px);
+    }
 }
