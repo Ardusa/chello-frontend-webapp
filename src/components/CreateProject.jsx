@@ -37,7 +37,7 @@ const CreateProject = () => {
         }
         else if (response.status === 401) {
             alert("Session expired. Please log in again.");
-            navigate("/");
+            navigate("/login");
         }
         else {
             alert("Failed to create project");

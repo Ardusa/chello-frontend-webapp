@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import { redirectLogin } from "../services/AuthService";
-import "../css/register-employee.css";
 import { useNavigate } from "react-router-dom";
+import "../api.js";
+import "../css/register-employee.css";
+import { getEmployeeId } from "../api.js";
 
-const RegisterEmployee = () => {
+const RegisterEmployee = (new_account = false) => {
   const [formData, setFormData] = useState({
     employee_id: "",
     name: "",
@@ -12,21 +13,10 @@ const RegisterEmployee = () => {
     email: "",
     authority_level: 1,
     title: "Employee",
+    manager_id: "",
   });
 
   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const handlePopState = () => {
-//         alert("You are navigating away from the registration page.");
-//     };
-
-//     window.addEventListener('popstate', handlePopState);
-
-//     return () => {
-//         window.removeEventListener('popstate', handlePopState);
-//     };
-// }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,11 +27,18 @@ const RegisterEmployee = () => {
     try {
       await axios.post("http://localhost:8000/register", formData);
       alert("Registration successful. Redirecting to login...");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       alert(error.response?.data?.detail || "Registration failed");
     }
   };
+
+  useEffect(() => {
+    if (!new_account) {
+      getEmployeeId().catch(console.error);
+      // setFormData(manager_id: )
+    }
+  })
 
   return (
     <div className="centered-container">
@@ -81,7 +78,7 @@ const RegisterEmployee = () => {
           <button type="submit" className="register-btn">Register</button>
         </form>
 
-        <button type="button" onClick={() => navigate("/")} className="arrow backward-btn"></button>
+        <button type="button" onClick={() => navigate("/login")} className="arrow backward-btn"></button>
       </div>
     </div>
   );

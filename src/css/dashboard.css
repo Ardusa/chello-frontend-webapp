@@ -1,4 +1,4 @@
-.dashboard-container {
+/* .dashboard-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,4 +25,139 @@
 
 .dashboard-container .no-projects {
     color: #777;
+} */
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+    background-color: black;
+    color: white;
+}
+
+/* .dashboard-container {
+    display: flex;
+    height: 100vh;
+} */
+
+.sidebar {
+    width: 350px;
+    background-color: #ffffff;
+    color: rgb(217, 38, 38);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.logo-img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+/* .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.chello-logo {
+    width: auto;
+    height: 40px;
+    margin-right: auto;
+} */
+
+.nav {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    padding: 10px;
+    padding-left: 120px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.nav-item:hover {
+    background-color: rgb(206, 206, 206);
+    font-weight: bold;
+    color: black;
+}
+
+.nav-item.active {
+    font-weight: bold;
+    color: black;
+
+}
+
+.logout-btn {
+    margin-top: auto !important;
+    padding: 10px 20px;
+    border: 3px #E04343 solid !important;
+    border-radius: 13px !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.logout-btn:hover {
+    background: #E04343;
+    color: white;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.cards-container {
+    width: 80%;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 20px;
+    color: yellow;
+}
+
+.card p {
+    margin-top: 5px;
+    font-size: 16px;
+    color: white;
 }

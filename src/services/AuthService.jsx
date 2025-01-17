@@ -46,7 +46,7 @@ const checkLoginStatus = async () => {
       let response = await makeAuthenticatedRequest("/verify-login/");
       if (!response.ok) throw new Error("Session expired");
     } catch (error) {
-      alert("Session expired. Please log in again.");
+      // alert("Session expired. Please log in again.");
       console.log("User is not logged in");
       return false;
     }
@@ -82,11 +82,11 @@ const getAccessToken = () => {
 
 // Function to refresh the access token using the refresh token
 const refreshAccessToken = async () => {
-  try {
+  // try {
     const refresh_token = localStorage.getItem("refresh_token");
     if (!refresh_token) throw new Error("No refresh token found");
 
-    const response = await fetch(`${API_BASE_URL}/refresh/`, {
+    const response = await fetch(`${API_BASE_URL}/refresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,17 +101,17 @@ const refreshAccessToken = async () => {
 
     localStorage.setItem("access_token", data.access_token);
     localStorage.setItem("refresh_token", data.refresh_token);
-  } catch (error) {
-    console.log("Refreshing token failed:", error.message);
+  // } catch (error) {
+    // console.log("Refreshing token failed:", error.message);
     throw error;
-  }
+  // }
 };
 
 
 // Function to handle user login and save the tokens
 const handleLogin = async (username, password) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/login/`, {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -143,29 +143,48 @@ const handleLogin = async (username, password) => {
   }
 };
 
-const handleLogout = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
-};
+// const handleLogout = () => {
+//   localStorage.removeItem("access_token");
+//   localStorage.removeItem("refresh_token");
+// };
 
 // Auth Provider to wrap around the app
 const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(checkLoginStatus());
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (localStorage.getItem("access_token")) {
+      return true;
+    }
+
+    return false;
+  });
+
+  const isLoggedInFunction = async () => {
+    return await checkLoginStatus();
+  }
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLoggedIn(checkLoginStatus());
+    const fetchLoginStatus = async () => {
+      const status = await checkLoginStatus();
+      setIsLoggedIn(status);
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    fetchLoginStatus();
+
+    // const handleStorageChange = async () => {
+    //   const isLoggedIn = await checkLoginStatus();
+    //   setIsLoggedIn(isLoggedIn);
+    //   console.log("Storage changed, isLoggedIn:", isLoggedIn);
+    // };
+
+    // window.addEventListener("storage", handleStorageChange);
+    // return () => {
+    //   window.removeEventListener("storage", handleStorageChange);
+    // };
   }, []);
 
   const login = async (username, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/login/`, {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username, password }),
@@ -188,14 +207,14 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleLogout2 = () => {
+  const logout = async () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setIsLoggedIn(false);
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, handleLogout2 }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, isLoggedInFunction }}>
       {children}
     </AuthContext.Provider>
   );
@@ -212,5 +231,5 @@ export {
   getAccessTokenWithRefresh,
   makeAuthenticatedRequest,
   checkLoginStatus,
-  handleLogout,
+  // handleLogout,
 };

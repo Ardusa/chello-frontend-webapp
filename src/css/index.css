@@ -68,3 +68,21 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+:root {
+  --green-button-color: #3ca332;
+  --green-button-hover-color: #026f09;
+  --blue-button-color: #4285F4;
+  --blue-button-hover-color: #063a8e;
+  --red-button-color: #ff0000;
+  --red-button-hover-color: #720202;
+  --background-color: #424242;
+}
+
+body, html {
+  background-color: var(--background-color);
+  color: white;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
