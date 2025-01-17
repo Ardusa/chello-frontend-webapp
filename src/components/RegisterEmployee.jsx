@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../api.js";
 import "../css/register-employee.css";
 import { registerEmployee, getEmployee, setPassword } from "../api.js";
-import { makeAuthenticatedRequest } from "../services/AuthService.jsx";
 
 const RegisterEmployee = (new_account = false, set_password = false) => {
   const [formData, setFormData] = useState({});
@@ -29,7 +28,7 @@ const RegisterEmployee = (new_account = false, set_password = false) => {
         };
       }
 
-      const responseJson = getEmployee();
+      const responseJson = await getEmployee();
 
       return {
         name: "",
@@ -80,7 +79,7 @@ const RegisterEmployee = (new_account = false, set_password = false) => {
       <div className="centered-container">
         <div className="register-container">
           <h2>Create Password</h2>
-          <p>Please create a password for your new account</p>
+          <p>Please create a password for your new account Employee {formData.id}</p>
 
           <form onSubmit={handleSetPassword}>
             <div className="form-input">
