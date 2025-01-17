@@ -7,7 +7,7 @@ import CreateProject from "./components/CreateProject";
 import ProjectDisplay from "./components/ProjectDisplay";
 
 const AppRoutes = () => {
-  const { isLoggedIn, isLoggedInFunction } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   return (
     <Routes>
@@ -17,9 +17,9 @@ const AppRoutes = () => {
 
       {/* Protected Routes */}
       <Route path="/register-employee" element={<RegisterEmployee />} />
-      <Route path="/dashboard" element={<ProtectedRoute isLoggedIn={isLoggedIn} Component={Dashboard} />} />
-      <Route path="/projects/create" element={<ProtectedRoute isLoggedIn={isLoggedIn} Component={CreateProject} />} />
-      <Route path="/projects/:project_id" element={<ProtectedRoute isLoggedIn={isLoggedIn} Component={ProjectDisplay} />} />
+      <Route path="/dashboard" element={<ProtectedRoute Component={Dashboard} />} />
+      <Route path="/projects/create" element={<ProtectedRoute Component={CreateProject} />} />
+      <Route path="/projects/:project_id" element={<ProtectedRoute Component={ProjectDisplay} />} />
     </Routes>
   );
 };
@@ -32,7 +32,9 @@ const App = () => (
   </AuthProvider>
 );
 
-export const ProtectedRoute = ({ isLoggedIn, Component, redirectTo = "/login" }) => {
+export const ProtectedRoute = ({ Component, redirectTo = "/login" }) => {
+  const { isLoggedIn } = useAuth();
+
   console.log("isLoggedIn:", isLoggedIn);
   return isLoggedIn ? <Component /> : <Navigate to={redirectTo} />;
 };

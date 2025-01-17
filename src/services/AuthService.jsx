@@ -82,29 +82,24 @@ const getAccessToken = () => {
 
 // Function to refresh the access token using the refresh token
 const refreshAccessToken = async () => {
-  // try {
-    const refresh_token = localStorage.getItem("refresh_token");
-    if (!refresh_token) throw new Error("No refresh token found");
+  const refresh_token = localStorage.getItem("refresh_token");
+  if (!refresh_token) throw new Error("No refresh token found");
 
-    const response = await fetch(`${API_BASE_URL}/refresh`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh_token: refresh_token }),
-    });
+  const response = await fetch(`${API_BASE_URL}/refresh`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ refresh_token: refresh_token }),
+  });
 
-    if (!response.ok) throw new Error("Refresh token expired");
+  if (!response.ok) throw new Error("Refresh token expired");
 
-    const data = await response.json();
-    if (!data) throw new Error("Failed to refresh access token");
+  const data = await response.json();
+  if (!data) throw new Error("Failed to refresh access token");
 
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-  // } catch (error) {
-    // console.log("Refreshing token failed:", error.message);
-    throw error;
-  // }
+  localStorage.setItem("access_token", data.access_token);
+  localStorage.setItem("refresh_token", data.refresh_token);
 };
 
 
