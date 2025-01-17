@@ -1,14 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../api.js";
 import "../css/register-employee.css";
-import { getEmployeeId, registerEmployee } from "../api.js";
+import { registerEmployee, getEmployee, setPassword } from "../api.js";
 import { makeAuthenticatedRequest } from "../services/AuthService.jsx";
 
-const RegisterEmployee = (new_account = false) => {
+const RegisterEmployee = (new_account = false, set_password = false) => {
   const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (set_password) {
+      return {
+        id: useParams().id,
+        temporary_password: "",
+        new_password: "",
+      }
+    }
+
+    const getFormData = async () => {
+      if (new_account) {
+        return {
+          name: "",
+          email: "",
+          password: "",
+          company_id: "",
+          position: "Founder",
+        };
+      }
+
+      const responseJson = getEmployee();
+
+      return {
+        name: "",
+        email: "",
+        password: "",
+        company_id: responseJson.company_id,
+        position: "",
+        manager_id: responseJson.id,
+      };
+    };
+
     const fetchData = async () => {
       const data = await getFormData();
       setFormData(data);
@@ -16,34 +48,6 @@ const RegisterEmployee = (new_account = false) => {
 
     fetchData();
   }, []);
-
-  const getFormData = async () => {
-    if (new_account) {
-      return {
-        name: "",
-        email: "",
-        password: "",
-        company_id: "",
-        position: "Founder",
-      };
-    }
-
-    const companyResponse = await makeAuthenticatedRequest("/get-id");
-    const companyJson = await companyResponse.json();
-    const managerResponse = await makeAuthenticatedRequest("/get-id");
-    const managerJson = await managerResponse.json();
-
-    return {
-      name: "",
-      email: "",
-      password: "",
-      company_id: companyJson.company_id,
-      position: "",
-      manager_id: managerJson.id,
-    };
-  };
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,10 +64,49 @@ const RegisterEmployee = (new_account = false) => {
     }
   };
 
+  const handleSetPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await setPassword(formData);
+      alert("Password set successfully. Redirecting to login...");
+      navigate("/login");
+    } catch (error) {
+      alert(error.response?.data?.detail || "Failed to set password");
+    }
+  };
+
+  if (set_password) {
+    return (
+      <div className="centered-container">
+        <div className="register-container">
+          <h2>Create Password</h2>
+          <p>Please create a password for your new account</p>
+
+          <form onSubmit={handleSetPassword}>
+            <div className="form-input">
+              <label>Temporary Password *</label>
+              <input type="password" name="temporary_password" placeholder="New Password" onChange={handleChange} required autoComplete="new-password" />
+            </div>
+
+            <div className="form-input">
+              <label>New Password *</label>
+              <input type="password" name="new_password" placeholder="Confirm Password" onChange={handleChange} required autoComplete="new-password" />
+            </div>
+
+            <button type="submit" className="register-btn">Set Password</button>
+          </form>
+
+          {/* <button type="button" onClick={() => navigate("/login")} className="arrow backward-btn"></button> */}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="centered-container">
       <div className="register-container">
         <h2>Register Employee</h2>
+
         <form onSubmit={handleSubmit}>
           <div className="form-input">
             <label>Full Name *</label>
@@ -77,7 +120,7 @@ const RegisterEmployee = (new_account = false) => {
 
           <div className="form-input">
             <label>Password *</label>
-            <input type="password" name="password" placeholder="Password" onChange={handleChange} required autoComplete="new-password" />
+            <input type="password" name="password" placeholder={new_account ? "Password" : "Temporary Password"} onChange={handleChange} required autoComplete="new-password" />
           </div>
 
           {new_account ? (

@@ -40,13 +40,18 @@ export const createProject = async (projectData) => {
     return response;
 }
 
-export const getEmployeeId = async () => {
+export const getEmployee = async () => {
     const response = await makeAuthenticatedRequest("/get-id");
     const json = await response.json();
-    return json.id;
+    return json;
 }
 
 export const registerEmployee = async (employeeData) => {
     const response = await axios.post(`${API_BASE_URL}/register`, employeeData);
+    return response;
+}
+
+export const setPassword = async (employeeData) => {
+    const response = await axios.post(`${API_BASE_URL}/set-password`, employeeData);
     return response;
 }

@@ -14,6 +14,7 @@ const AppRoutes = () => {
       {/* Public Routes */}
       <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
       <Route path="/register-new-account" element={<RegisterEmployee new_account={true} />} />
+      <Route path="/set-password/:id" element={<RegisterEmployee set_password={true} />} />
 
       {/* Protected Routes */}
       <Route path="/register-employee" element={<RegisterEmployee new_account={false} />} />

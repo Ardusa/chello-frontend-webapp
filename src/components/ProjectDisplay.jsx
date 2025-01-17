@@ -4,7 +4,7 @@ import { fetchProjectDetails } from "../api"; // Assuming you have an API functi
 // import "../css/project-display.css";
 
 const ProjectDisplay = ({ onLogout }) => {
-  const { project_id } = useParams(); // Access project_id from URL
+  const { project_id } = useParams().project_id; // Access project_id from URL
   const [project, setProject] = useState(null); // Store project data
   const [loading, setLoading] = useState(true); // Track loading state
   const [error, setError] = useState(null); // Store error message
