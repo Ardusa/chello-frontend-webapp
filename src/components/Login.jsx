@@ -6,16 +6,15 @@ import "../css/styles.css";
 import "../css/login.css";
 
 const Login = () => {
-    const [id, setId] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    // Handle login form submission
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page refresh on form submit
         try {
-            await login(id, password);
+            await login(email, password);
             navigate("/dashboard");
             console.log("Login successful");
         } catch (error) {
@@ -43,10 +42,10 @@ const Login = () => {
                 <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
                     <input
-                        type="text"
-                        placeholder="Employee ID"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
+                        type="email"
+                        placeholder="user@chello.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <input

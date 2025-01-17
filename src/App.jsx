@@ -13,15 +13,23 @@ const AppRoutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/register-new-account" element={<RegisterEmployee />} />
+      <Route path="/register-new-account" element={<RegisterEmployee new_account={true} />} />
 
       {/* Protected Routes */}
-      <Route path="/register-employee" element={<RegisterEmployee />} />
+      <Route path="/register-employee" element={<RegisterEmployee new_account={false} />} />
       <Route path="/dashboard" element={<ProtectedRoute Component={Dashboard} />} />
       <Route path="/projects/create" element={<ProtectedRoute Component={CreateProject} />} />
       <Route path="/projects/:project_id" element={<ProtectedRoute Component={ProjectDisplay} />} />
     </Routes>
   );
+};
+
+
+export const ProtectedRoute = ({ Component, redirectTo = "/login" }) => {
+  const { isLoggedIn } = useAuth();
+
+  console.log("isLoggedIn:", isLoggedIn);
+  return isLoggedIn ? <Component /> : <Navigate to={redirectTo} />;
 };
 
 const App = () => (
@@ -31,12 +39,5 @@ const App = () => (
     </BrowserRouter>
   </AuthProvider>
 );
-
-export const ProtectedRoute = ({ Component, redirectTo = "/login" }) => {
-  const { isLoggedIn } = useAuth();
-
-  console.log("isLoggedIn:", isLoggedIn);
-  return isLoggedIn ? <Component /> : <Navigate to={redirectTo} />;
-};
 
 export default App;
