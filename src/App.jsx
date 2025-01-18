@@ -13,11 +13,11 @@ const AppRoutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/register-new-account" element={<RegisterEmployee new_account={true} />} />
-      <Route path="/set-password/:id" element={<RegisterEmployee set_password={true} />} />
+      <Route path="/register-new-account" element={<RegisterEmployee new_account={true} set_password={false} />} />
+      <Route path="/set-password/:id" element={<RegisterEmployee new_account={false} set_password={true} />} />
 
       {/* Protected Routes */}
-      <Route path="/register-employee" element={<RegisterEmployee new_account={false} />} />
+      <Route path="/register-employee" element={<RegisterEmployee new_account={false} set_password={false} />} />
       <Route path="/dashboard" element={<ProtectedRoute Component={Dashboard} />} />
       <Route path="/projects/create" element={<ProtectedRoute Component={CreateProject} />} />
       <Route path="/projects/:project_id" element={<ProtectedRoute Component={ProjectDisplay} />} />

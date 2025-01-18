@@ -1,43 +1,9 @@
-/* .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-
-.dashboard-container .dashboard-buttons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.dashboard-container .dashboard-title {
-    margin-bottom: 20px;
-}
-
-.dashboard-container .project-list {
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
-    margin-top: 20px;
-}
-
-.dashboard-container .no-projects {
-    color: #777;
-} */
-
 .dashboard {
     display: flex;
     height: 100vh;
     background-color: black;
     color: white;
 }
-
-/* .dashboard-container {
-    display: flex;
-    height: 100vh;
-} */
 
 .sidebar {
     width: 350px;
@@ -47,31 +13,19 @@
     flex-direction: column;
     align-items: center;
     padding: 5px;
-}
-
-.logo {
-    text-align: center;
-    margin-bottom: 0px;
+    border-radius: 20px;
+    margin: 10px;
 }
 
 .logo-img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 5px;
+    align-self: first baseline;
+    margin: auto !important;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+    width: 300px;
+    height: auto;
+    margin-bottom: 0px;
 }
-
-/* .logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
-}
-
-.chello-logo {
-    width: auto;
-    height: 40px;
-    margin-right: auto;
-} */
 
 .nav {
     width: 350px;
@@ -83,29 +37,48 @@
     background: none;
     border: none;
     color: rgb(0, 0, 0);
-    font-size: 18px;
-    padding: 10px;
+    font-size: 22px !important;
+    padding: 28px !important;
     padding-left: 120px;
     width: 100%;
-    text-align: left;
     cursor: pointer;
-    transition: background 0.3s;
+    height: 50px;
+    transition: background 0.5s;
 }
 
 .nav-item:hover {
-    background-color: rgb(206, 206, 206);
-    font-weight: bold;
+    background: none;
+    /* background-color: rgb(206, 206, 206); */
+    /* font-weight: bold; */
+    font-size: 107%;
     color: black;
 }
 
 .nav-item.active {
+    background: none;
     font-weight: bold;
     color: black;
+    font-size: 107%;
+}
 
+.settings-btn {
+    margin-top: auto !important;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 3px rgb(2, 136, 209) solid !important;
+    border-radius: 13px !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.settings-btn:hover {
+    background: #ffffff;
+    color: rgb(2, 136, 209);
 }
 
 .logout-btn {
-    margin-top: auto !important;
+    margin-top: 10px !important;
+    margin-bottom: 7px !important;
     padding: 10px 20px;
     border: 3px #E04343 solid !important;
     border-radius: 13px !important;
@@ -128,7 +101,8 @@
 
 
 .cards-container {
-    width: 80%;
+    margin-top: 40px;
+    width: 92%;
 }
 
 .cards {
@@ -136,6 +110,15 @@
     flex-wrap: wrap;
     gap: 20px;
 }
+
+.cards p {
+    margin: 5px;
+    margin-left: 0px;
+}
+/* 
+.cards h1, h2, h3 {
+    margin-bottom: 10px;
+} */
 
 .card {
     background: #222;
@@ -152,6 +135,7 @@
 
 .card h3 {
     margin: 0;
+    margin-bottom: 10px;
     font-size: 20px;
     color: yellow;
 }

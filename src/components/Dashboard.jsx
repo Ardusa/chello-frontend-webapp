@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { fetchProjects, fetchEmployees } from "../api";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+
 import LogoutIcon from "@mui/icons-material/Logout";
 import FolderIcon from '@mui/icons-material/Folder';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import InsightsIcon from '@mui/icons-material/Insights';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 import { useAuth } from "../services/AuthService";
 
 import { Container, Typography, Button, List, ListItem, ListItemButton, ListItemText, Paper, Box } from "@mui/material";
@@ -19,21 +23,19 @@ const Dashboard = () => {
     const { logout } = useAuth();
 
     const handleLogout = () => {
-        // localStorage.removeItem("access_token");
-        // localStorage.removeItem("refresh_token");
         logout();
         navigate("/login");
     };
 
     useEffect(() => {
         if (selectedSection === "projects") {
-        fetchProjects().then(setProjects).catch((e) => {
-            console.error(e);
-            if (e.status === 401) {
-                console.log("Session expired. Redirecting to login page.");
-                navigate("/login");
-            }
-        });
+            fetchProjects().then(setProjects).catch((e) => {
+                console.error(e);
+                if (e.status === 401) {
+                    console.log("Session expired. Redirecting to login page.");
+                    navigate("/login");
+                }
+            });
         } else if (selectedSection === "employees") {
             fetchEmployees().then(setEmployees).catch(console.error);
         }
@@ -43,10 +45,8 @@ const Dashboard = () => {
         <div className="dashboard">
             {/* Sidebar */}
             <aside className="sidebar">
-                <div className="logo">
-                    <img src={logo} alt="Chello Logo" className="logo-img" />
-                    <h1>Chello</h1>
-                </div>
+                <img src={logo} alt="Chello Logo" className="logo-img" />
+                <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px"}}>Chello</h1>
                 <nav className="nav">
                     {[
                         { id: "projects", name: "Projects", icon: <FolderIcon /> },
@@ -58,11 +58,15 @@ const Dashboard = () => {
                             className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
                             onClick={() => setSelectedSection(section.id)}
                             startIcon={section.icon}
+                            disableRipple
                         >
                             {section.name}
                         </Button>
                     ))}
                 </nav>
+                <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleLogout()}>
+                    Settings
+                </Button>
                 <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
                     Logout
                 </Button>
@@ -80,14 +84,18 @@ const Dashboard = () => {
 
 const ProjectCards = ({ projects }) => (
     <div className="cards-container">
-        <h2>Projects</h2>
+        {/* <h2>Projects</h2> */}
         <div className="cards">
-            {projects.map((project) => (
-                <div key={project.project_id} className="card" onClick={() => window.location.href = `/projects/${project.project_id}/`}>
-                    <h3>{project.project_name}</h3>
-                    <p>{project.description}</p>
+            {Object.keys(projects).map((projectId) => (
+                <div key={projectId} className="card" onClick={() => window.location.href = `/projects/${projectId}/`}>
+                    <h3>{projects[projectId].name}</h3>
+                    <p>{projects[projectId].description}</p>
                 </div>
             ))}
+            <div className="card create-project-card" onClick={() => window.location.href = "/projects/create"}>
+                <h3>Create Project</h3>
+                <AddBoxOutlinedIcon style={{ fontSize: 40 }} />
+            </div>
         </div>
     </div>
 );
@@ -101,7 +109,7 @@ const InsightsCards = () => {
     ];
     return (
         <div className="cards-container">
-            <h2>Insights</h2>
+            {/* <h2>Insights</h2> */}
             <div className="cards">
                 {insights.map((insight) => (
                     <div key={insight.id} className="card" onClick={() => window.location.href = insight.path}>
@@ -115,15 +123,19 @@ const InsightsCards = () => {
 
 const EmployeeCards = ({ employees }) => (
     <div className="cards-container">
-        <h2>Employees</h2>
+        {/* <h2>Employees</h2> */}
         <div className="cards">
-            {employees.map((employee) => (
+            {(employees).map((employee) => (
                 <div key={employee.employee_id} className="card" onClick={() => window.location.href = `/employees/${employee.employee_id}/`}>
                     <h3>{employee.name}</h3>
                     <p>{employee.email}</p>
-                    <p>{employee.title}</p>
+                    <p>{employee.position}</p>
                 </div>
             ))}
+            <div className="card create-employee-card" onClick={() => window.location.href = "/register-employee"}>
+                <h3>Register Employee</h3>
+                <AddBoxOutlinedIcon style={{ fontSize: 40 }} />
+            </div>
         </div>
     </div>
 );

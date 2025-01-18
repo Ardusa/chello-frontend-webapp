@@ -1,27 +1,27 @@
-// import axios from "axios";
+import axios from "axios";
 import { makeAuthenticatedRequest } from "./services/AuthService";
 
 // TODO: Update the API_BASE_URL to your backend URL
 const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
 
 export const fetchProjects = async () => {
-    try {
-        const response = await makeAuthenticatedRequest("/projects/get-projects");
-        const json = await response.json();
-        const projects = json.assigned_projects;
+    const response = await makeAuthenticatedRequest("/projects/get-projects");
+    const json = await response.json();
 
-        return projects;
-    } catch (error) {
-        if (error.status === 404) {
-            return [];
-        }
+    // ! Debugging
+    console.log("Projects:", json);
 
-        throw error;
-    }
+    return json;
 };
 
 export const fetchEmployees = async () => {
-    return [];
+    const response = await makeAuthenticatedRequest("/employees/get-employees");
+    const json = await response.json();
+
+    // ! Debugging
+    console.log("Employees:", json);
+
+    return json;
 }
 
 export const fetchProjectDetails = async (project_id) => {
@@ -47,7 +47,12 @@ export const getEmployee = async () => {
 }
 
 export const registerEmployee = async (employeeData) => {
-    const response = await axios.post(`${API_BASE_URL}/register`, employeeData);
+    const response = await axios.post(`${API_BASE_URL}/create-new-employee`, employeeData);
+    return response;
+}
+
+export const createAccount = async (employeeData) => {
+    const response = await axios.post(`${API_BASE_URL}/register-account`, employeeData);
     return response;
 }
 

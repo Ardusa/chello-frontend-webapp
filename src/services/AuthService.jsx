@@ -90,7 +90,7 @@ const refreshAccessToken = async () => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ refresh_token: refresh_token }),
+    body: JSON.stringify({ refresh_token }),
   });
 
   if (!response.ok) throw new Error("Refresh token expired");

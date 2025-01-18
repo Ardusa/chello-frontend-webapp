@@ -22,18 +22,13 @@ const CreateProject = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // const response = await makeAuthenticatedRequest("/projects/create", {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify(projectData),
-        // });
 
-        const response = createProject(projectData);
+        const response = await createProject(projectData);
         const data = await response.json();
 
         if (response.ok) {
-            alert("Project created successfully: " + data.project_id);
-            navigate("/dashboard");
+            alert("Project created successfully: " + data.id);
+            navigate(`/projects/${data.id}`);
         }
         else if (response.status === 401) {
             alert("Session expired. Please log in again.");

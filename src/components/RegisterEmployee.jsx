@@ -2,28 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../api.js";
 import "../css/register-employee.css";
-import { registerEmployee, getEmployee, setPassword } from "../api.js";
+import { createAccount, getEmployee, setPassword } from "../api.js";
 
-const RegisterEmployee = (new_account = false, set_password = false) => {
+const RegisterEmployee = ( {new_account = false, set_password = false } ) => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
-    if (set_password) {
-      return {
-        id: useParams().id,
-        temporary_password: "",
-        new_password: "",
-      }
-    }
-
     const getFormData = async () => {
+      if (set_password) {
+        return {
+          id: id || "",
+          temporary_password: "",
+          new_password: "",
+        }
+      }
+      
       if (new_account) {
         return {
           name: "",
           email: "",
           password: "",
-          company_id: "",
+          company_name: "",
           position: "Founder",
         };
       }
@@ -55,11 +56,12 @@ const RegisterEmployee = (new_account = false, set_password = false) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await registerEmployee(formData);
+      await createAccount(formData);
       alert("Registration successful. Redirecting to login...");
       navigate("/login");
     } catch (error) {
       alert(error.response?.data?.detail || "Registration failed");
+      console.error("Registration failed:", error);
     }
   };
 
@@ -114,7 +116,7 @@ const RegisterEmployee = (new_account = false, set_password = false) => {
 
           <div className="form-input">
             <label>Email *</label>
-            <input type="email" name="email" placeholder="user@chello.team" onChange={handleChange} required autoComplete="off" />
+            <input type="email" name="email" placeholder="user@chello.team" onChange={handleChange} required autoComplete="email" />
           </div>
 
           <div className="form-input">
@@ -136,7 +138,7 @@ const RegisterEmployee = (new_account = false, set_password = false) => {
 
           <div className="form-input">
             <label>Position Title *</label>
-            <input type="text" name="title" placeholder="Software Engineer" onChange={handleChange} required autoComplete="organization-title" />
+            <input type="text" name="position" placeholder="Founder" onChange={handleChange} required autoComplete="organization-title" readOnly={false} />
           </div>
           {new_account ? (
             <button type="submit" className="register-btn">Register Account</button>
