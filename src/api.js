@@ -4,9 +4,17 @@ import { makeAuthenticatedRequest } from "./services/AuthService";
 // TODO: Update the API_BASE_URL to your backend URL
 const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
 
+
+/**
+{
+    project_id: Project,
+    ...
+}
+*/
 export const fetchProjects = async () => {
     const response = await makeAuthenticatedRequest("/projects/get-projects");
     const json = await response.json();
+
 
     // ! Debugging
     console.log("Projects:", json);
@@ -37,11 +45,16 @@ export const createProject = async (projectData) => {
         body: JSON.stringify(projectData),
     });
 
-    return response;
+    const json = await response.json();
+
+    // ! Debugging
+    console.log("Project created:", json);
+
+    return json;
 }
 
 export const getEmployee = async () => {
-    const response = await makeAuthenticatedRequest("/get-id");
+    const response = await makeAuthenticatedRequest("/get-id/");
     const json = await response.json();
     return json;
 }

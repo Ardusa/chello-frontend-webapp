@@ -124,9 +124,9 @@
     background: #222;
     padding: 20px;
     border-radius: 10px;
-    width: 250px;
+    width: 300px;
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 }
 
 .card:hover {
@@ -136,12 +136,12 @@
 .card h3 {
     margin: 0;
     margin-bottom: 10px;
-    font-size: 20px;
+    font-size: 24px;
     color: yellow;
 }
 
 .card p {
     margin-top: 5px;
-    font-size: 16px;
+    font-size: 20px;
     color: white;
 }

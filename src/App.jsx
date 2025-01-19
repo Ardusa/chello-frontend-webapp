@@ -19,7 +19,7 @@ const AppRoutes = () => {
       {/* Protected Routes */}
       <Route path="/register-employee" element={<RegisterEmployee new_account={false} set_password={false} />} />
       <Route path="/dashboard" element={<ProtectedRoute Component={Dashboard} />} />
-      <Route path="/projects/create" element={<ProtectedRoute Component={CreateProject} />} />
+      {/* <Route path="/projects/create" element={<ProtectedRoute Component={CreateProject} />} /> */}
       <Route path="/projects/:project_id" element={<ProtectedRoute Component={ProjectDisplay} />} />
     </Routes>
   );
