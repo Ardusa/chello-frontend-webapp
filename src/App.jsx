@@ -3,8 +3,8 @@ import { AuthProvider, useAuth } from "./services/AuthService";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import RegisterEmployee from "./components/RegisterEmployee";
-import CreateProject from "./components/CreateProject";
 import ProjectDisplay from "./components/ProjectDisplay";
+import Settings from "./components/Settings";
 
 const AppRoutes = () => {
   const { isLoggedIn } = useAuth();
@@ -12,14 +12,14 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
+      <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard/projects" /> : <Login />} />
       <Route path="/register-new-account" element={<RegisterEmployee new_account={true} set_password={false} />} />
       <Route path="/set-password/:id" element={<RegisterEmployee new_account={false} set_password={true} />} />
 
       {/* Protected Routes */}
       <Route path="/register-employee" element={<RegisterEmployee new_account={false} set_password={false} />} />
-      <Route path="/dashboard" element={<ProtectedRoute Component={Dashboard} />} />
-      {/* <Route path="/projects/create" element={<ProtectedRoute Component={CreateProject} />} /> */}
+      <Route path="/dashboard/:selection" element={<ProtectedRoute Component={Dashboard} />} />
+      <Route path="/settings" element={<ProtectedRoute Component={Settings} />} />
       <Route path="/projects/:project_id" element={<ProtectedRoute Component={ProjectDisplay} />} />
     </Routes>
   );

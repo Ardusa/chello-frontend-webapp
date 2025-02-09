@@ -15,23 +15,23 @@ const Login = () => {
         e.preventDefault(); // Prevent page refresh on form submit
         try {
             await login(email, password);
-            navigate("/dashboard");
+            navigate("/dashboard/projects");
             console.log("Login successful");
         } catch (error) {
             console.error("Login failed:", error);
         }
     };
 
-    useEffect(() => {
-        const checkStatus = async () => {
-            if (await checkLoginStatus()) {
-                console.log("User is already logged in");
-                navigate("/dashboard");
-            }
-        };
+    // useEffect(() => {
+    //     const checkStatus = async () => {
+    //         if (await checkLoginStatus()) {
+    //             console.log("User is already logged in");
+    //             navigate("/dashboard");
+    //         }
+    //     };
 
-        checkStatus();
-    }, []);
+    //     checkStatus();
+    // }, []);
 
     return (
         <div className="centered-container">

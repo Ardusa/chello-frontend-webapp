@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchProjects, fetchEmployees, getEmployee, registerEmployee, createProject } from "../api";
-import { useNavigate } from "react-router-dom";
+import { fetchProjects, fetchEmployees, getEmployee, registerEmployee, createProject, ProjectCreate, EmployeeCreate } from "../api";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -9,20 +9,27 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import InsightsIcon from '@mui/icons-material/Insights';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Autocomplete } from "@mui/material";
 
 import { useAuth } from "../services/AuthService";
 
-import { Container, Typography, Button, List, ListItem, ListItemButton, ListItemText, Paper, Box } from "@mui/material";
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 
 import "../css/dashboard.css";
 
+let Projects = {};
+let Employees = [];
+let employeeToId = [];
+
 const Dashboard = () => {
-    const [projects, setProjects] = useState({});
-    const [employees, setEmployees] = useState([]);
+    const [projects, setProjects] = useState(Projects);
+    const [employees, setEmployees] = useState(Employees);
 
     const refreshProjects = () => {
-        fetchProjects().then(setProjects).catch((e) => {
+        fetchProjects().then((e) => {
+            Projects = e;
+            setProjects(e);
+        }
+        ).catch((e) => {
             console.error(e);
             if (e.status === 401) {
                 console.log("Session expired. Redirecting to login page.");
@@ -32,7 +39,21 @@ const Dashboard = () => {
     };
 
     const refreshEmployees = () => {
-        fetchEmployees().then(setEmployees).catch((e) => {
+        fetchEmployees().then((e) => {
+            Employees = e;
+            getEmployee().then((currentUser) => {
+                employeeToId = [
+                    { name: currentUser.name, id: currentUser.id },
+                    ...e.map(employee => ({
+                        name: employee.name,
+                        id: employee.id
+                    }))
+                ];
+            });
+            console.log("Employee to ID:", employeeToId);
+            setEmployees(e);
+        }
+        ).catch((e) => {
             console.error(e);
             if (e.status === 401) {
                 console.log("Session expired. Redirecting to login page.");
@@ -41,19 +62,24 @@ const Dashboard = () => {
         });
     };
 
-    const navigate = useNavigate();
-    const [selectedSection, setSelectedSection] = useState("projects");
+    useEffect(() => {
+        refreshProjects();
+        refreshEmployees();
+    }, []);
+
+    const { section } = useParams();
+    const [selectedSection, setSelectedSection] = useState(section || "projects");
     const { logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
 
-    useEffect(() => {
-        refreshProjects();
-        refreshEmployees();
-    }, []);
+    const handleSettings = () => {
+        navigate("/settings");
+    }
 
     return (
         <div className="dashboard">
@@ -78,7 +104,7 @@ const Dashboard = () => {
                         </Button>
                     ))}
                 </nav>
-                <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleLogout()}>
+                <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
                     Settings
                 </Button>
                 <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
@@ -88,7 +114,7 @@ const Dashboard = () => {
 
             {/* Main Content */}
             <main className="content">
-                {selectedSection === "projects" && <ProjectCards projects={projects} refreshProjects={refreshProjects} />}
+                {selectedSection === "projects" && <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshEmployees={refreshEmployees} />}
                 {selectedSection === "insights" && <InsightsCards />}
                 {selectedSection === "employees" && <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />}
             </main>
@@ -96,16 +122,11 @@ const Dashboard = () => {
     );
 };
 
-const ProjectCards = ({ projects, refreshProjects }) => {
+const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
-    const [newProject, setNewProject] = useState({
-        company_id: "",
-        name: "",
-        description: "", // optional
-        project_manager: "",
-    });
+    const [projectData, setNewProject] = useState(new ProjectCreate());
 
     const handleOpen = () => {
         getEmployee()
@@ -121,12 +142,7 @@ const ProjectCards = ({ projects, refreshProjects }) => {
     };
 
     const handleClose = () => {
-        setNewProject({
-            company_id: "",
-            name: "",
-            description: "",
-            project_manager: "",
-        });
+        setNewProject(new ProjectCreate());
         setOpen(false);
     }
 
@@ -135,9 +151,14 @@ const ProjectCards = ({ projects, refreshProjects }) => {
         setNewProject((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleManagerChange = (e, value) => {
+        setNewProject((prev) => ({ ...prev, project_manager: value.id }));
+    }
+
     const handleSubmit = () => {
-        console.log("New Project: ", newProject);
-        createProject(newProject)
+        console.log("New Project: ", projectData);
+
+        createProject(projectData)
             .then((createdProject) => {
                 refreshProjects();
                 handleClose();
@@ -173,7 +194,7 @@ const ProjectCards = ({ projects, refreshProjects }) => {
                         label="Name"
                         type="text"
                         fullWidth
-                        value={newProject.name}
+                        value={projectData.name}
                         onChange={handleChange}
                     />
                     <TextField
@@ -182,17 +203,23 @@ const ProjectCards = ({ projects, refreshProjects }) => {
                         label="Description"
                         type="text"
                         fullWidth
-                        value={newProject.description}
+                        value={projectData.description}
                         onChange={handleChange}
                     />
-                    <TextField
-                        margin="dense"
+                    <Autocomplete
+                        autoSelect
+                        autoHighlight
+                        margin='normal'
+                        onChange={handleManagerChange}
                         name="project_manager"
+                        value={employeeToId[0]}
                         label="Project Manager"
-                        type="text"
+                        disablePortal
                         fullWidth
-                        value={newProject.project_manager}
-                        onChange={handleChange}
+                        options={employeeToId}
+                        getOptionLabel={(option) => option.name}
+                        renderInput={(params) => <TextField {...params} label="Manager" />}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -228,16 +255,9 @@ const InsightsCards = () => {
     );
 };
 
-const EmployeeCards = ({ employees, refreshEmployees }) => {
+const EmployeeCards = ({ employees, refreshProjects, refreshEmployees }) => {
     const [open, setOpen] = useState(false);
-    const [newEmployee, setNewEmployee] = useState({
-        name: "",
-        email: "",
-        password: "",
-        company_id: "",
-        position: "Engineer",
-        manager_id: "",
-    });
+    const [employeeData, setNewEmployee] = useState(new EmployeeCreate());
 
     const handleOpen = () => {
         getEmployee()
@@ -253,14 +273,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
     };
 
     const handleClose = () => {
-        setNewEmployee({
-            name: "",
-            email: "",
-            password: "",
-            company_id: "",
-            position: "Engineer",
-            manager_id: "",
-        });
+        setNewEmployee(new EmployeeCreate());
         setOpen(false);
     }
 
@@ -270,8 +283,8 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
     };
 
     const handleSubmit = () => {
-        console.log("New Employee: ", newEmployee);
-        registerEmployee(newEmployee)
+        console.log("New Employee: ", employeeData);
+        registerEmployee(employeeData)
             .then(() => handleClose())
             .catch(console.error);
         refreshEmployees();
@@ -302,7 +315,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Name"
                         type="text"
                         fullWidth
-                        value={newEmployee.name}
+                        value={employeeData.name}
                         onChange={handleChange}
                     />
                     <TextField
@@ -311,7 +324,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Email"
                         type="email"
                         fullWidth
-                        value={newEmployee.email}
+                        value={employeeData.email}
                         onChange={handleChange}
                     />
                     <TextField
@@ -320,7 +333,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Temporary Password"
                         type="text"
                         fullWidth
-                        value={newEmployee.password}
+                        value={employeeData.password}
                         onChange={handleChange}
                     />
                     <TextField
@@ -329,7 +342,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Manager ID"
                         type="text"
                         fullWidth
-                        value={newEmployee.manager_id}
+                        value={employeeData.manager_id}
                         onChange={handleChange}
                     />
                     <TextField
@@ -338,7 +351,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Position"
                         type="text"
                         fullWidth
-                        value={newEmployee.position}
+                        value={employeeData.position}
                         onChange={handleChange}
                     />
                 </DialogContent>
