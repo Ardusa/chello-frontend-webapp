@@ -18,7 +18,7 @@ const AppRoutes = () => {
 
       {/* Protected Routes */}
       <Route path="/register-employee" element={<RegisterEmployee new_account={false} set_password={false} />} />
-      <Route path="/dashboard/:selection" element={<ProtectedRoute Component={Dashboard} />} />
+      <Route path="/dashboard/:section" element={<ProtectedRoute Component={Dashboard} />} />
       <Route path="/settings" element={<ProtectedRoute Component={Settings} />} />
       <Route path="/projects/:project_id" element={<ProtectedRoute Component={ProjectDisplay} />} />
     </Routes>

@@ -35,6 +35,10 @@ const makeAuthenticatedRequest = async (route, options = {}) => {
     return await fetch(url, options);
   }
 
+  if (!response.ok) {
+    throw new Error(`Request failed; Error ${response.status}: ${response.statusText}`);
+  }
+
   return response;
 };
 

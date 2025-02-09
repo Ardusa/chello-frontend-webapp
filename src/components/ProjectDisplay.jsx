@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Navigate } from "react-router-dom";
-import { fetchProjectDetails, ProjectResponse } from "../api"; // Assuming you have an API function to fetch project details
+import { fetchProjectDetails, ProjectResponse } from "../api";
 // import "../css/project-display.css";
 
 const ProjectDisplay = ({ onLogout }) => {

@@ -23,6 +23,10 @@ let employeeToId = [];
 const Dashboard = () => {
     const [projects, setProjects] = useState(Projects);
     const [employees, setEmployees] = useState(Employees);
+    const { section } = useParams();
+    const [selectedSection, setSelectedSection] = useState(section || "projects");
+    const { logout } = useAuth();
+    const navigate = useNavigate();
 
     const refreshProjects = () => {
         fetchProjects().then((e) => {
@@ -67,11 +71,6 @@ const Dashboard = () => {
         refreshEmployees();
     }, []);
 
-    const { section } = useParams();
-    const [selectedSection, setSelectedSection] = useState(section || "projects");
-    const { logout } = useAuth();
-    const navigate = useNavigate();
-
     const handleLogout = () => {
         logout();
         navigate("/login");
@@ -96,7 +95,11 @@ const Dashboard = () => {
                         <Button
                             key={section.id}
                             className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
-                            onClick={() => setSelectedSection(section.id)}
+                            onClick={() => {
+                                navigate(`/dashboard/${section.id}`);
+                                setSelectedSection(section.id);
+                            }}
+                            // onClick={() => setSelectedSection(section.id)}
                             startIcon={section.icon}
                             disableRipple
                         >
@@ -170,12 +173,10 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
     return (
         <div className="cards-container">
             <div className="cards">
-                {Object.values(projects).map((project) => (
+                {Object.keys(projects).map((project) => (
+                    console.log("Projects: ", projects),
                     <div key={project.id} className="card" onClick={() => window.location.href = `/projects/${project.id}/`}>
                         <h3>{project.name}</h3>
-                        {/* {project.description && (
-                            <p style={{ fontSize: "15px" }}>{project.description}</p>
-                        )} */}
                         <p>Tasks Remaining: {project.tasks_remaining}</p>
                     </div>
                 ))}
@@ -191,7 +192,7 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
                         autoFocus
                         margin="dense"
                         name="name"
-                        label="Name"
+                        label="Project Name"
                         type="text"
                         fullWidth
                         value={projectData.name}
@@ -206,21 +207,22 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
                         value={projectData.description}
                         onChange={handleChange}
                     />
-                    <Autocomplete
+                    {/* <TextField
+                        margin='dense'
                         autoSelect
                         autoHighlight
-                        margin='normal'
                         onChange={handleManagerChange}
                         name="project_manager"
-                        value={employeeToId[0]}
                         label="Project Manager"
+                        type="text"
+                        value={employeeToId[0]}
                         disablePortal
                         fullWidth
                         options={employeeToId}
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => <TextField {...params} label="Manager" />}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
-                    />
+                    /> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
