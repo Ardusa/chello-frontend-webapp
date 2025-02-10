@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../api.js";
 import "../css/register-employee.css";
-import { createAccount, getEmployee, setPassword } from "../api.js";
+import { createAccount, getEmployee, setPassword } from "../services/api.js";
 
 const RegisterEmployee = ( {new_account = false, set_password = false } ) => {
   const [formData, setFormData] = useState({});

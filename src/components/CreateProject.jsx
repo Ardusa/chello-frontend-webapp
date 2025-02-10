@@ -3,7 +3,7 @@
 // // import { makeAuthenticatedRequest } from "../services/AuthService";
 // import ProjectTreeView from "./ProjectTreeView.jsx"; // Assuming this is your tree component
 // import "../css/create-project.css";
-// import { createProject, ProjectCreate } from "../api.js";
+// import { createProject, ProjectCreate } from "../services/api.js";
 
 // const CreateProject = () => {
 //     const [projectData, setProjectData] = useState(new ProjectCreate());

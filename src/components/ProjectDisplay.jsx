@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
-import { fetchProjectDetails, ProjectResponse } from "../api";
-// import "../css/project-display.css";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { fetchProjectDetails } from '../services/api.js';
+import TaskTree from './TaskTree';
 
-const ProjectDisplay = ({ onLogout }) => {
+const ProjectDisplay = () => {
   const { project_id } = useParams();
-  const [project, setProject] = useState({});
+  const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loadProjectDetails = async () => {
@@ -18,10 +17,10 @@ const ProjectDisplay = ({ onLogout }) => {
         if (data) {
           setProject(data);
         } else {
-          setError("Project not found.");
+          setError('Project not found.');
         }
       } catch (error) {
-        setError("Error fetching project details.");
+        setError('Error fetching project details.');
       } finally {
         setLoading(false);
       }
@@ -30,28 +29,21 @@ const ProjectDisplay = ({ onLogout }) => {
     loadProjectDetails();
   }, [project_id]);
 
-  const handleBack = () => {
-    navigate("/dashboard/projects");
-  };
+  if (loading) {
+    return <p>Loading project details...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
-    <div className="centered-container">
-      {loading ? (
-        <p>Loading project details...</p>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        project && (
-          <div>
-            <h2>{project.description}</h2>
-            <p>{project.description}</p>
-            <p>Start Date: {project.start_date}</p>
-            <p>End Date: {project.end_date}</p>
-          </div>
-        )
-      )}
-      <button className='arrow backward-btn' onClick={handleBack}></button>
-      {/* <button onClick={onLogout}>Logout</button> */}
+    <div className="project-display">
+      <h2>{project.name}</h2>
+      <p>{project.description}</p>
+      <p>Start Date: {project.start_date}</p>
+      <p>End Date: {project.end_date}</p>
+      <TaskTree project={project} />
     </div>
   );
 };
