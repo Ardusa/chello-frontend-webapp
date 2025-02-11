@@ -100,10 +100,6 @@ export const fetchProjects = async () => {
 export const fetchEmployees = async () => {
     const response = await makeAuthenticatedRequest("/employees/get-employees");
     const json = await response.json();
-
-    // ! Debugging
-    console.log("Employees:", json);
-
     return json;
 }
 
@@ -149,10 +145,6 @@ export const createProject = async (projectData) => {
     });
 
     const json = await response.json();
-
-    // ! Debugging
-    console.log("Project created:", json);
-
     return json;
 }
 
@@ -219,10 +211,6 @@ export const createTask = async (taskData) => {
     });
 
     const json = await response.json();
-
-    // ! Debugging
-    console.log("Task created:", json);
-
     return json;
 };
 
