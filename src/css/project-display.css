@@ -20,8 +20,7 @@
 /* Styling for the tree items */
 .MuiTreeItem-root {
     padding: 0px;
-    margin: 10px 0;
-    font-size: 1.5rem;
+    margin: 5px;
     /* Increase font size for tree item labels */
     display: block;
     justify-content: space-between;
@@ -60,7 +59,8 @@
 .MuiButton-root {
     font-size: 1.2rem;
     /* Increase font size for the add task button */
-    padding: 10px 20px;
+    /* padding: 10px 20px; */
+    padding: 0px;
     margin-left: 20px;
 }
 
@@ -85,14 +85,15 @@
 }
 
 .project-header {
-    font-size: 2rem;
+    font-size: 50px;
     margin-bottom: 20px;
     color: white;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .delete-button {
     color: rgb(255, 0, 0) !important;
-    font-size: 1.2rem;
+    font-size: 20px !important;
     padding: 10px 20px;
     margin-left: 20px;
 }
@@ -104,7 +105,7 @@
 
 .add-button {
     color: rgb(0, 145, 255) !important;
-    font-size: 1.2rem;
+    font-size: 20px !important;
     padding: 10px 20px;
     margin-left: 20px;
 }
@@ -115,7 +116,9 @@
 }
 
 .task-node {
-    display: 'flex';
-    justify-content: 'space-between';
-    align-items: 'center'
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    padding: 10px 0px 10px 5px;
 }

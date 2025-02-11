@@ -7,6 +7,7 @@ import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogConten
 import "../css/project-display.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import "../css/dashboard.css";
 
 
 
@@ -162,7 +163,7 @@ const ProjectTaskTree = () => {
 
     return (
       <TreeItem key={node.id} itemId={node.id} label={
-        <div className="title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="task-node">
           <span>{node.name}</span>
           <div>
             <Button className="add-button" onClick={() => handleOpenDialog(node.id)}>
@@ -200,6 +201,39 @@ const ProjectTaskTree = () => {
 
   return (
     <div className="centered-container">
+      {/* Sidebar
+      <aside className="sidebar">
+        <img src={logo} alt="Chello Logo" className="logo-img" />
+        <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
+        <nav className="nav">
+          {[
+            { id: "projects", name: "Projects", icon: <FolderIcon /> },
+            { id: "insights", name: "Insights", icon: <InsightsIcon /> },
+            { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
+          ].map((section) => (
+            <Button
+              key={section.id}
+              className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
+              onClick={() => {
+                navigate(`/dashboard/${section.id}`);
+                setSelectedSection(section.id);
+              }}
+              // onClick={() => setSelectedSection(section.id)}
+              startIcon={section.icon}
+              disableRipple
+            >
+              {section.name}
+            </Button>
+          ))}
+        </nav>
+        <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
+          Settings
+        </Button>
+        <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
+          Logout
+        </Button>
+      </aside> */}
+
       <div className="project-header">
         <h1>{project.name}</h1>
       </div>
@@ -224,7 +258,7 @@ const ProjectTaskTree = () => {
         ) : (
           <Typography>No project data available.</Typography>
         )}
-        <Button onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
+        <Button className="add-button" style={{ marginBottom: '10px' }} onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
         {/* </TreeItem> */}
       </SimpleTreeView>
 
