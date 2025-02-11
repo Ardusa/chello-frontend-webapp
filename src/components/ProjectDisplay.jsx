@@ -4,6 +4,11 @@ import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmploye
 import { SimpleTreeView } from "@mui/x-tree-view";
 import { TreeItem } from "@mui/x-tree-view";
 import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
+import "../css/project-display.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+
+
 
 const ProjectTaskTree = () => {
   const { project_id } = useParams();
@@ -59,19 +64,44 @@ const ProjectTaskTree = () => {
     fetchEmployeeDetails();
   }, [project_id]);
 
-  const fetchTaskDetailsRecursively = async (tasks, taskDetails = {}, subtasksDict = {}) => {
+  const fetchTaskDetailsRecursively = async (tasks) => {
     try {
-      for (const taskId of Object.keys(tasks)) {
-        const task = await fetchTaskDetails(taskId);
-        taskDetails[taskId] = task;
+      const fetchTaskDetailsRecursivelyHelper = async (tasks) => {
+        for (const [taskId, task_id_or_dict] of Object.entries(tasks)) {
+          const task = await fetchTaskDetails(taskId);
+          taskDetails[taskId] = task;
+          if (task.parent_task_id) {
+            const appendTaskToSubtasksDict = (dict, parentId, task) => {
+              for (const key in dict) {
+                if (key === parentId) {
+                  dict[key][task.id] = task;
+                  console.log("Appending task to subtasks dict:", dict[key]);
+                  return true;
+                }
+                if (appendTaskToSubtasksDict(dict[key], parentId, task)) {
+                  console.log("Appending task to subtasks dict:", dict[key]);
+                  return true;
+                }
+              }
+              return false;
+            };
 
-        if (task.subtasks && Object.keys(task.subtasks).length > 0) {
-          subtasksDict[taskId] = task.subtasks;
-          await fetchTaskDetailsRecursively(task.subtasks, taskDetails, subtasksDict);
+            if (!appendTaskToSubtasksDict(subtasksDict, task.parent_task_id, task)) {
+              subtasksDict[task.parent_task_id] = { [task.id]: task };
+            }
+          } else {
+            if (!subtasksDict[taskId]) {
+              subtasksDict[taskId] = {};
+            }
+          }
+
+          await fetchTaskDetailsRecursivelyHelper(task_id_or_dict);
         }
-      }
+      };
+
+      await fetchTaskDetailsRecursivelyHelper(tasks);
     } catch (error) {
-      console.error(`Error fetching details for task ${taskId}:`, error);
+      console.error("Error fetching task details recursively:", error);
     }
 
     return { taskDetails, subtasksDict };
@@ -131,16 +161,25 @@ const ProjectTaskTree = () => {
     if (!node) return null;
 
     return (
-      <TreeItem key={node.id} itemId={node.id} label={node.name}>
-        {console.log("Node:", node)}
-        {console.log("Task Details:", taskDetails)}
-
+      <div className="task-node-container">
+      <TreeItem key={node.id} itemId={node.id} label={
+        <div className="task-node">
+          <span>{node.name}</span>
+          <div>
+            <Button className="add-button" onClick={() => handleOpenDialog(node.id)}>
+              <FontAwesomeIcon icon={faPlus} />
+            </Button>
+            <Button className="delete-button" onClick={() => handleDeleteTask(node.id)}>
+              <FontAwesomeIcon icon={faTrash} />
+            </Button>
+          </div>
+        </div>
+      }>
         {subtasksDict[node.id] && Object.keys(subtasksDict[node.id]).map(subtaskId => {
           return renderTree(subtaskId);
         })}
-
-        <Button onClick={() => handleOpenDialog(node.id)}>+ Add Task</Button>
       </TreeItem>
+      </div>
     );
   };
 
@@ -163,6 +202,9 @@ const ProjectTaskTree = () => {
 
   return (
     <div className="centered-container">
+      <div className="project-header">
+        <h1>{project.name}</h1>
+      </div>
       <SimpleTreeView
         sx={{
           width: '80%',
@@ -178,14 +220,14 @@ const ProjectTaskTree = () => {
           },
         }}
       >
-        <TreeItem key={project.id} itemId={project.id} label={project.name}>
-          {Object.keys(project.subtasks).length > 0 ? (
-            Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
-          ) : (
-            <Typography>No project data available.</Typography>
-          )}
-          <Button onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
-        </TreeItem>
+        {/* <TreeItem key={project.id} itemId={project.id} label={project.name}> */}
+        {Object.keys(project.subtasks).length > 0 ? (
+          Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
+        ) : (
+          <Typography>No project data available.</Typography>
+        )}
+        <Button onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
+        {/* </TreeItem> */}
       </SimpleTreeView>
 
       <Dialog
@@ -214,6 +256,7 @@ const ProjectTaskTree = () => {
             fullWidth
             margin="dense"
             value={newTask.description}
+            onChange={(e) => handleTaskChange("description", e.target.value)}
           />
           <TextField
             label="Assigned To"

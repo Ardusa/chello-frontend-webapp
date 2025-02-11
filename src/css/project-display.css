@@ -1,0 +1,121 @@
+/* General container styling */
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Tree view container to make it bigger */
+.MuiTreeView-root {
+    width: 90%;
+    background-color: #f4f6f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Styling for the tree items */
+.MuiTreeItem-root {
+    padding: 0px;
+    margin: 10px 0;
+    font-size: 1.5rem;
+    /* Increase font size for tree item labels */
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Make the task names aligned to the right, except for the project name */
+.MuiTreeItem-label {
+    font-size: 2rem;
+    text-align: left;
+    flex-grow: 1;
+}
+
+/* Styling for the trash can icon */
+.trash-icon {
+    font-size: 1.5rem;
+    /* Make the trash can icon bigger */
+    color: #555;
+    /* Default color */
+    transition: color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Hover effect for the trash icon */
+.MuiTreeItem-root:hover .trash-icon {
+    /* Turn the icon white on hover */
+    color: white;
+    /* Slightly scale up the icon */
+    transform: scale(1.2);
+    background-color: #ffcccc;
+}
+
+/* Tree item button styling */
+.MuiButton-root {
+    font-size: 1.2rem;
+    /* Increase font size for the add task button */
+    padding: 10px 20px;
+    margin-left: 20px;
+}
+
+/* Dialog box styling */
+.MuiDialog-paper {
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Text fields inside the dialog box */
+.MuiTextField-root {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+/* Make buttons inside the dialog box larger */
+.MuiDialogActions-root .MuiButton-root {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+}
+
+.project-header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.delete-button {
+    color: rgb(255, 0, 0) !important;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    margin-left: 20px;
+}
+
+.delete-button:hover {
+    background-color: #ff0000;
+    color: white !important;
+}
+
+.add-button {
+    color: rgb(0, 145, 255) !important;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    margin-left: 20px;
+}
+
+.add-button:hover {
+    background-color: rgb(0, 145, 255);
+    color: white !important;
+}
+
+.task-node {
+    display: 'flex';
+    justify-content: 'space-between';
+    align-items: 'center'
+}

@@ -222,7 +222,7 @@ export const createTask = async (taskData) => {
  * @returns {Promise<TaskResponse>} A promise that resolves to the details of the task.
  */
 export const fetchTaskDetails = async (task_id) => {
-    const response = await makeAuthenticatedRequest(`/tasks/${task_id}/`);
+    const response = await makeAuthenticatedRequest(`/tasks/${task_id}`);
     const json = await response.json();
     return json;
 }
