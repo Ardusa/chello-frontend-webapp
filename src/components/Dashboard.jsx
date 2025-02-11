@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProjects, fetchEmployees, getEmployee, registerEmployee, createProject, ProjectCreate, EmployeeCreate } from "../api";
+import { fetchProjects, fetchEmployees, getEmployee, registerEmployee, createProject, ProjectCreate, EmployeeCreate } from "../services/api.js";
 import { useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/logo.png";
 
@@ -18,11 +18,12 @@ import "../css/dashboard.css";
 
 let Projects = {};
 let Employees = [];
-let employeeToId = [];
+
 
 const Dashboard = () => {
     const [projects, setProjects] = useState(Projects);
     const [employees, setEmployees] = useState(Employees);
+    const [currentUser, setCurrentUser] = useState(null);
     const { section } = useParams();
     const [selectedSection, setSelectedSection] = useState(section || "projects");
     const { logout } = useAuth();
@@ -45,16 +46,7 @@ const Dashboard = () => {
     const refreshEmployees = () => {
         fetchEmployees().then((e) => {
             Employees = e;
-            getEmployee().then((currentUser) => {
-                employeeToId = [
-                    { name: currentUser.name, id: currentUser.id },
-                    ...e.map(employee => ({
-                        name: employee.name,
-                        id: employee.id
-                    }))
-                ];
-            });
-            console.log("Employee to ID:", employeeToId);
+            getEmployee().then(setCurrentUser);
             setEmployees(e);
         }
         ).catch((e) => {
@@ -173,13 +165,15 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
     return (
         <div className="cards-container">
             <div className="cards">
-                {Object.keys(projects).map((project) => (
-                    console.log("Projects: ", projects),
-                    <div key={project.id} className="card" onClick={() => window.location.href = `/projects/${project.id}/`}>
-                        <h3>{project.name}</h3>
-                        <p>Tasks Remaining: {project.tasks_remaining}</p>
-                    </div>
-                ))}
+                {Object.keys(projects).map((projectId) => {
+                    const project = projects[projectId];
+                    return (
+                        <div key={project.id} className="card" onClick={() => window.location.href = `/projects/${project.id}/`}>
+                            <h3>{project.name}</h3>
+                            <p>Tasks Remaining: {project.tasks_remaining}</p>
+                        </div>
+                    );
+                })}
                 <div className="card create-project-card" onClick={handleOpen}>
                     <h3>Create Project</h3>
                     <AddBoxOutlinedIcon style={{ fontSize: 40 }} />
@@ -207,22 +201,6 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
                         value={projectData.description}
                         onChange={handleChange}
                     />
-                    {/* <TextField
-                        margin='dense'
-                        autoSelect
-                        autoHighlight
-                        onChange={handleManagerChange}
-                        name="project_manager"
-                        label="Project Manager"
-                        type="text"
-                        value={employeeToId[0]}
-                        disablePortal
-                        fullWidth
-                        options={employeeToId}
-                        getOptionLabel={(option) => option.name}
-                        renderInput={(params) => <TextField {...params} label="Manager" />}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                    /> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">

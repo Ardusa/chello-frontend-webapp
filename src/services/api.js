@@ -1,5 +1,5 @@
 import axios from "axios";
-import { makeAuthenticatedRequest } from "./services/AuthService";
+import { makeAuthenticatedRequest } from "./AuthService";
 
 // TODO: Update the API_BASE_URL to your backend URL
 const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
@@ -42,6 +42,27 @@ export class ProjectCreate {
         this.project_manager = data.project_manager || "";
         this.description = data.description || "";
         this.company_id = data.company_id || "";
+    }
+}
+
+export class TaskResponse {
+    constructor(data = {}) {
+        this.id = data.id || "";
+        this.project_id = data.project_id || "";
+        this.name = data.name || "";
+        this.description = data.description || "";
+        this.assigned_to = data.assigned_to || "";
+        this.parent_task_id = data.parent_task_id || "";
+    }
+}
+
+export class TaskCreate {
+    constructor(data = {}) {
+        this.project_id = data.project_id || "";
+        this.name = data.name || "";
+        this.description = data.description || "";
+        this.assigned_to = data.assigned_to || "";
+        this.parent_task_id = data.parent_task_id || "";
     }
 }
 
@@ -122,7 +143,7 @@ export const fetchProjectDetails = async (project_id) => {
  */
 export const createProject = async (projectData) => {
     const response = await makeAuthenticatedRequest("/projects/create", {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(projectData),
     });
@@ -155,7 +176,7 @@ export const getEmployee = async () => {
  * @returns {Promise<EmployeeResponse>} A promise that resolves to the created employee data.
  */
 export const registerEmployee = async (employeeData) => {
-    const response = await axios.post(`${API_BASE_URL}/create-new-employee`, employeeData);
+    const response = await axios.put(`${API_BASE_URL}/create-new-employee`, employeeData);
     return response;
 }
 
@@ -167,7 +188,7 @@ export const registerEmployee = async (employeeData) => {
  * @returns {Promise<EmployeeResponse>} A promise that resolves to the created employee data.
  */
 export const createAccount = async (employeeData) => {
-    const response = await axios.post(`${API_BASE_URL}/register-account`, employeeData);
+    const response = await axios.put(`${API_BASE_URL}/register-account`, employeeData);
     return response;
 }
 
@@ -182,3 +203,25 @@ export const setPassword = async (employeeData) => {
     const response = await axios.post(`${API_BASE_URL}/set-password`, employeeData);
     return response;
 }
+
+/**
+ * Creates a new task on the server.
+ * @async
+ * @function createTask
+ * @param {TaskCreate} taskData - The task data to create.
+ * @returns {Promise<TaskResponse>} A promise that resolves to the created task data.
+ */
+export const createTask = async (taskData) => {
+    const response = await makeAuthenticatedRequest(`/projects/create-task`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(taskData),
+    });
+
+    const json = await response.json();
+
+    // ! Debugging
+    console.log("Task created:", json);
+
+    return json;
+};
