@@ -214,7 +214,8 @@ const ProjectTaskTree = () => {
             fullWidth
             margin="dense"
             value={newTask.description}
-            select
+          />
+          <TextField
             label="Assigned To"
             fullWidth
             margin="dense"
