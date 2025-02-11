@@ -165,35 +165,27 @@ const ProjectTaskTree = () => {
     <div className="centered-container">
       <SimpleTreeView
         sx={{
-          width: '100%',
-          maxWidth: 400,
+          width: '80%',
           bgcolor: 'background.paper',
           border: '1px solid',
           borderColor: 'divider',
           borderRadius: 1,
           boxShadow: 1,
+          '& .MuiTreeItem-root': {
+            padding: '10px 0',
+            fontSize: '1.2rem',
+            justifyContent: 'space-between',
+          },
         }}
       >
-        {Object.keys(project.subtasks).length > 0 ? (
-          Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
-        ) : (
-          <Typography>No project data available.</Typography>
-        )}
-        
-        <Button
-          onClick={() => handleOpenDialog(null)}
-          sx={{
-            marginTop: 2,
-            padding: '8px 16px',
-            backgroundColor: 'primary.main',
-            color: 'white',
-            '&:hover': {
-              backgroundColor: 'primary.dark',
-            },
-          }}
-        >
-          + Add Root Task
-        </Button>
+        <TreeItem key={project.id} itemId={project.id} label={project.name}>
+          {Object.keys(project.subtasks).length > 0 ? (
+            Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
+          ) : (
+            <Typography>No project data available.</Typography>
+          )}
+          <Button onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
+        </TreeItem>
       </SimpleTreeView>
 
       <Dialog
@@ -222,9 +214,6 @@ const ProjectTaskTree = () => {
             fullWidth
             margin="dense"
             value={newTask.description}
-            onChange={(e) => handleTaskChange("description", e.target.value)}
-          />
-          <TextField
             select
             label="Assigned To"
             fullWidth
