@@ -161,9 +161,8 @@ const ProjectTaskTree = () => {
     if (!node) return null;
 
     return (
-      <div className="task-node-container">
       <TreeItem key={node.id} itemId={node.id} label={
-        <div className="task-node">
+        <div className="title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>{node.name}</span>
           <div>
             <Button className="add-button" onClick={() => handleOpenDialog(node.id)}>
@@ -179,7 +178,6 @@ const ProjectTaskTree = () => {
           return renderTree(subtaskId);
         })}
       </TreeItem>
-      </div>
     );
   };
 
