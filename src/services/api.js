@@ -126,7 +126,7 @@ export const fetchEmployeeDetails = async (employee_id) => {
  * @async
  * @function fetchProjectDetails
  * @param {string} project_id - The ID of the project to fetch.
- * @returns {Promise<ProjectResponse>} A promise that resolves to the details of the project.
+ * @returns {Promise<Object>} A promise that resolves to the details of the project.
  */
 export const fetchProjectDetails = async (project_id) => {
     const response = await makeAuthenticatedRequest(`/projects/${project_id}/`);
@@ -225,3 +225,16 @@ export const createTask = async (taskData) => {
 
     return json;
 };
+
+/**
+ * Fetches the details of a specific task from the server.
+ * @async
+ * @function fetchTaskDetails
+ * @param {string} task_id - The ID of the task to fetch.
+ * @returns {Promise<TaskResponse>} A promise that resolves to the details of the task.
+ */
+export const fetchTaskDetails = async (task_id) => {
+    const response = await makeAuthenticatedRequest(`/tasks/${task_id}/`);
+    const json = await response.json();
+    return json;
+}
