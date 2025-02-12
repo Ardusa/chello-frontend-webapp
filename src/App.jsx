@@ -6,6 +6,7 @@ import RegisterEmployee from "./components/RegisterEmployee";
 import ProjectDisplay from "./components/ProjectDisplay";
 import Settings from "./components/Settings";
 import FrontPage from "./components/FrontPage";
+import RegisterAccount from "./components/RegisterAccount";
 
 const AppRoutes = () => {
   const { isLoggedIn } = useAuth();
@@ -15,7 +16,8 @@ const AppRoutes = () => {
       {/* Public Routes */}
       <Route path="/" element={<FrontPage />} />
       <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard/projects" /> : <Login />} />
-      <Route path="/register-new-account" element={<RegisterEmployee new_account={true} set_password={false} />} />
+      <Route path="/register" element={<RegisterAccount />} />
+      <Route path="/register-company" element={<RegisterAccount company={true} />} />
       <Route path="/set-password/:id" element={<RegisterEmployee new_account={false} set_password={true} />} />
 
       {/* Protected Routes */}

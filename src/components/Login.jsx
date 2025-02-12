@@ -47,7 +47,7 @@ const Login = () => {
                         />
 
                         <button type="submit" className="arrow forward-btn"></button>
-                        <button type="button" onClick={() => navigate("/register-new-account")} className="register-btn">Register Now!</button>
+                        <button type="button" onClick={() => navigate("/register")} className="register-btn">Register Now!</button>
                     </form>
                 </div>
             </div>

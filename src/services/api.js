@@ -4,7 +4,18 @@ import { makeAuthenticatedRequest } from "./AuthService";
 // TODO: Update the API_BASE_URL to your backend URL
 const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
 
-export class EmployeeResponse {
+/**
+ * Represents the response data for an account.
+ * @class
+ * @param {Object} data - The data to initialize the account response.
+ * @param {string} [data.id=""] - The ID of the account.
+ * @param {string} [data.name=""] - The name of the account.
+ * @param {string} [data.email=""] - The email of the account.
+ * @param {string} [data.company_id=""] - The ID of the company the account belongs to.
+ * @param {string} [data.position=""] - The position of the account.
+ * @param {string} [data.manager_id=""] - The ID of the manager of the account.
+ */
+export class AccountResponse {
     constructor(data = {}) {
         this.id = data.id || "";
         this.name = data.name || "";
@@ -15,7 +26,19 @@ export class EmployeeResponse {
     }
 }
 
-export class EmployeeCreate {
+
+/**
+ * Represents an account to create.
+ * @class
+ * @param {Object} [data={}] - The data to initialize the account creation with.
+ * @param {string} [data.name=""] - The name of the account.
+ * @param {string} [data.email=""] - The email of the account.
+ * @param {string} [data.password=""] - The password of the account.
+ * @param {string} [data.company_id=""] - The ID of the company the account belongs to.
+ * @param {string} [data.position=""] - The position of the account.
+ * @param {string} [data.manager_id=""] - The ID of the manager of the account.
+ */
+export class AccountCreate {
     constructor(data = {}) {
         this.name = data.name || "";
         this.email = data.email || "";
@@ -26,6 +49,16 @@ export class EmployeeCreate {
     }
 }
 
+/**
+ * Represents a response for a project.
+ * @class
+ * @param {Object} [data={}] - The data to initialize the project response with.
+ * @param {string} [data.id=""] - The ID of the project.
+ * @param {string} [data.name=""] - The name of the project.
+ * @param {string} [data.project_manager=""] - The ID of the project manager.
+ * @param {string} [data.description=""] - The description of the project.
+ * @param {string} [data.company_id=""] - The ID of the company the project belongs to.
+ */
 export class ProjectResponse {
     constructor(data = {}) {
         this.id = data.id || "";
@@ -36,6 +69,15 @@ export class ProjectResponse {
     }
 }
 
+/**
+ * Represents a project to create.
+ * @class
+ * @param {Object} [data={}] - The data to initialize the project creation with.
+ * @param {string} [data.name=""] - The name of the project.
+ * @param {string} [data.project_manager=""] - The ID of the project manager.
+ * @param {string} [data.description=""] - The description of the project.
+ * @param {string} [data.company_id=""] - The ID of the company the project belongs to.
+ */
 export class ProjectCreate {
     constructor(data = {}) {
         this.name = data.name || "";
@@ -45,6 +87,18 @@ export class ProjectCreate {
     }
 }
 
+/**
+ * Represents a response for a task.
+ * @class
+ * Creates an instance of TaskResponse.
+ * @param {Object} [data={}] - The data to initialize the task response with.
+ * @param {string} [data.id=""] - The ID of the task.
+ * @param {string} [data.project_id=""] - The ID of the project the task belongs to.
+ * @param {string} [data.name=""] - The name of the task.
+ * @param {string} [data.description=""] - The description of the task.
+ * @param {string} [data.assigned_to=""] - The ID of the user the task is assigned to.
+ * @param {string} [data.parent_task_id=""] - The ID of the parent task, if any.
+ */
 export class TaskResponse {
     constructor(data = {}) {
         this.id = data.id || "";
@@ -56,6 +110,16 @@ export class TaskResponse {
     }
 }
 
+/**
+ * Represents a task to create.
+ * @class
+ * @param {Object} [data={}] - The data to initialize the task creation with.
+ * @param {string} [data.project_id=""] - The ID of the project the task belongs to.
+ * @param {string} [data.name=""] - The name of the task.
+ * @param {string} [data.description=""] - The description of the task.
+ * @param {string} [data.assigned_to=""] - The ID of the user the task is assigned to.
+ * @param {string} [data.parent_task_id=""] - The ID of the parent task, if any.
+ */
 export class TaskCreate {
     constructor(data = {}) {
         this.project_id = data.project_id || "";
@@ -66,9 +130,39 @@ export class TaskCreate {
     }
 }
 
+/**
+ * Represents a response for a company.
+ * @class
+ * @param {Object} [data={}] - The data to initialize the company response with.
+ * @param {string} [data.id=""] - The ID of the company.
+ * @param {string} [data.name=""] - The name of the company.
+ * @param {string} [data.founding_member=""] - The ID of the founding member of the company.
+ */
+export class CompanyResponse {
+    constructor(data = {}) {
+        this.id = data.id || "";
+        this.name = data.name || "";
+        this.founding_member = data.founding_member || "";
+    }
+}
 
 /**
- * Fetches the list of projects from the server for the current employee.
+ * Represents a company to create.
+ * @class
+ * @param {Object} [data={}] - The data to initialize the company creation with.
+ * @param {string} [data.name=""] - The name of the company.
+ * @param {string} [data.founding_member=""] - The ID of the founding member of the company.
+ */
+export class CompanyCreate {
+    constructor(data = {}) {
+        this.name = data.name || "";
+        this.founding_member = data.founding_member || "";
+    }
+}
+
+
+/**
+ * Fetches the list of projects from the server for the current account.
  * @async
  * @function fetchProjects
  * @returns {Promise<Object>} A promise that resolves to a dictionary of projects where the key is the project_id and the value is a {@link ProjectResponse} object.
@@ -85,28 +179,28 @@ export const fetchProjects = async () => {
 };
 
 /**
- * Fetches the list of employees from the server.
+ * Fetches the list of accounts from the server.
  *
  * @async
- * @function fetchEmployees
- * @returns {Promise<Object>} A promise that resolves to a dictionary of employees where the key is the employee_id and the value is an EmployeeResponse object.
+ * @function fetchAccounts
+ * @returns {Promise<Object>} A promise that resolves to a dictionary of accounts where the key is the account_id and the value is an AccountResponse object.
  */
-export const fetchEmployees = async () => {
-    const response = await makeAuthenticatedRequest("/employees/get-employees");
+export const fetchAccounts = async () => {
+    const response = await makeAuthenticatedRequest("/accounts/get-accounts");
     const json = await response.json();
     return json;
 }
 
 
 /**
- * Fetches the details of a specific employee from the server.
+ * Fetches the details of a specific account from the server.
  * @async
- * @function fetchEmployeeDetails
- * @param {string} employee_id - The ID of the employee to fetch.
- * @returns {Promise<EmployeeResponse>} A promise that resolves to the details of the employee.
+ * @function fetchAccountDetails
+ * @param {string} account_id - The ID of the account to fetch.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the details of the account.
  */
-export const fetchEmployeeDetails = async (employee_id) => {
-    const response = await makeAuthenticatedRequest(`/employees/${employee_id}`);
+export const fetchAccountDetails = async (account_id) => {
+    const response = await makeAuthenticatedRequest(`/accounts/${account_id}`);
     const json = await response.json();
     return json;
 }
@@ -143,26 +237,26 @@ export const createProject = async (projectData) => {
 }
 
 /**
- * Fetches the details of the currently logged-in employee.
+ * Fetches the details of the currently logged-in account.
  * @async
- * @function getEmployee
- * @returns {Promise<EmployeeResponse>} A promise that resolves to the details of the employee.
+ * @function getAccount
+ * @returns {Promise<AccountResponse>} A promise that resolves to the details of the account.
  */
-export const getEmployee = async () => {
-    const response = await makeAuthenticatedRequest("/employees/self");
+export const getAccount = async () => {
+    const response = await makeAuthenticatedRequest("/accounts/self");
     const json = await response.json();
     return json;
 }
 
 /**
- * Put a new employee into the company database.
+ * Put a new account into the company database.
  * @async
- * @function registerEmployee
- * @param {Object} employeeData - The employee data to create.
- * @returns {Promise<EmployeeResponse>} A promise that resolves to the created employee data.
+ * @function registerAccount
+ * @param {Object} accountData - The account data to create.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
  */
-export const registerEmployee = async (employeeData) => {
-    const response = await axios.put(`${API_BASE_URL}/create-new-employee`, employeeData);
+export const registerAccount = async (accountData) => {
+    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, accountData);
     return response;
 }
 
@@ -170,23 +264,23 @@ export const registerEmployee = async (employeeData) => {
  * Create a new account for a completely new company.
  * @async
  * @function createAccount
- * @param {EmployeeCreate} employeeData - The employee data to create.
- * @returns {Promise<EmployeeResponse>} A promise that resolves to the created employee data.
+ * @param {AccountCreate} accountData - The account data to create.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
  */
-export const createAccount = async (employeeData) => {
-    const response = await axios.put(`${API_BASE_URL}/register-account`, employeeData);
+export const createAccount = async (accountData) => {
+    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, accountData);
     return response;
 }
 
 /**
- * Set a password for an existing employee.
+ * Set a password for an existing account.
  * @async
  * @function setPassword
- * @param {Object} employeeData - The employee data to create.
- * @returns {Promise<Object>} A promise that resolves to the created employee data.
+ * @param {Object} accountData - The account data to create.
+ * @returns {Promise<Object>} A promise that resolves to the created account data.
  */
-export const setPassword = async (employeeData) => {
-    const response = await axios.post(`${API_BASE_URL}/set-password`, employeeData);
+export const setPassword = async (accountData) => {
+    const response = await axios.post(`${API_BASE_URL}/set-password`, accountData);
     return response;
 }
 
@@ -198,7 +292,7 @@ export const setPassword = async (employeeData) => {
  * @returns {Promise<TaskResponse>} A promise that resolves to the created task data.
  */
 export const createTask = async (taskData) => {
-    const response = await makeAuthenticatedRequest(`/projects/create-task`, {
+    const response = await makeAuthenticatedRequest(`/tasks/create-task`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskData),
@@ -208,6 +302,13 @@ export const createTask = async (taskData) => {
     return json;
 };
 
+/**
+ * Deletes a task from the server.
+ * @async
+ * @function deleteTask
+ * @param {string} task_id - The ID of the task to delete.
+ * @returns {Promise<Object>} A promise that resolves to the response from the server.
+ */
 export const deleteTask = async (task_id) => {
     const response = await makeAuthenticatedRequest(`/tasks/${task_id}/delete`, {
         method: "DELETE",
@@ -229,6 +330,13 @@ export const fetchTaskDetails = async (task_id) => {
     return json;
 }
 
+/**
+ * Deletes a project from the server.
+ * @async
+ * @function deleteProject
+ * @param {string} project_id - The ID of the project to delete.
+ * @returns {Promise<Object>} A promise that resolves to the response from the server.
+ */
 export const deleteProject = async (project_id) => {
     const response = await makeAuthenticatedRequest(`/projects/${project_id}/delete`, {
         method: "DELETE",

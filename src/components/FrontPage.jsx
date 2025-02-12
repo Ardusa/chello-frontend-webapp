@@ -11,7 +11,7 @@ const FrontPage = () => {
                 <div className="logo-placeholder">[Logo Image]</div>
                 <nav className="nav">
                     <button onClick={() => navigate('/login')}>Login</button>
-                    <button onClick={() => navigate('/register-new-account')}>Register</button>
+                    <button onClick={() => navigate('/register')}>Register</button>
                 </nav>
             </header>
 

@@ -7,7 +7,7 @@ import { useAuth } from "../services/AuthService";
 import logo from '../assets/logo.png';
 import { CircularProgress, Button } from "@mui/material";
 import "../css/sidebar.css";
-import { getEmployee, fetchEmployeeDetails, EmployeeResponse } from "../services/api"
+import { getEmployee, fetchAccountDetails, EmployeeResponse } from "../services/api"
 
 
 /**
@@ -37,7 +37,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
             setUser(user);
 
             if (user.manager_id) {
-                const manager = await fetchEmployeeDetails(user.manager_id);
+                const manager = await fetchAccountDetails(user.manager_id);
                 console.log("manager: ", manager);
                 console.log("user: ", user)
                 setManager(manager);
