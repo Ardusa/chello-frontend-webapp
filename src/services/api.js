@@ -228,3 +228,11 @@ export const fetchTaskDetails = async (task_id) => {
     const json = await response.json();
     return json;
 }
+
+export const deleteProject = async (project_id) => {
+    const response = await makeAuthenticatedRequest(`/projects/${project_id}/delete`, {
+        method: "DELETE",
+    });
+
+    return response;
+}

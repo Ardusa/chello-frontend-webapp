@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails, deleteTask } from "../services/api.js";
+import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails, deleteTask, deleteProject } from "../services/api.js";
 import { SimpleTreeView, TreeItem2 } from "@mui/x-tree-view";
 import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,6 +43,7 @@ export default ProjectDashboard;
 
 const ProjectTaskTree = () => {
   const { project_id } = useParams();
+  const navigate = useNavigate();
   const [project, setProject] = useState({
     id: "",
     description: "",
@@ -156,6 +157,11 @@ const ProjectTaskTree = () => {
     await fetchEmployeeDetails();
   };
 
+  const handleDeleteProject = async (projectId) => {
+    await deleteProject(projectId);
+    navigate("/dashboard/projects");
+  };
+
   const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setNewTask((prev) => ({
@@ -225,7 +231,10 @@ const ProjectTaskTree = () => {
 
         >
           {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))}
-          <Button className="add-button" style={{ margin: '10px' }} onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
+          <div className="project-btn-container">
+            <Button className="add-button" onClick={() => handleOpenDialog(null)}>+ Add Root Task</Button>
+            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)}>Delete Project</Button>
+          </div>
         </SimpleTreeView>
 
         <Dialog

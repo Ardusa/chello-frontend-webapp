@@ -71,7 +71,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
                     </div>
                     {manager.id &&
                         <div className='manager-info'>
-                            <h3 >Manager</h3>
+                            <h3 >{manager.position}</h3>
                             <h2 style={{ fontWeight: 'bold' }}>{manager.name}</h2>
                             <p>{manager.email}</p>
                         </div>
