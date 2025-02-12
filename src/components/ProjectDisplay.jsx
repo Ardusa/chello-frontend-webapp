@@ -49,11 +49,11 @@ const ProjectTaskTree = () => {
     name: "",
     subtasks: {},
   });
-  const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [parentTaskId, setParentTaskId] = useState(null);
-  const [newTask, setNewTask] = useState(new TaskCreate({ project_id}));
+  const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
   const [employees, setEmployees] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
   const [subtasksDict, setSubtasksDict] = useState({});
@@ -64,7 +64,6 @@ const ProjectTaskTree = () => {
   }, [project_id]);
 
   const loadProjectDetails = async () => {
-    setLoading(true);
     try {
       const projectData = await fetchProjectDetails(project_id);
       setProject({
@@ -80,8 +79,6 @@ const ProjectTaskTree = () => {
     } catch (error) {
       console.error("Error fetching project details:", error);
       setError("Error fetching project details.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -144,7 +141,6 @@ const ProjectTaskTree = () => {
     await fetchEmployeeDetails();
   };
 
-  // Function to handle creating a task
   const handleCreateTask = async () => {
     try {
       await createTask(newTask);
@@ -162,7 +158,6 @@ const ProjectTaskTree = () => {
     await fetchEmployeeDetails();
   };
 
-  // Function to update the newTask object as the form changes
   const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setNewTask((prev) => ({
@@ -199,15 +194,6 @@ const ProjectTaskTree = () => {
       </TreeItem2>
     );
   };
-
-  // Display loading, error, or the task tree
-  if (loading) {
-    return (
-      <div className="centered-container">
-        <CircularProgress />
-      </div>
-    );
-  }
 
   if (error) {
     return (

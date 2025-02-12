@@ -3,12 +3,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from '@mui/icons-material/Settings';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Button from '@mui/material/Button';
 import { useAuth } from "../services/AuthService";
 import logo from '../assets/logo.png';
+import { CircularProgress, Button } from "@mui/material";
 import "../css/sidebar.css";
 import { getEmployee, fetchEmployeeDetails, EmployeeResponse } from "../services/api"
-
 
 
 /**
@@ -25,6 +24,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(new EmployeeResponse({}));
     const [manager, setManager] = useState(new EmployeeResponse({}));
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,6 +42,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
                 console.log("user: ", user)
                 setManager(manager);
             }
+            setLoading(false);
         };
 
         fetchData();
@@ -61,21 +62,21 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
             {/* Sidebar */}
             <aside className="sidebar">
                 {/* <img src={user?.profile_picture} alt="Profile Picture" className="profile-img" /> */}
+                {/* <img src={logo} alt="Chello Logo" className="logo-img" /> */}
                 <div className="user-details-container">
                     <div className="user-info">
                         <h3 >{user.position}</h3>
                         <h2>{user.name}</h2>
                         <p>{user.email}</p>
                     </div>
-                        {manager.id &&
-                            <div className='manager-info'>
+                    {manager.id &&
+                        <div className='manager-info'>
                             <h3 >Manager</h3>
                             <h2 style={{ fontWeight: 'bold' }}>{manager.name}</h2>
                             <p>{manager.email}</p>
-                            </div>
-                        }
+                        </div>
+                    }
                 </div>
-                {/* <img src={logo} alt="Chello Logo" className="logo-img" /> */}
                 <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
                 <nav className="nav">
                     {Object.entries(elements).map(([id, element]) => (
@@ -109,7 +110,8 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
 
             {/* Main Content */}
             <main className="content">
-                {elements[selectedSection].element}
+                {!loading && elements[selectedSection].element}
+                {loading && <CircularProgress />}
             </main>
         </div>
     );
