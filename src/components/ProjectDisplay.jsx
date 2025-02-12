@@ -73,9 +73,7 @@ const ProjectTaskTree = () => {
         subtasks: projectData.tasks,
       });
 
-      const { taskDetails, subtasksDict } = await fetchTaskDetailsRecursively(projectData.tasks);
-      setTaskDetails(taskDetails);
-      setSubtasksDict(subtasksDict);
+      await fetchTaskDetailsRecursively(projectData.tasks);
     } catch (error) {
       console.error("Error fetching project details:", error);
       setError("Error fetching project details.");
@@ -101,7 +99,7 @@ const ProjectTaskTree = () => {
       const fetchTaskDetailsRecursivelyHelper = async (tasks) => {
         for (const [taskId, task_id_or_dict] of Object.entries(tasks)) {
           const task = await fetchTaskDetails(taskId);
-          taskDetails[taskId] = task;
+          setTaskDetails((prev) => ({ ...prev, [taskId]: task }));
           if (task.parent_task_id) {
             const appendTaskToSubtasksDict = (dict, parentId, task) => {
               if (!dict[parentId]) {
@@ -113,7 +111,7 @@ const ProjectTaskTree = () => {
             appendTaskToSubtasksDict(subtasksDict, task.parent_task_id, task);
           } else {
             if (!subtasksDict[taskId]) {
-              subtasksDict[taskId] = {};
+              setSubtasksDict((prev) => ({ ...prev, [taskId]: {} }));
             }
           }
 
@@ -125,23 +123,23 @@ const ProjectTaskTree = () => {
     } catch (error) {
       console.error("Error fetching task details recursively:", error);
     }
-
-    return { taskDetails, subtasksDict };
   };
 
   const handleOpenDialog = (parent_id = null) => {
-    setParentTaskId(parent_id);
+    setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
+    // setParentTaskId(parent_id);
     setOpen(true);
   };
 
   const handleCloseDialog = async () => {
     setOpen(false);
-    setNewTask(new TaskCreate({ project_id }));
     await loadProjectDetails();
     await fetchEmployeeDetails();
+    setNewTask(new TaskCreate({ project_id }));
   };
 
   const handleCreateTask = async () => {
+    // newTask.parent_task_id = parentTaskId;
     try {
       await createTask(newTask);
       await handleCloseDialog();
