@@ -1,40 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fetchProjects, fetchEmployees, getEmployee, registerEmployee, createProject, ProjectCreate, EmployeeCreate } from "../services/api.js";
 import { useNavigate, useParams } from "react-router-dom";
-import logo from "../assets/logo.png";
 
-import LogoutIcon from "@mui/icons-material/Logout";
 import FolderIcon from '@mui/icons-material/Folder';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import InsightsIcon from '@mui/icons-material/Insights';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Autocomplete } from "@mui/material";
-
-import { useAuth } from "../services/AuthService";
-
-
 import "../css/dashboard.css";
-
-let Projects = {};
-let Employees = [];
-
+import "../css/project-display.css";
+import Sidebar from "./Sidebar";
 
 const Dashboard = () => {
-    const [projects, setProjects] = useState(Projects);
-    const [employees, setEmployees] = useState(Employees);
-    const [currentUser, setCurrentUser] = useState(null);
-    const { section } = useParams();
-    const [selectedSection, setSelectedSection] = useState(section || "projects");
-    const { logout } = useAuth();
+    const [projects, setProjects] = useState({});
+    const [employees, setEmployees] = useState({});
     const navigate = useNavigate();
 
     const refreshProjects = () => {
         fetchProjects().then((e) => {
-            Projects = e;
             setProjects(e);
-        }
-        ).catch((e) => {
+        }).catch((e) => {
             console.error(e);
             if (e.status === 401) {
                 console.log("Session expired. Redirecting to login page.");
@@ -45,11 +30,9 @@ const Dashboard = () => {
 
     const refreshEmployees = () => {
         fetchEmployees().then((e) => {
-            Employees = e;
-            getEmployee().then(setCurrentUser);
+            getEmployee();
             setEmployees(e);
-        }
-        ).catch((e) => {
+        }).catch((e) => {
             console.error(e);
             if (e.status === 401) {
                 console.log("Session expired. Redirecting to login page.");
@@ -58,64 +41,130 @@ const Dashboard = () => {
         });
     };
 
-    useEffect(() => {
-        refreshProjects();
-        refreshEmployees();
-    }, []);
+    let funcs = [
+        refreshProjects,
+        refreshEmployees
+    ];
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
+    let elements = {
+        projects: {
+            element: <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshEmployees={refreshEmployees} />,
+            icon: <FolderIcon />,
+            urlPath: "/dashboard/projects",
+            name: "Projects",
+        },
+        insights: {
+            element: <InsightsCards />,
+            icon: <InsightsIcon />,
+            urlPath: "/dashboard/insights",
+            name: "Insights",
+        },
+        employees: {
+            element: <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />,
+            icon: <AssignmentIndIcon />,
+            urlPath: "/dashboard/employees",
+            name: "Employees",
+        },
     };
 
-    const handleSettings = () => {
-        navigate("/settings");
-    }
-
-    return (
-        <div className="dashboard">
-            {/* Sidebar */}
-            <aside className="sidebar">
-                <img src={logo} alt="Chello Logo" className="logo-img" />
-                <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
-                <nav className="nav">
-                    {[
-                        { id: "projects", name: "Projects", icon: <FolderIcon /> },
-                        { id: "insights", name: "Insights", icon: <InsightsIcon /> },
-                        { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
-                    ].map((section) => (
-                        <Button
-                            key={section.id}
-                            className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
-                            onClick={() => {
-                                navigate(`/dashboard/${section.id}`);
-                                setSelectedSection(section.id);
-                            }}
-                            // onClick={() => setSelectedSection(section.id)}
-                            startIcon={section.icon}
-                            disableRipple
-                        >
-                            {section.name}
-                        </Button>
-                    ))}
-                </nav>
-                <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
-                    Settings
-                </Button>
-                <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
-                    Logout
-                </Button>
-            </aside>
-
-            {/* Main Content */}
-            <main className="content">
-                {selectedSection === "projects" && <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshEmployees={refreshEmployees} />}
-                {selectedSection === "insights" && <InsightsCards />}
-                {selectedSection === "employees" && <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />}
-            </main>
-        </div>
-    );
+    return <Sidebar elements={elements} useEffectFuncs={funcs} />;
 };
+
+export default Dashboard;
+
+// const Dashboard = () => {
+//     const [projects, setProjects] = useState({});
+//     const [employees, setEmployees] = useState({});
+//     const [currentUser, setCurrentUser] = useState(null);
+//     const { section } = useParams();
+//     const [selectedSection, setSelectedSection] = useState(section || "projects");
+//     const { logout } = useAuth();
+//     const navigate = useNavigate();
+
+//     const refreshProjects = () => {
+//         fetchProjects().then((e) => {
+//             setProjects(e);
+//         }
+//         ).catch((e) => {
+//             console.error(e);
+//             if (e.status === 401) {
+//                 console.log("Session expired. Redirecting to login page.");
+//                 navigate("/login");
+//             }
+//         });
+//     };
+
+//     const refreshEmployees = () => {
+//         fetchEmployees().then((e) => {
+//             getEmployee().then(setCurrentUser);
+//             setEmployees(e);
+//         }
+//         ).catch((e) => {
+//             console.error(e);
+//             if (e.status === 401) {
+//                 console.log("Session expired. Redirecting to login page.");
+//                 navigate("/login");
+//             }
+//         });
+//     };
+
+//     useEffect(() => {
+//         refreshProjects();
+//         refreshEmployees();
+//     }, []);
+
+//     const handleLogout = () => {
+//         logout();
+//         navigate("/login");
+//     };
+
+//     const handleSettings = () => {
+//         navigate("/settings");
+//     }
+
+//     return (
+//         <div className="dashboard">
+//             {/* Sidebar */}
+//             <aside className="sidebar">
+//                 <img src={logo} alt="Chello Logo" className="logo-img" />
+//                 <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
+//                 <nav className="nav">
+//                     {[
+//                         { id: "projects", name: "Projects", icon: <FolderIcon /> },
+//                         { id: "insights", name: "Insights", icon: <InsightsIcon /> },
+//                         { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
+//                     ].map((section) => (
+//                         <Button
+//                             key={section.id}
+//                             className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
+//                             onClick={() => {
+//                                 navigate(`/dashboard/${section.id}`);
+//                                 setSelectedSection(section.id);
+//                             }}
+//                             startIcon={section.icon}
+//                             disableRipple
+//                         >
+//                             {section.name}
+//                         </Button>
+//                     ))}
+//                 </nav>
+//                 <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
+//                     Settings
+//                 </Button>
+//                 <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
+//                     Logout
+//                 </Button>
+//             </aside>
+
+//             {/* Main Content */}
+//             <main className="content">
+//                 {selectedSection === "projects" && <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshEmployees={refreshEmployees} />}
+//                 {selectedSection === "insights" && <InsightsCards />}
+//                 {selectedSection === "employees" && <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />}
+//             </main>
+//         </div>
+//     );
+// };
 
 const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
     const [open, setOpen] = useState(false);
@@ -157,7 +206,7 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
             .then((createdProject) => {
                 refreshProjects();
                 handleClose();
-                navigate(`/projects/${createdProject.id}`);
+                navigate(`/projects/${createdProject.id}/files/`);
             })
             .catch(console.error);
     };
@@ -168,7 +217,7 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
                 {Object.keys(projects).map((projectId) => {
                     const project = projects[projectId];
                     return (
-                        <div key={project.id} className="card" onClick={() => window.location.href = `/projects/${project.id}/`}>
+                        <div key={project.id} className="card" onClick={() => window.location.href = `/projects/${project.id}/files`}>
                             <h3>{project.name}</h3>
                             <p>Tasks Remaining: {project.tasks_remaining}</p>
                         </div>
@@ -348,4 +397,4 @@ const EmployeeCards = ({ employees, refreshProjects, refreshEmployees }) => {
     );
 };
 
-export default Dashboard;
+// export default Dashboard;

@@ -1,15 +1,5 @@
-/* General container styling */
-.centered-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    flex-direction: column;
-    padding: 20px;
-}
-
 /* Tree view container to make it bigger */
-.MuiTreeView-root {
+.project-file-container .MuiTreeView-root {
     width: 90%;
     background-color: #f4f6f8;
     border-radius: 8px;
@@ -18,7 +8,7 @@
 }
 
 /* Styling for the tree items */
-.MuiTreeItem-root {
+.project-file-container .MuiTreeItem-root {
     padding: 0px;
     margin: 5px;
     /* Increase font size for tree item labels */
@@ -29,14 +19,14 @@
 }
 
 /* Make the task names aligned to the right, except for the project name */
-.MuiTreeItem-label {
+.project-file-container .MuiTreeItem-label {
     font-size: 2rem;
     text-align: left;
     flex-grow: 1;
 }
 
 /* Styling for the trash can icon */
-.trash-icon {
+.project-file-container .trash-icon {
     font-size: 1.5rem;
     /* Make the trash can icon bigger */
     color: #555;
@@ -47,7 +37,7 @@
 }
 
 /* Hover effect for the trash icon */
-.MuiTreeItem-root:hover .trash-icon {
+.project-file-container .MuiTreeItem-root:hover .trash-icon {
     /* Turn the icon white on hover */
     color: white;
     /* Slightly scale up the icon */
@@ -56,7 +46,7 @@
 }
 
 /* Tree item button styling */
-.MuiButton-root {
+.project-file-container .MuiButton-root {
     font-size: 1.2rem;
     /* Increase font size for the add task button */
     /* padding: 10px 20px; */
@@ -65,7 +55,7 @@
 }
 
 /* Dialog box styling */
-.MuiDialog-paper {
+.project-file-container .MuiDialog-paper {
     width: 80%;
     max-width: 600px;
     border-radius: 10px;
@@ -73,52 +63,168 @@
 }
 
 /* Text fields inside the dialog box */
-.MuiTextField-root {
+.project-file-container .MuiTextField-root {
     margin-bottom: 15px;
     font-size: 1.2rem;
 }
 
 /* Make buttons inside the dialog box larger */
-.MuiDialogActions-root .MuiButton-root {
+.project-file-container .MuiDialogActions-root .MuiButton-root {
     font-size: 1.2rem;
     padding: 10px 20px;
 }
 
-.project-header {
+.project-file-container .project-header {
     font-size: 50px;
     margin-bottom: 20px;
     color: white;
     font-family: 'Times New Roman', Times, serif;
 }
 
-.delete-button {
+.project-file-container .delete-button {
     color: rgb(255, 0, 0) !important;
     font-size: 20px !important;
     padding: 10px 20px;
     margin-left: 20px;
 }
 
-.delete-button:hover {
+.project-file-container .delete-button:hover {
     background-color: #ff0000;
     color: white !important;
 }
 
-.add-button {
+.project-file-container .add-button {
     color: rgb(0, 145, 255) !important;
     font-size: 20px !important;
     padding: 10px 20px;
     margin-left: 20px;
 }
 
-.add-button:hover {
+.project-file-container .add-button:hover {
     background-color: rgb(0, 145, 255);
     color: white !important;
 }
 
-.task-node {
-    display:flex;
+.project-file-container .task-node {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 20px;
     padding: 10px 0px 10px 5px;
+}
+
+.project-file-container {
+    display: flex;
+    height: 100vh;
+    background-color: black;
+    color: white;
+}
+
+.project-file-container .sidebar {
+    width: 350px;
+    background-color: #a1a1a1;
+    color: rgb(217, 38, 38);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    border-radius: 20px;
+    margin: 10px;
+}
+
+.project-file-container .logo-img {
+    align-self: first baseline;
+    margin: auto !important;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+    width: 300px;
+    height: auto;
+    margin-bottom: 0px;
+}
+
+.project-file-container .nav {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-file-container .nav-item {
+    background: none;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 22px !important;
+    padding: 28px !important;
+    padding-left: 120px;
+    width: 100%;
+    cursor: pointer;
+    height: 50px;
+    transition: background 0.5s;
+}
+
+.project-file-container .nav-item:hover {
+    background: none;
+    /* background-color: rgb(206, 206, 206); */
+    /* font-weight: bold; */
+    font-size: 107%;
+    color: black;
+}
+
+.project-file-container .nav-item.active {
+    background: none;
+    font-weight: bold;
+    color: black;
+    font-size: 107%;
+}
+
+.project-file-container .dashboard-btn {
+    margin-top: auto !important;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 3px rgb(2, 136, 209) solid !important;
+    border-radius: 13px !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.project-file-container .dashboard-btn:hover {
+    background: #ffffff;
+    color: rgb(2, 136, 209);
+}
+
+.project-file-container .settings-btn {
+    margin-top: 10px !important;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 3px rgb(2, 136, 209) solid !important;
+    border-radius: 13px !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.project-file-container .settings-btn:hover {
+    background: #ffffff;
+    color: rgb(2, 136, 209);
+}
+
+.project-file-container .logout-btn {
+    margin-top: 10px !important;
+    margin-bottom: 7px !important;
+    padding: 10px 20px;
+    border: 3px #E04343 solid !important;
+    border-radius: 13px !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.project-file-container .logout-btn:hover {
+    background: #E04343;
+    color: white;
+}
+
+.project-file-container .content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

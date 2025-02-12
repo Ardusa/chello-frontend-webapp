@@ -1,11 +1,10 @@
-/* .dashboard {
+.sidebar-container {
     display: flex;
     height: 100vh;
-    background-color: black;
     color: white;
 }
 
-.dashboard .sidebar {
+.sidebar-container .sidebar {
     width: 350px;
     background-color: #a1a1a1;
     color: rgb(217, 38, 38);
@@ -15,9 +14,11 @@
     padding: 5px;
     border-radius: 20px;
     margin: 10px;
+    margin-right: 30px;
+    border: black 5px solid;
 }
 
-.dashboard .logo-img {
+.sidebar-container .logo-img {
     align-self: first baseline;
     margin: auto !important;
     margin-top: 20px !important;
@@ -27,13 +28,13 @@
     margin-bottom: 0px;
 }
 
-.dashboard .nav {
+.sidebar-container .nav {
     width: 350px;
     display: flex;
     flex-direction: column;
 }
 
-.dashboard .nav-item {
+.sidebar-container .nav-item {
     border: none;
     color: rgb(0, 89, 254);
     font-size: 22px;
@@ -45,21 +46,37 @@
     transition: font-size 0.2s;
 }
 
-.dashboard .nav-item:hover {
+.sidebar-container .nav-item:hover {
     background: none;
     font-size: 24px;
     color: black;
     transition: font-size 0.2s;
 }
 
-.dashboard .nav-item.active {
+.sidebar-container .nav-item.active {
     background: none;
     font-weight: bold;
     color: black;
     font-size: 24px;
 }
 
-.dashboard .settings-btn {
+.sidebar-container .back-btn {
+    margin: auto 5px 5px 5px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 3px rgb(209, 109, 2) solid;
+    background-color: rgb(209, 109, 2);
+    border-radius: 13px;
+    cursor: pointer;
+    width: 95%;
+}
+
+.sidebar-container .back-btn:hover {
+    background: #ffffff;
+    color: rgb(209, 109, 2);
+}
+
+.sidebar-container .settings-btn {
     margin: auto 5px 5px 5px;
     padding: 10px 20px;
     font-size: 18px;
@@ -69,12 +86,16 @@
     width: 95%;
 }
 
-.dashboard .settings-btn:hover {
+.sidebar-container .settings-btn.not-top {
+    margin-top: 10px;
+}
+
+.sidebar-container .settings-btn:hover {
     background: #ffffff;
     color: rgb(2, 136, 209);
 }
 
-.dashboard .logout-btn {
+.sidebar-container .logout-btn {
     margin: 10px 5px 5px 5px;
     padding: 10px 20px;
     font-size: 18px;
@@ -84,36 +105,36 @@
     width: 95%;
 }
 
-.dashboard .logout-btn:hover {
+.sidebar-container .logout-btn:hover {
     background: #E04343;
     color: white;
 }
 
-.dashboard .content {
+.sidebar-container .content {
     flex-grow: 1;
-    padding: 20px;
-    display: flex;
+    /* padding: 20px; */
+    /* display: flex; */
     flex-direction: column;
     align-items: center;
 }
 
-.dashboard .cards-container {
+.sidebar-container .cards-container {
     margin-top: 40px;
     width: 92%;
 }
 
-.dashboard .cards {
+.sidebar-container .cards {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
 
-.dashboard .cards p {
+.sidebar-container .cards p {
     margin: 5px;
     margin-left: 0px;
 }
 
-.dashboard .card {
+.sidebar-container .card {
     background: #222;
     padding: 20px;
     border-radius: 10px;
@@ -122,19 +143,19 @@
     transition: transform 0.2s ease-in-out;
 }
 
-.dashboard .card:hover {
+.sidebar-container .card:hover {
     transform: scale(1.05);
 }
 
-.dashboard .card h3 {
+.sidebar-container .card h3 {
     margin: 0;
     margin-bottom: 10px;
     font-size: 24px;
     color: yellow;
 }
 
-.dashboard .card p {
+.sidebar-container .card p {
     margin-top: 5px;
     font-size: 20px;
     color: white;
-} */
+}

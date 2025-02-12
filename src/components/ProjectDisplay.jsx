@@ -1,15 +1,135 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails } from "../services/api.js";
-import { SimpleTreeView } from "@mui/x-tree-view";
-import { TreeItem } from "@mui/x-tree-view";
-import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
-import "../css/project-display.css";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails, fetchProjects, registerEmployee, createProject, ProjectCreate, EmployeeCreate, ProjectResponse } from "../services/api.js";
+import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
+import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Autocomplete } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import "../css/dashboard.css";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from '@mui/icons-material/Settings';
+import FolderIcon from '@mui/icons-material/Folder';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import InsightsIcon from '@mui/icons-material/Insights';
+import BackIcon from '@mui/icons-material/ArrowBack';
+import logo from "../assets/logo.png";
+import "../css/project-display.css";
+import Sidebar from "./Sidebar";
 
+// const Dashboard = () => {
+//   // const [project, setProject] = useState(new ProjectResponse());
 
+//   // const refreshProjectData = () => {
+//   //   fetchProjectDetails(project_id).then((e) => {
+//   //     setProject(e.project);
+//   //   }
+//   //   ).catch((e) => {
+//   //     console.error(e);
+//   //     if (e.status === 401) {
+//   //       console.log("Session expired. Redirecting to login page.");
+//   //       navigate("/login");
+//   //     }
+//   //   });
+//   // };
+
+//   useEffect(() => {
+//     refreshProjectData();
+//   }, []);
+
+//   const handleLogout = () => {
+//     logout();
+//     navigate("/login");
+//   };
+
+//   const handleSettings = () => {
+//     navigate("/settings");
+//   }
+
+//   const handleDashboard = () => {
+//     navigate("/dashboard/projects");
+//   }
+
+//   return (
+//     <div className="project-dashboard">
+//       {/* Sidebar */}
+//       <aside className="sidebar">
+//         <img src={logo} alt="Chello Logo" className="logo-img" />
+//         <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>{project.name}</h1>
+//         <nav className="nav">
+//           {[
+//             { id: "files", name: "Project Explorer", icon: <FolderIcon /> },
+//             { id: "insights", name: "Insights", icon: <InsightsIcon /> },
+//             { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
+//           ].map((section) => (
+//             <Button
+//               key={section.id}
+//               className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
+//               onClick={() => {
+//                 navigate(`/projects/${project_id}/${section.id}`);
+//                 setSelectedSection(section.id);
+//               }}
+//               startIcon={section.icon}
+//               disableRipple
+//             >
+//               {section.name}
+//             </Button>
+//           ))}
+//         </nav>
+//         <Button variant="contained" color="secondary" className="dashboard-btn" startIcon={<BackIcon />} onClick={() => handleDashboard()}>
+//           Back To Dashboard
+//         </Button>
+//         <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
+//           Settings
+//         </Button>
+//         <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
+//           Logout
+//         </Button>
+//       </aside>
+
+//       {/* Main Content */}
+//       <main className="content">
+//         {selectedSection === "files" && <ProjectTaskTree />}
+//         {selectedSection === "insights" && <ProjectTaskTree />}
+//         {selectedSection === "employees" && <ProjectTaskTree />}
+//         {/* {selectedSection === "insights" && <InsightsCards />}
+//               {selectedSection === "employees" && <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />} */}
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default Dashboard;
+
+const ProjectDashboard = () => {
+  const { project_id } = useParams();
+  const navigate = useNavigate();
+
+  const refreshProjectData = () => {
+    fetchProjectDetails(project_id).catch((e) => {
+      console.error(e);
+      if (e.status === 401) {
+        console.log("Session expired. Redirecting to login page.");
+        navigate("/login");
+      }
+    });
+  };
+
+  let funcs = [
+    refreshProjectData,
+  ];
+
+  let elements = {
+    files: {
+      element: <ProjectTaskTree />,
+      icon: <FolderIcon />,
+      urlPath: `/projects/${project_id}/files`,
+      name: "Project Explorer",
+    },
+  };
+
+  return <Sidebar elements={elements} backLink="/dashboard/projects" useEffectFuncs={funcs} />;
+};
+
+export default ProjectDashboard;
 
 const ProjectTaskTree = () => {
   const { project_id } = useParams();
@@ -76,11 +196,9 @@ const ProjectTaskTree = () => {
               for (const key in dict) {
                 if (key === parentId) {
                   dict[key][task.id] = task;
-                  console.log("Appending task to subtasks dict:", dict[key]);
                   return true;
                 }
                 if (appendTaskToSubtasksDict(dict[key], parentId, task)) {
-                  console.log("Appending task to subtasks dict:", dict[key]);
                   return true;
                 }
               }
@@ -200,122 +318,91 @@ const ProjectTaskTree = () => {
   }
 
   return (
-    <div className="centered-container">
-      {/* Sidebar
-      <aside className="sidebar">
-        <img src={logo} alt="Chello Logo" className="logo-img" />
-        <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
-        <nav className="nav">
-          {[
-            { id: "projects", name: "Projects", icon: <FolderIcon /> },
-            { id: "insights", name: "Insights", icon: <InsightsIcon /> },
-            { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
-          ].map((section) => (
-            <Button
-              key={section.id}
-              className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
-              onClick={() => {
-                navigate(`/dashboard/${section.id}`);
-                setSelectedSection(section.id);
-              }}
-              // onClick={() => setSelectedSection(section.id)}
-              startIcon={section.icon}
-              disableRipple
-            >
-              {section.name}
-            </Button>
-          ))}
-        </nav>
-        <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
-          Settings
-        </Button>
-        <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
-          Logout
-        </Button>
-      </aside> */}
-
-      <div className="project-header">
-        <h1>{project.name}</h1>
-      </div>
-      <SimpleTreeView
-        sx={{
-          width: '80%',
-          bgcolor: 'background.paper',
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 1,
-          boxShadow: 1,
-          '& .MuiTreeItem-root': {
-            padding: '10px 0',
-            fontSize: '1.2rem',
-            justifyContent: 'space-between',
-          },
-        }}
-      >
-        {/* <TreeItem key={project.id} itemId={project.id} label={project.name}> */}
-        {Object.keys(project.subtasks).length > 0 ? (
-          Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
-        ) : (
-          <Typography>No project data available.</Typography>
-        )}
-        <Button className="add-button" style={{ marginBottom: '10px' }} onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
-        {/* </TreeItem> */}
-      </SimpleTreeView>
-
-      <Dialog
-        open={open}
-        onClose={handleCloseDialog}
-        sx={{
-          '& .MuiDialog-paper': {
+    <div className="project-file-container">
+      <div className="centered-container">
+        <div className="project-header">
+          <h1>{project.name}</h1>
+        </div>
+        <SimpleTreeView
+          sx={{
             width: '80%',
-            maxWidth: 600,
-            borderRadius: 2,
-            boxShadow: 3,
-          },
-        }}
-      >
-        <DialogTitle>{parentTaskId ? "Add Subtask" : "Add Task"}</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Task Name"
-            fullWidth
-            margin="dense"
-            value={newTask.name}
-            onChange={(e) => handleTaskChange("name", e.target.value)}
-          />
-          <TextField
-            label="Description"
-            fullWidth
-            margin="dense"
-            value={newTask.description}
-            onChange={(e) => handleTaskChange("description", e.target.value)}
-          />
-          <TextField
-            label="Assigned To"
-            fullWidth
-            margin="dense"
-            value={newTask.assigned_to}
-            onChange={(e) => handleTaskChange("assigned_to", e.target.value)}
-            slotProps={{
-              select: {
-                native: true,
-              },
-            }}
-          >
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.id}>
-                {employee.name}
-              </option>
-            ))}
-          </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleCreateTask} color="primary">Create Task</Button>
-        </DialogActions>
-      </Dialog>
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 1,
+            boxShadow: 1,
+            '& .MuiTreeItem-root': {
+              padding: '10px 0',
+              fontSize: '1.2rem',
+              justifyContent: 'space-between',
+            },
+          }}
+        >
+          {/* <TreeItem key={project.id} itemId={project.id} label={project.name}> */}
+          {Object.keys(project.subtasks).length > 0 ? (
+            Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
+          ) : (
+            <Typography>No project data available.</Typography>
+          )}
+          <Button className="add-button" style={{ marginBottom: '10px' }} onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
+          {/* </TreeItem> */}
+        </SimpleTreeView>
+
+        <Dialog
+          open={open}
+          onClose={handleCloseDialog}
+          sx={{
+            '& .MuiDialog-paper': {
+              width: '80%',
+              maxWidth: 600,
+              borderRadius: 2,
+              boxShadow: 3,
+            },
+          }}
+        >
+          <DialogTitle>{parentTaskId ? "Add Subtask" : "Add Task"}</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Task Name"
+              fullWidth
+              margin="dense"
+              value={newTask.name}
+              onChange={(e) => handleTaskChange("name", e.target.value)}
+            />
+            <TextField
+              label="Description"
+              fullWidth
+              margin="dense"
+              value={newTask.description}
+              onChange={(e) => handleTaskChange("description", e.target.value)}
+            />
+            <TextField
+              label="Assigned To"
+              fullWidth
+              margin="dense"
+              value={newTask.assigned_to}
+              onChange={(e) => handleTaskChange("assigned_to", e.target.value)}
+              slotProps={{
+                select: {
+                  native: true,
+                },
+              }}
+            >
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.id}>
+                  {employee.name}
+                </option>
+              ))}
+            </TextField>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={handleCreateTask} color="primary">Create Task</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 };
 
-export default ProjectTaskTree;
+export { ProjectTaskTree };

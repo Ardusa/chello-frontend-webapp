@@ -1,4 +1,4 @@
-.login-container {
+.login-container .form-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -27,7 +27,7 @@
     padding: 10px;
 }
 
-.logo {
+.login-container .logo {
     font-family: 'Poppins', sans-serif;
     font-size: 36px;
     width: 150px;
@@ -44,5 +44,4 @@
 
 .login-container button.register-btn:hover {
     background-color: var(--green-button-hover-color);
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
 }
