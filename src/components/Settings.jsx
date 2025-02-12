@@ -90,7 +90,7 @@ const Settings = () => {
                 </div>
 
                 <button className="save-btn">Save</button>
-                <button type="button" onClick={() => navigate("/dashboard/projects")} className="arrow backward-btn"></button>
+                <button type="button" onClick={() => navigate(-1)} className="arrow backward-btn"></button>
             </div>
         </div>
     );
