@@ -88,7 +88,7 @@
     color: rgb(255, 0, 0) !important;
     font-size: 20px !important;
     padding: 10px 20px;
-    margin-left: 20px;
+    margin-left: 00px;
 }
 
 .project-file-container .delete-button:hover {
@@ -100,7 +100,7 @@
     color: rgb(0, 145, 255) !important;
     font-size: 20px !important;
     padding: 10px 20px;
-    margin-left: 20px;
+    margin-left: 0px;
 }
 
 .project-file-container .add-button:hover {

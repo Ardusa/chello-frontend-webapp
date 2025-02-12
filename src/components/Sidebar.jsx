@@ -7,7 +7,7 @@ import { useAuth } from "../services/AuthService";
 import logo from '../assets/logo.png';
 import { CircularProgress, Button } from "@mui/material";
 import "../css/sidebar.css";
-import { getEmployee, fetchAccountDetails, EmployeeResponse } from "../services/api"
+import { getAccount, fetchAccountDetails, AccountResponse } from "../services/api";
 
 
 /**
@@ -22,8 +22,8 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
     const [selectedSection, setSelectedSection] = useState(Object.keys(elements)[0]);
     const { logout } = useAuth();
     const navigate = useNavigate();
-    const [user, setUser] = useState(new EmployeeResponse({}));
-    const [manager, setManager] = useState(new EmployeeResponse({}));
+    const [user, setUser] = useState(new AccountResponse({}));
+    const [manager, setManager] = useState(new AccountResponse({}));
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
                 setSelectedSection(section);
             }
 
-            const user = await getEmployee();
+            const user = await getAccount();
             setUser(user);
 
             if (user.manager_id) {
@@ -62,7 +62,8 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
             {/* Sidebar */}
             <aside className="sidebar">
                 {/* <img src={user?.profile_picture} alt="Profile Picture" className="profile-img" /> */}
-                {/* <img src={logo} alt="Chello Logo" className="logo-img" /> */}
+                <h1 style={{ fontSize: "70px", color: "black", margin: "10px 0px" }}>Chello</h1>
+                <img src={logo} alt="Chello Logo" className="logo-img" />
                 <div className="user-details-container">
                     <div className="user-info">
                         <h3 >{user.position}</h3>
@@ -77,7 +78,6 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
                         </div>
                     }
                 </div>
-                <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
                 <nav className="nav">
                     {Object.entries(elements).map(([id, element]) => (
                         <Button

@@ -15,18 +15,16 @@
     padding: 5px;
     border-radius: 20px;
     margin: 10px;
-    margin-right: 30px;
+    margin-right: 50px;
     border: black 5px solid;
 }
 
 .sidebar-container .logo-img {
     align-self: first baseline;
     margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin: 20px auto;
     width: 300px;
     height: auto;
-    margin-bottom: 0px;
 }
 
 .sidebar-container .nav {
@@ -37,27 +35,27 @@
 
 .sidebar-container .nav-item {
     font-weight: 200;
-    background: none;
+    background: none !important;
     border: none;
     color: rgb(0, 89, 254);
-    font-size: 22px;
+    font-size: 30px;
     padding: 28px !important;
     padding-left: 120px;
     width: 100%;
     cursor: pointer;
     height: 50px;
     transition: font-size 0.2s, color 0.2s;
-    margin: 8px 0px;
+    margin: 12px 0px;
 }
 
 .sidebar-container .nav-item:hover {
-    font-size: 24px;
+    font-size: 32px;
     color: black;
     transition: font-size 0.2s, color 0.2s;
 }
 
 .sidebar-container .nav-item.active {
-    font-size: 24px;
+    font-size: 32px;
     color: black;
     font-weight: 800;
     transition: font-weight 0.1s ease-in-out;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchProjects, fetchEmployees, getEmployee, registerEmployee, createProject, ProjectCreate, EmployeeCreate } from "../services/api.js";
+import { fetchProjects, fetchAccounts, getAccount, registerAccount, createProject, ProjectCreate, AccountCreate } from "../services/api.js";
 import { useNavigate, useParams } from "react-router-dom";
 
 import FolderIcon from '@mui/icons-material/Folder';
@@ -13,7 +13,7 @@ import Sidebar from "./Sidebar";
 
 const Dashboard = () => {
     const [projects, setProjects] = useState({});
-    const [employees, setEmployees] = useState({});
+    const [accounts, setAccounts] = useState({});
     const navigate = useNavigate();
 
     const refreshProjects = () => {
@@ -28,9 +28,9 @@ const Dashboard = () => {
         });
     };
 
-    const refreshEmployees = () => {
-        fetchEmployees().then((e) => {
-            setEmployees(e);
+    const refreshAccounts = () => {
+        fetchAccounts().then((e) => {
+            setAccounts(e);
         }).catch((e) => {
             console.error(e);
             if (e.status === 401) {
@@ -42,12 +42,12 @@ const Dashboard = () => {
 
     let funcs = [
         refreshProjects,
-        refreshEmployees
+        refreshAccounts
     ];
 
     let elements = {
         projects: {
-            element: <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshEmployees={refreshEmployees} />,
+            element: <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshAccounts={refreshAccounts} />,
             icon: <FolderIcon />,
             urlPath: "/dashboard/projects",
             name: "Projects",
@@ -59,7 +59,7 @@ const Dashboard = () => {
             name: "Insights",
         },
         employees: {
-            element: <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />,
+            element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
             icon: <AssignmentIndIcon />,
             urlPath: "/dashboard/employees",
             name: "Employees",
@@ -71,14 +71,14 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
+const ProjectCards = ({ projects, refreshProjects, refreshAccounts }) => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
     const [projectData, setNewProject] = useState(new ProjectCreate());
 
     const handleOpen = () => {
-        getEmployee()
+        getAccount()
             .then((response) => {
                 setNewProject((prev) => ({
                     ...prev,
@@ -171,7 +171,7 @@ const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
 
 const InsightsCards = () => {
     const insights = [
-        // { id: 1, title: "Employee Efficiency", path: "/insights/employee-efficiency", description: "View the average efficiency of completing tasks based on time alloted for your employees" },
+        // { id: 1, title: "Account Efficiency", path: "/insights/account-efficiency", description: "View the average efficiency of completing tasks based on time alloted for your accounts" },
         { id: 2, title: "Project Completion Rate", path: "/insights/project-completion", description: "View the percentage of your projects completed on time or earlier." },
         { id: 3, title: "Task Progress", path: "/insights/task-progress", description: "View the progress of your assigned tasks." },
     ];
@@ -189,14 +189,14 @@ const InsightsCards = () => {
     );
 };
 
-const EmployeeCards = ({ employees, refreshEmployees }) => {
+const AccountCards = ({ accounts, refreshAccounts }) => {
     const [open, setOpen] = useState(false);
-    const [employeeData, setNewEmployee] = useState(new EmployeeCreate());
+    const [accountData, setNewAccount] = useState(new AccountCreate());
 
     const handleOpen = () => {
-        getEmployee()
+        getAccount()
             .then((response) => {
-                setNewEmployee((prev) => ({
+                setNewAccount((prev) => ({
                     ...prev,
                     company_id: response.company_id,
                     manager_id: response.id,
@@ -207,40 +207,40 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
     };
 
     const handleClose = () => {
-        setNewEmployee(new EmployeeCreate());
+        setNewAccount(new AccountCreate());
         setOpen(false);
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setNewEmployee((prev) => ({ ...prev, [name]: value }));
+        setNewAccount((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = () => {
-        console.log("New Employee: ", employeeData);
-        registerEmployee(employeeData)
+        console.log("New Account: ", accountData);
+        registerAccount(accountData)
             .then(() => handleClose())
             .catch(console.error);
-        refreshEmployees();
+        refreshAccounts();
     };
 
     return (
         <div className="cards-container">
             <div className="cards">
-                {employees.length > 0 && employees.map((employee) => (
-                    <div key={employee.id} className="card" onClick={() => window.location.href = `/employees/${employee.employee_id}/`}>
-                        <h3>{employee.name}</h3>
-                        <p>{employee.email}</p>
-                        <p>{employee.position}</p>
+                {accounts.length > 0 && accounts.map((account) => (
+                    <div key={account.id} className="card" onClick={() => window.location.href = `/accounts/${account.account_id}/`}>
+                        <h3>{account.name}</h3>
+                        <p>{account.email}</p>
+                        <p>{account.position}</p>
                     </div>
                 ))}
-                <div className="card create-employee-card" onClick={handleOpen}>
-                    <h3>Register Employee</h3>
+                <div className="card create-account-card" onClick={handleOpen}>
+                    <h3>Register Account</h3>
                     <AddBoxOutlinedIcon style={{ fontSize: 40 }} />
                 </div>
             </div>
             <Dialog open={open} onClose={handleClose} PaperProps={{ style: { backgroundColor: 'lightgray' } }}>
-                <DialogTitle>Register Employee</DialogTitle>
+                <DialogTitle>Register Account</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -249,7 +249,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Name"
                         type="text"
                         fullWidth
-                        value={employeeData.name}
+                        value={accountData.name}
                         onChange={handleChange}
                     />
                     <TextField
@@ -258,7 +258,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Email"
                         type="email"
                         fullWidth
-                        value={employeeData.email}
+                        value={accountData.email}
                         onChange={handleChange}
                     />
                     <TextField
@@ -267,7 +267,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Temporary Password"
                         type="text"
                         fullWidth
-                        value={employeeData.password}
+                        value={accountData.password}
                         onChange={handleChange}
                     />
                     <TextField
@@ -276,7 +276,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Manager ID"
                         type="text"
                         fullWidth
-                        value={employeeData.manager_id}
+                        value={accountData.manager_id}
                         onChange={handleChange}
                     />
                     <TextField
@@ -285,7 +285,7 @@ const EmployeeCards = ({ employees, refreshEmployees }) => {
                         label="Position"
                         type="text"
                         fullWidth
-                        value={employeeData.position}
+                        value={accountData.position}
                         onChange={handleChange}
                     />
                 </DialogContent>

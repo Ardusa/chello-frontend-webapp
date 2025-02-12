@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails, deleteTask, deleteProject } from "../services/api.js";
+import { fetchProjectDetails, createTask, TaskCreate, fetchAccounts, getAccount, fetchTaskDetails, deleteTask, deleteProject } from "../services/api.js";
 import { SimpleTreeView, TreeItem2 } from "@mui/x-tree-view";
 import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,15 +53,15 @@ const ProjectTaskTree = () => {
 
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-  const [parentTaskId, setParentTaskId] = useState(null);
+  // const [parentTaskId, setParentTaskId] = useState(null);
   const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
-  const [employees, setEmployees] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
   const [subtasksDict, setSubtasksDict] = useState({});
 
   useEffect(() => {
     loadProjectDetails();
-    fetchEmployeeDetails();
+    fetchAccountDetails();
   }, [project_id]);
 
   const loadProjectDetails = async () => {
@@ -81,17 +81,17 @@ const ProjectTaskTree = () => {
     }
   };
 
-  const fetchEmployeeDetails = async () => {
+  const fetchAccountDetails = async () => {
     try {
-      const employees = await fetchEmployees();
-      setEmployees(employees);
+      const accounts = await fetchAccounts();
+      setAccounts(accounts);
 
-      const currentUser = await getEmployee();
-      setEmployees((prev) => [{ id: currentUser.id, name: currentUser.name }, ...prev]);
+      const currentUser = await getAccount();
+      setAccounts((prev) => [{ id: currentUser.id, name: currentUser.name }, ...prev]);
       setNewTask((prev) => ({ ...prev, assigned_to: currentUser.id }));
     } catch (error) {
-      console.error("Error fetching employees:", error);
-      setError("Error fetching employees.");
+      console.error("Error fetching accounts:", error);
+      setError("Error fetching accounts.");
     }
   };
 
@@ -135,7 +135,7 @@ const ProjectTaskTree = () => {
   const handleCloseDialog = async () => {
     setOpen(false);
     await loadProjectDetails();
-    await fetchEmployeeDetails();
+    await fetchAccountDetails();
     setNewTask(new TaskCreate({ project_id }));
   };
 
@@ -154,7 +154,7 @@ const ProjectTaskTree = () => {
   const handleDeleteTask = async (taskId) => {
     await deleteTask(taskId);
     await loadProjectDetails();
-    await fetchEmployeeDetails();
+    await fetchAccountDetails();
   };
 
   const handleDeleteProject = async (projectId) => {
@@ -175,13 +175,13 @@ const ProjectTaskTree = () => {
     const node = taskDetails[nodeId];
     if (!node) return null;
 
-    const assignedEmployee = employees.find(emp => emp.id === node.assigned_to);
+    const assignedAccount = accounts.find(emp => emp.id === node.assigned_to);
 
     return (
       <TreeItem2 key={node.id} itemId={node.id} label={
         <div className="task-node">
           <span style={{ paddingLeft: "20px" }}>{node.name}</span>
-          <span>{assignedEmployee ? assignedEmployee.name : "Unassigned"}</span>
+          <span>{assignedAccount ? assignedAccount.name : "Unassigned"}</span>
           <div>
             <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
               <FontAwesomeIcon icon={faPlus} />
@@ -249,7 +249,7 @@ const ProjectTaskTree = () => {
             },
           }}
         >
-          <DialogTitle>{parentTaskId ? "Add Subtask" : "Add Root Task"}</DialogTitle>
+          <DialogTitle>{newTask.parent_task_id ? "Add Subtask" : "Add Root Task"}</DialogTitle>
           <DialogContent>
             <TextField
               label="Task Name"
@@ -285,9 +285,9 @@ const ProjectTaskTree = () => {
                 },
               }}
             >
-              {employees.map((employee) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.name}
+              {accounts.map((account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
                 </option>
               ))}
             </TextField>

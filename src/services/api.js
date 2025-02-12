@@ -8,21 +8,33 @@ const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
  * Represents the response data for an account.
  * @class
  * @param {Object} data - The data to initialize the account response.
- * @param {string} [data.id=""] - The ID of the account.
- * @param {string} [data.name=""] - The name of the account.
- * @param {string} [data.email=""] - The email of the account.
- * @param {string} [data.company_id=""] - The ID of the company the account belongs to.
- * @param {string} [data.position=""] - The position of the account.
- * @param {string} [data.manager_id=""] - The ID of the manager of the account.
+ * @param {string} [data.id=""] - Unique identifier for the account, primary key.
+ * @param {string} [data.name=""] - Name of the account.
+ * @param {string} [data.email=""] - Unique email address of the account.
+ * @param {string} [data.password=""] - Password of the account.
+ * @param {string} [data.manager_id=""] - Foreign key referencing the manager of the account, nullable.
+ * @param {number} [data.position=0] - Position of the account within the company.
+ * @param {boolean} [data.free_plan=false] - Boolean indicating if the account is on a free plan.
+ * @param {number} [data.task_limit=null] - Maximum number of tasks the account can create.
+ * @param {string} [data.company_id=""] - Foreign key referencing the company the account belongs to.
+ * @param {Date} [data.account_created=new Date()] - Date and time the account was created.
+ * @param {Date} [data.last_login=new Date()] - Date and time the account was last logged into.
+ * @param {number} [data.efficiency_score=0.0] - Score indicating the efficiency of the account.
  */
 export class AccountResponse {
     constructor(data = {}) {
         this.id = data.id || "";
         this.name = data.name || "";
         this.email = data.email || "";
+        this.password = data.password || "";
         this.company_id = data.company_id || "";
-        this.position = data.position || "";
         this.manager_id = data.manager_id || "";
+        this.position = data.position || "";
+        this.account_created = data.account_created ? new Date(data.account_created) : new Date();
+        this.last_login = data.last_login ? new Date(data.last_login) : new Date();
+        this.free_plan = data.free_plan || false;
+        this.task_limit = data.task_limit || null;
+        this.efficiency_score = data.efficiency_score || 0.0;
     }
 }
 
@@ -34,18 +46,22 @@ export class AccountResponse {
  * @param {string} [data.name=""] - The name of the account.
  * @param {string} [data.email=""] - The email of the account.
  * @param {string} [data.password=""] - The password of the account.
- * @param {string} [data.company_id=""] - The ID of the company the account belongs to.
+ * @param {string} [data.manager_id=null] - The ID of the manager of the account.
  * @param {string} [data.position=""] - The position of the account.
- * @param {string} [data.manager_id=""] - The ID of the manager of the account.
+ * @param {boolean} [data.free_plan=false] - Boolean indicating if the account is on a free plan.
+ * @param {number} [data.task_limit=null] - Maximum number of tasks the account can create.
+ * @param {string} [data.company_id=null] - The ID of the company the account belongs to.
  */
 export class AccountCreate {
     constructor(data = {}) {
         this.name = data.name || "";
         this.email = data.email || "";
         this.password = data.password || "";
-        this.company_id = data.company_id || "";
+        this.manager_id = data.manager_id || null;
         this.position = data.position || "";
-        this.manager_id = data.manager_id || "";
+        this.free_plan = data.free_plan || false;
+        this.task_limit = data.task_limit || null;
+        this.company_id = data.company_id || null;
     }
 }
 
@@ -55,17 +71,25 @@ export class AccountCreate {
  * @param {Object} [data={}] - The data to initialize the project response with.
  * @param {string} [data.id=""] - The ID of the project.
  * @param {string} [data.name=""] - The name of the project.
- * @param {string} [data.project_manager=""] - The ID of the project manager.
  * @param {string} [data.description=""] - The description of the project.
  * @param {string} [data.company_id=""] - The ID of the company the project belongs to.
+ * @param {string} [data.project_manager=""] - The ID of the project manager.
+ * @param {Date} [data.project_created=new Date()] - The date and time the project was created.
+ * @param {Date} [data.project_started=null] - The date and time the project was started.
+ * @param {Date} [data.project_completed=null] - The date and time the project was completed.
+ * @param {boolean} [data.is_finished=false] - Boolean indicating if the project is finished.
  */
 export class ProjectResponse {
     constructor(data = {}) {
         this.id = data.id || "";
         this.name = data.name || "";
-        this.project_manager = data.project_manager || "";
         this.description = data.description || "";
         this.company_id = data.company_id || "";
+        this.project_manager = data.project_manager || "";
+        this.project_created = data.project_created ? new Date(data.project_created) : new Date();
+        this.project_started = data.project_started ? new Date(data.project_started) : null;
+        this.project_completed = data.project_completed ? new Date(data.project_completed) : null;
+        this.is_finished = data.is_finished || false;
     }
 }
 
@@ -74,16 +98,16 @@ export class ProjectResponse {
  * @class
  * @param {Object} [data={}] - The data to initialize the project creation with.
  * @param {string} [data.name=""] - The name of the project.
- * @param {string} [data.project_manager=""] - The ID of the project manager.
  * @param {string} [data.description=""] - The description of the project.
  * @param {string} [data.company_id=""] - The ID of the company the project belongs to.
+ * @param {string} [data.project_manager=""] - The ID of the project manager.
  */
 export class ProjectCreate {
     constructor(data = {}) {
         this.name = data.name || "";
-        this.project_manager = data.project_manager || "";
         this.description = data.description || "";
         this.company_id = data.company_id || "";
+        this.project_manager = data.project_manager || "";
     }
 }
 
@@ -93,20 +117,36 @@ export class ProjectCreate {
  * Creates an instance of TaskResponse.
  * @param {Object} [data={}] - The data to initialize the task response with.
  * @param {string} [data.id=""] - The ID of the task.
- * @param {string} [data.project_id=""] - The ID of the project the task belongs to.
  * @param {string} [data.name=""] - The name of the task.
  * @param {string} [data.description=""] - The description of the task.
+ * @param {string} [data.project_id=""] - The ID of the project the task belongs to.
  * @param {string} [data.assigned_to=""] - The ID of the user the task is assigned to.
  * @param {string} [data.parent_task_id=""] - The ID of the parent task, if any.
+ * @param {number} [data.order=0] - The order of the task within the project.
+ * @param {Date} [data.task_created=new Date()] - The date and time the task was created.
+ * @param {Date} [data.task_started=null] - The date and time the task was started.
+ * @param {Date} [data.task_completed=null] - The date and time the task was completed.
+ * @param {boolean} [data.is_finished=false] - Boolean indicating if the task is finished.
+ * @param {number} [data.task_human_estimated_man_hours=null] - Estimated time of completion, given by the task creator.
+ * @param {number} [data.task_AI_estimated_man_hours=null] - Estimated time of completion, given by the neural network.
+ * @param {number} [data.task_actual_man_hours=null] - Actual time of completion.
  */
 export class TaskResponse {
     constructor(data = {}) {
         this.id = data.id || "";
-        this.project_id = data.project_id || "";
         this.name = data.name || "";
         this.description = data.description || "";
+        this.project_id = data.project_id || "";
         this.assigned_to = data.assigned_to || "";
         this.parent_task_id = data.parent_task_id || "";
+        this.order = data.order || 0;
+        this.task_created = data.task_created ? new Date(data.task_created) : new Date();
+        this.task_started = data.task_started ? new Date(data.task_started) : null;
+        this.task_completed = data.task_completed ? new Date(data.task_completed) : null;
+        this.is_finished = data.is_finished || false;
+        this.task_human_estimated_man_hours = data.task_human_estimated_man_hours || null;
+        this.task_AI_estimated_man_hours = data.task_AI_estimated_man_hours || null;
+        this.task_actual_man_hours = data.task_actual_man_hours || null;
     }
 }
 
@@ -114,19 +154,21 @@ export class TaskResponse {
  * Represents a task to create.
  * @class
  * @param {Object} [data={}] - The data to initialize the task creation with.
- * @param {string} [data.project_id=""] - The ID of the project the task belongs to.
  * @param {string} [data.name=""] - The name of the task.
  * @param {string} [data.description=""] - The description of the task.
+ * @param {string} [data.project_id=""] - The ID of the project the task belongs to.
  * @param {string} [data.assigned_to=""] - The ID of the user the task is assigned to.
- * @param {string} [data.parent_task_id=""] - The ID of the parent task, if any.
+ * @param {string} [data.parent_task_id=null] - The ID of the parent task, if any.
+ * @param {number} [data.order=0] - The order of the task within the project.
  */
 export class TaskCreate {
     constructor(data = {}) {
-        this.project_id = data.project_id || "";
         this.name = data.name || "";
         this.description = data.description || "";
+        this.project_id = data.project_id || "";
         this.assigned_to = data.assigned_to || "";
-        this.parent_task_id = data.parent_task_id || "";
+        this.parent_task_id = data.parent_task_id || null;
+        this.order = data.order || 0;
     }
 }
 
@@ -136,12 +178,14 @@ export class TaskCreate {
  * @param {Object} [data={}] - The data to initialize the company response with.
  * @param {string} [data.id=""] - The ID of the company.
  * @param {string} [data.name=""] - The name of the company.
+ * @param {Date} [data.founding_date=new Date()] - The date the company was founded.
  * @param {string} [data.founding_member=""] - The ID of the founding member of the company.
  */
 export class CompanyResponse {
     constructor(data = {}) {
         this.id = data.id || "";
         this.name = data.name || "";
+        this.founding_date = data.founding_date ? new Date(data.founding_date) : new Date();
         this.founding_member = data.founding_member || "";
     }
 }
@@ -310,7 +354,7 @@ export const createTask = async (taskData) => {
  * @returns {Promise<Object>} A promise that resolves to the response from the server.
  */
 export const deleteTask = async (task_id) => {
-    const response = await makeAuthenticatedRequest(`/tasks/${task_id}/delete`, {
+    const response = await makeAuthenticatedRequest(`/tasks/${task_id}`, {
         method: "DELETE",
     });
 
@@ -338,7 +382,7 @@ export const fetchTaskDetails = async (task_id) => {
  * @returns {Promise<Object>} A promise that resolves to the response from the server.
  */
 export const deleteProject = async (project_id) => {
-    const response = await makeAuthenticatedRequest(`/projects/${project_id}/delete`, {
+    const response = await makeAuthenticatedRequest(`/projects/${project_id}`, {
         method: "DELETE",
     });
 

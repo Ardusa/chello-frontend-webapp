@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../css/register-employee.css";
-import { createAccount, getEmployee, setPassword } from "../services/api.js";
+import "../css/register-account.css";
+import { createAccount, getAccount, setPassword } from "../services/api.js";
 
-const RegisterEmployee = ({ new_account = false, set_password = false }) => {
+const RegisterAccount = ({ new_account = false, set_password = false }) => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
@@ -28,7 +28,7 @@ const RegisterEmployee = ({ new_account = false, set_password = false }) => {
         };
       }
 
-      const responseJson = await getEmployee();
+      const responseJson = await getAccount();
 
       return {
         name: "",
@@ -81,7 +81,7 @@ const RegisterEmployee = ({ new_account = false, set_password = false }) => {
         <div className="centered-container">
           <div className="form-container">
             <h2>Create Password</h2>
-            <p>Please create a password for your new account Employee {formData.id}</p>
+            <p>Please create a password for your new account Account {formData.id}</p>
 
             <form onSubmit={handleSetPassword}>
               <div className="form-input">
@@ -106,7 +106,7 @@ const RegisterEmployee = ({ new_account = false, set_password = false }) => {
     <div className="register-container">
       <div className="centered-container">
         <div className="form-container">
-          <h2>Register Employee</h2>
+          <h2>Register Account</h2>
 
           <form onSubmit={handleSubmit}>
             <div className="form-input">
@@ -143,7 +143,7 @@ const RegisterEmployee = ({ new_account = false, set_password = false }) => {
             {new_account ? (
               <button type="submit" className="register-btn">Register Account</button>
             ) : (
-              <button type="submit" className="register-btn">Register Employee</button>
+              <button type="submit" className="register-btn">Register Account</button>
             )}
           </form>
 
@@ -155,4 +155,4 @@ const RegisterEmployee = ({ new_account = false, set_password = false }) => {
 
 };
 
-export default RegisterEmployee;
+export default RegisterAccount;

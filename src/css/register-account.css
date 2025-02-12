@@ -51,3 +51,12 @@
     border-radius: 5px;
     width: auto;
 }
+
+.register-container select.account-type {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: auto;
+    margin: 10px 30px;
+    font-size: 20px;
+}

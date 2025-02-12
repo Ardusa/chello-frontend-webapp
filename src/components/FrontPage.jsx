@@ -39,8 +39,8 @@ const FrontPage = () => {
                     </div>
                     <div className="feature">
                         <div className="feature-image-placeholder">[Feature Image 3]</div>
-                        <h3>Manager-Employee Relations</h3>
-                        <p>Manage team structures with manager-employee relationship capabilities.</p>
+                        <h3>Manager-Account Relations</h3>
+                        <p>Manage team structures with manager-account relationship capabilities.</p>
                     </div>
                     <div className="feature">
                         <div className="feature-image-placeholder">[Feature Image 4]</div>

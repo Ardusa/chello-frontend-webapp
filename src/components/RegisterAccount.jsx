@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../css/register-employee.css";
-import { createAccount, getEmployee, setPassword, EmployeeCreate } from "../services/api.js";
+import "../css/register-account.css";
+import { createAccount, getAccount, setPassword, AccountCreate } from "../services/api.js";
 
-const RegisterEmployee = () => {
-    const [formData, setFormData] = useState(new EmployeeCreate());
+
+const RegisterAccount = () => {
+    const [formData, setFormData] = useState(new AccountCreate());
     const navigate = useNavigate();
     const [isCompany, setIsCompany] = useState(false);
 
@@ -15,6 +16,9 @@ const RegisterEmployee = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if (isCompany) {
+                formData.task_limit = null;
+            }
             await createAccount(formData);
             alert("Registration successful. Redirecting to login...");
             navigate("/login");
@@ -24,6 +28,14 @@ const RegisterEmployee = () => {
         }
     };
 
+    const handleAccountTypeChange = (e) => {
+        setIsCompany(e.target.value === "company");
+    };
+
+    const handleSubscriptionPlanChange = (e) => {
+        setFormData({ ...formData, free_plan: e.target.value === "free" });
+    };
+
     return (
         <div className="register-container">
             <div className="centered-container">
@@ -31,6 +43,27 @@ const RegisterEmployee = () => {
                     <h2>Register Account</h2>
 
                     <form onSubmit={handleSubmit}>
+                        <div className="form-input">
+                            <label>Account Type *</label>
+                            <select className="account-type" name="accountType" onChange={handleAccountTypeChange} required>
+                                <option value="personal">Personal</option>
+                                <option value="company">Company</option>
+                            </select>
+                        </div>
+
+                        <div className="form-input">
+                            <label>Subscription Plan *</label>
+                            <select className="account-type" name="accountType" onChange={handleSubscriptionPlanChange} required>
+                                <option value="free">Free</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </div>
+
+                        <div className="form-input">
+                            <label>Task Limit *</label>
+                            <input type="number" name="task_limit" placeholder="0" onChange={handleChange} required autoComplete="name" min="0" />
+                        </div>
+
                         <div className="form-input">
                             <label>Full Name *</label>
                             <input type="text" name="name" placeholder="Full Name" onChange={handleChange} required autoComplete="name" />
@@ -46,15 +79,20 @@ const RegisterEmployee = () => {
                             <input type="password" name="password" placeholder={"Password"} onChange={handleChange} required autoComplete="new-password" />
                         </div>
 
-                        <div className="form-input">
-                            <label>Company Name *</label>
-                            <input type="text" name="company_name" placeholder="Company Name" onChange={handleChange} required autoComplete="organization" />
-                        </div>
+                        {isCompany && (
+                            <>
+                                <div className="form-input">
+                                    <label>Company Name *</label>
+                                    <input type="text" name="company_name" placeholder="Company Name" onChange={handleChange} required autoComplete="organization" />
+                                </div>
 
-                        <div className="form-input">
-                            <label>Position Title *</label>
-                            <input type="text" name="position" placeholder="Founder" onChange={handleChange} required autoComplete="organization-title" readOnly={false} />
-                        </div>
+                                <div className="form-input">
+                                    <label>Position Title *</label>
+                                    <input type="text" name="position" placeholder="Founder" onChange={handleChange} required autoComplete="organization-title" />
+                                </div>
+                            </>
+                        )}
+
                         <button type="submit" className="register-btn">Register Account</button>
                     </form>
 
@@ -63,7 +101,6 @@ const RegisterEmployee = () => {
             </div>
         </div>
     );
-
 };
 
-export default RegisterEmployee;
+export default RegisterAccount;

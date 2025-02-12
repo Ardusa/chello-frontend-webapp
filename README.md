@@ -5,7 +5,7 @@ Welcome to the **Chello Frontend**, the web-based interface for Chello—a task 
 ## Features
 
 - **User Authentication**: Login and secure access with integration to the backend authentication system.
-- **Manager-Employee Relations**: Manage team structures with manager-employee relationship capabilities.
+- **Manager-Account Relations**: Manage team structures with manager-account relationship capabilities.
 - **Project Management**: Create, view, and modify projects seamlessly using backend API calls.
 - **Task Interaction**: Assign tasks, update statuses, and handle dependencies via the intuitive interface.
 
@@ -22,8 +22,8 @@ Welcome to the **Chello Frontend**, the web-based interface for Chello—a task 
 - Authenticate users securely using the backend's `/login` API.
 - Store tokens for session management.
 
-### Manager-Employee Relations
-- Fetch and display employees assigned to a manager.
+### Manager-Account Relations
+- Fetch and display accounts assigned to a manager.
 - Visualize hierarchical relationships.
 
 ### Project Management
