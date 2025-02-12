@@ -83,6 +83,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
                             key={id}
                             className={`nav-item ${selectedSection === id ? "active" : ""}`}
                             onClick={() => {
+                                if (selectedSection === id) return;
                                 navigate(element.urlPath);
                                 setSelectedSection(id);
                             }}

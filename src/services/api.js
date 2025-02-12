@@ -208,6 +208,14 @@ export const createTask = async (taskData) => {
     return json;
 };
 
+export const deleteTask = async (task_id) => {
+    const response = await makeAuthenticatedRequest(`/tasks/${task_id}/delete`, {
+        method: "DELETE",
+    });
+
+    return response;
+}
+
 /**
  * Fetches the details of a specific task from the server.
  * @async

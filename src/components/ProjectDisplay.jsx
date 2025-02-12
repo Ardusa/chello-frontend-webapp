@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails } from "../services/api.js";
-import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
+import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails, deleteTask } from "../services/api.js";
+import { SimpleTreeView, TreeItem2 } from "@mui/x-tree-view";
 import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -45,6 +45,7 @@ const ProjectTaskTree = () => {
   const { project_id } = useParams();
   const [project, setProject] = useState({
     id: "",
+    description: "",
     name: "",
     subtasks: {},
   });
@@ -52,48 +53,51 @@ const ProjectTaskTree = () => {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [parentTaskId, setParentTaskId] = useState(null);
-  const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
+  const [newTask, setNewTask] = useState(new TaskCreate({ project_id}));
   const [employees, setEmployees] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
   const [subtasksDict, setSubtasksDict] = useState({});
 
   useEffect(() => {
-    const loadProjectDetails = async () => {
-      try {
-        const projectData = await fetchProjectDetails(project_id);
-        setProject({
-          id: projectData.project.id,
-          name: projectData.project.name,
-          subtasks: projectData.tasks,
-        });
-
-        const { taskDetails, subtasksDict } = await fetchTaskDetailsRecursively(projectData.tasks);
-        setTaskDetails(taskDetails);
-        setSubtasksDict(subtasksDict);
-      } catch (error) {
-        console.error("Error fetching project details:", error);
-        setError("Error fetching project details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchEmployeeDetails = async () => {
-      try {
-        const employees = await fetchEmployees();
-        setEmployees(employees);
-
-        const currentUser = await getEmployee();
-        setNewTask((prev) => ({ ...prev, assigned_to: currentUser.id }));
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-        setError("Error fetching employees.");
-      }
-    };
-
     loadProjectDetails();
     fetchEmployeeDetails();
   }, [project_id]);
+
+  const loadProjectDetails = async () => {
+    setLoading(true);
+    try {
+      const projectData = await fetchProjectDetails(project_id);
+      setProject({
+        id: projectData.project.id,
+        name: projectData.project.name,
+        description: projectData.project.description,
+        subtasks: projectData.tasks,
+      });
+
+      const { taskDetails, subtasksDict } = await fetchTaskDetailsRecursively(projectData.tasks);
+      setTaskDetails(taskDetails);
+      setSubtasksDict(subtasksDict);
+    } catch (error) {
+      console.error("Error fetching project details:", error);
+      setError("Error fetching project details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchEmployeeDetails = async () => {
+    try {
+      const employees = await fetchEmployees();
+      setEmployees(employees);
+
+      const currentUser = await getEmployee();
+      setEmployees((prev) => [{ id: currentUser.id, name: currentUser.name }, ...prev]);
+      setNewTask((prev) => ({ ...prev, assigned_to: currentUser.id }));
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      setError("Error fetching employees.");
+    }
+  };
 
   const fetchTaskDetailsRecursively = async (tasks) => {
     try {
@@ -103,21 +107,13 @@ const ProjectTaskTree = () => {
           taskDetails[taskId] = task;
           if (task.parent_task_id) {
             const appendTaskToSubtasksDict = (dict, parentId, task) => {
-              for (const key in dict) {
-                if (key === parentId) {
-                  dict[key][task.id] = task;
-                  return true;
-                }
-                if (appendTaskToSubtasksDict(dict[key], parentId, task)) {
-                  return true;
-                }
+              if (!dict[parentId]) {
+                dict[parentId] = {};
               }
-              return false;
+              dict[parentId][task.id] = task;
             };
 
-            if (!appendTaskToSubtasksDict(subtasksDict, task.parent_task_id, task)) {
-              subtasksDict[task.parent_task_id] = { [task.id]: task };
-            }
+            appendTaskToSubtasksDict(subtasksDict, task.parent_task_id, task);
           } else {
             if (!subtasksDict[taskId]) {
               subtasksDict[taskId] = {};
@@ -136,51 +132,42 @@ const ProjectTaskTree = () => {
     return { taskDetails, subtasksDict };
   };
 
-  // Open dialog to add a task, with optional parent task id
   const handleOpenDialog = (parent_id = null) => {
     setParentTaskId(parent_id);
-    setNewTask(new TaskCreate({ project_id, parent_task_id: parent_id }));
     setOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = async () => {
     setOpen(false);
+    setNewTask(new TaskCreate({ project_id }));
+    await loadProjectDetails();
+    await fetchEmployeeDetails();
   };
 
   // Function to handle creating a task
   const handleCreateTask = async () => {
-    await createTask(newTask).then((createdTask) => {
-      setProject((prev) => ({
-        ...prev,
-        subtasks: insertTask(prev.subtasks || [], createdTask),
-      }));
-      handleCloseDialog();
-    }).catch((error) => {
+    try {
+      await createTask(newTask);
+      await handleCloseDialog();
+    }
+    catch (error) {
       console.error("Error creating task:", error);
       setError("Error creating task.");
-    });
+    }
   }
 
-  // Function to insert the new task into the correct position
-  const insertTask = (tasks, newTask) => {
-    if (!newTask.parent_task_id) {
-      return [...tasks, newTask];
-    }
-
-    return tasks.map((task) => {
-      if (task.id === newTask.parent_task_id) {
-        return { ...task, subtasks: [...(task.subtasks || []), newTask] };
-      } else {
-        return { ...task, subtasks: insertTask(task.subtasks || [], newTask) };
-      }
-    });
+  const handleDeleteTask = async (taskId) => {
+    await deleteTask(taskId);
+    await loadProjectDetails();
+    await fetchEmployeeDetails();
   };
 
   // Function to update the newTask object as the form changes
-  const handleTaskChange = (field, value) => {
+  const handleTaskChange = (e) => {
+    const { name, value } = e.target;
     setNewTask((prev) => ({
       ...prev,
-      [field]: value,
+      [name]: value,
     }));
   };
 
@@ -189,15 +176,18 @@ const ProjectTaskTree = () => {
     const node = taskDetails[nodeId];
     if (!node) return null;
 
+    const assignedEmployee = employees.find(emp => emp.id === node.assigned_to);
+
     return (
-      <TreeItem key={node.id} itemId={node.id} label={
+      <TreeItem2 key={node.id} itemId={node.id} label={
         <div className="task-node">
-          <span>{node.name}</span>
+          <span style={{ paddingLeft: "20px" }}>{node.name}</span>
+          <span>{assignedEmployee ? assignedEmployee.name : "Unassigned"}</span>
           <div>
-            <Button className="add-button" onClick={() => handleOpenDialog(node.id)}>
+            <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
               <FontAwesomeIcon icon={faPlus} />
             </Button>
-            <Button className="delete-button" onClick={() => handleDeleteTask(node.id)}>
+            <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(node.id); }}>
               <FontAwesomeIcon icon={faTrash} />
             </Button>
           </div>
@@ -206,7 +196,7 @@ const ProjectTaskTree = () => {
         {subtasksDict[node.id] && Object.keys(subtasksDict[node.id]).map(subtaskId => {
           return renderTree(subtaskId);
         })}
-      </TreeItem>
+      </TreeItem2>
     );
   };
 
@@ -230,8 +220,9 @@ const ProjectTaskTree = () => {
   return (
     <div className="project-file-container">
       <div className="centered-container">
-        <div className="project-header">
+        <div className="project-header-container">
           <h1>{project.name}</h1>
+          <p>{project.description}</p>
         </div>
         <SimpleTreeView
           sx={{
@@ -247,15 +238,10 @@ const ProjectTaskTree = () => {
               justifyContent: 'space-between',
             },
           }}
+
         >
-          {/* <TreeItem key={project.id} itemId={project.id} label={project.name}> */}
-          {Object.keys(project.subtasks).length > 0 ? (
-            Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))
-          ) : (
-            <Typography>No project data available.</Typography>
-          )}
-          <Button className="add-button" style={{ marginBottom: '10px' }} onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
-          {/* </TreeItem> */}
+          {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))}
+          <Button className="add-button" style={{ margin: '10px' }} onClick={() => handleOpenDialog(null)} sx={{ marginLeft: 2 }}>+ Add Root Task</Button>
         </SimpleTreeView>
 
         <Dialog
@@ -270,28 +256,36 @@ const ProjectTaskTree = () => {
             },
           }}
         >
-          <DialogTitle>{parentTaskId ? "Add Subtask" : "Add Task"}</DialogTitle>
+          <DialogTitle>{parentTaskId ? "Add Subtask" : "Add Root Task"}</DialogTitle>
           <DialogContent>
             <TextField
               label="Task Name"
-              fullWidth
+              name="name"
               margin="dense"
+              type="text"
+              fullWidth
               value={newTask.name}
-              onChange={(e) => handleTaskChange("name", e.target.value)}
+              onChange={handleTaskChange}
+              autoFocus
+              required
             />
             <TextField
               label="Description"
+              name="description"
               fullWidth
               margin="dense"
               value={newTask.description}
-              onChange={(e) => handleTaskChange("description", e.target.value)}
+              onChange={handleTaskChange}
+              required
             />
             <TextField
               label="Assigned To"
+              name="assigned_to"
               fullWidth
               margin="dense"
+              select
               value={newTask.assigned_to}
-              onChange={(e) => handleTaskChange("assigned_to", e.target.value)}
+              onChange={handleTaskChange}
               slotProps={{
                 select: {
                   native: true,

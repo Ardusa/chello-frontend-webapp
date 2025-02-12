@@ -4,14 +4,13 @@
     background-color: #f4f6f8;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 0px;
 }
 
 /* Styling for the tree items */
 .project-file-container .MuiTreeItem-root {
-    padding: 0px;
+    padding: 0px !important;
     margin: 5px;
-    /* Increase font size for tree item labels */
     display: block;
     justify-content: space-between;
     align-items: center;
@@ -28,9 +27,7 @@
 /* Styling for the trash can icon */
 .project-file-container .trash-icon {
     font-size: 1.5rem;
-    /* Make the trash can icon bigger */
     color: #555;
-    /* Default color */
     transition: color 0.3s ease, transform 0.3s ease;
     cursor: pointer;
     margin-left: 10px;
@@ -38,9 +35,7 @@
 
 /* Hover effect for the trash icon */
 .project-file-container .MuiTreeItem-root:hover .trash-icon {
-    /* Turn the icon white on hover */
     color: white;
-    /* Slightly scale up the icon */
     transform: scale(1.2);
     background-color: #ffcccc;
 }
@@ -74,11 +69,19 @@
     padding: 10px 20px;
 }
 
-.project-file-container .project-header {
-    font-size: 50px;
-    margin-bottom: 20px;
+.project-file-container .project-header-container {
+    margin-bottom: 60px;
     color: white;
-    font-family: 'Times New Roman', Times, serif;
+}
+
+.project-file-container .project-header-container h1 {
+    margin: 5px 0pc;
+    font-size: 50px;
+}
+
+.project-file-container .project-header-container p {
+    margin: 5px 0px;
+    font-size: 20px;
 }
 
 .project-file-container .delete-button {

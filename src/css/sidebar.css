@@ -6,6 +6,7 @@
 
 .sidebar-container .sidebar {
     width: 400px;
+    min-width: 400px;
     background-color: #a1a1a1;
     color: rgb(217, 38, 38);
     display: flex;
@@ -35,6 +36,8 @@
 }
 
 .sidebar-container .nav-item {
+    font-weight: 200;
+    background: none;
     border: none;
     color: rgb(0, 89, 254);
     font-size: 22px;
@@ -48,17 +51,16 @@
 }
 
 .sidebar-container .nav-item:hover {
-    background: none;
     font-size: 24px;
     color: black;
     transition: font-size 0.2s, color 0.2s;
 }
 
 .sidebar-container .nav-item.active {
-    background: none;
-    font-weight: bold;
-    color: black;
     font-size: 24px;
+    color: black;
+    font-weight: 800;
+    transition: font-weight 0.1s ease-in-out;
 }
 
 .sidebar-container .back-btn {
