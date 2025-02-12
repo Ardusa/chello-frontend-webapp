@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { useAuth } from "../services/AuthService";
 import logo from '../assets/logo.png';
 import "../css/sidebar.css";
+import { getEmployee, fetchEmployeeDetails, EmployeeResponse } from "../services/api"
 
 
 
@@ -22,12 +23,28 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
     const [selectedSection, setSelectedSection] = useState(Object.keys(elements)[0]);
     const { logout } = useAuth();
     const navigate = useNavigate();
+    const [user, setUser] = useState(new EmployeeResponse({}));
+    const [manager, setManager] = useState(new EmployeeResponse({}));
 
     useEffect(() => {
-        useEffectFuncs.forEach(func => func());
-        if (section) {
-            setSelectedSection(section);
-        }
+        const fetchData = async () => {
+            useEffectFuncs.forEach(func => func());
+            if (section) {
+                setSelectedSection(section);
+            }
+
+            const user = await getEmployee();
+            setUser(user);
+
+            if (user.manager_id) {
+                const manager = await fetchEmployeeDetails(user.manager_id);
+                console.log("manager: ", manager);
+                console.log("user: ", user)
+                setManager(manager);
+            }
+        };
+
+        fetchData();
     }, []);
 
     const handleLogout = () => {
@@ -43,7 +60,22 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
         <div className="sidebar-container">
             {/* Sidebar */}
             <aside className="sidebar">
-                <img src={logo} alt="Chello Logo" className="logo-img" />
+                {/* <img src={user?.profile_picture} alt="Profile Picture" className="profile-img" /> */}
+                <div className="user-details-container">
+                    <div className="user-info">
+                        <h3 >{user.position}</h3>
+                        <h2>{user.name}</h2>
+                        <p>{user.email}</p>
+                    </div>
+                        {manager.id &&
+                            <div className='manager-info'>
+                            <h3 >Manager</h3>
+                            <h2 style={{ fontWeight: 'bold' }}>{manager.name}</h2>
+                            <p>{manager.email}</p>
+                            </div>
+                        }
+                </div>
+                {/* <img src={logo} alt="Chello Logo" className="logo-img" /> */}
                 <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
                 <nav className="nav">
                     {Object.entries(elements).map(([id, element]) => (

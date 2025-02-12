@@ -1,103 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails, fetchProjects, registerEmployee, createProject, ProjectCreate, EmployeeCreate, ProjectResponse } from "../services/api.js";
+import { fetchProjectDetails, createTask, TaskCreate, fetchEmployees, getEmployee, fetchTaskDetails } from "../services/api.js";
 import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
-import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Autocomplete } from "@mui/material";
+import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import LogoutIcon from "@mui/icons-material/Logout";
-import SettingsIcon from '@mui/icons-material/Settings';
 import FolderIcon from '@mui/icons-material/Folder';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import InsightsIcon from '@mui/icons-material/Insights';
-import BackIcon from '@mui/icons-material/ArrowBack';
-import logo from "../assets/logo.png";
 import "../css/project-display.css";
 import Sidebar from "./Sidebar";
-
-// const Dashboard = () => {
-//   // const [project, setProject] = useState(new ProjectResponse());
-
-//   // const refreshProjectData = () => {
-//   //   fetchProjectDetails(project_id).then((e) => {
-//   //     setProject(e.project);
-//   //   }
-//   //   ).catch((e) => {
-//   //     console.error(e);
-//   //     if (e.status === 401) {
-//   //       console.log("Session expired. Redirecting to login page.");
-//   //       navigate("/login");
-//   //     }
-//   //   });
-//   // };
-
-//   useEffect(() => {
-//     refreshProjectData();
-//   }, []);
-
-//   const handleLogout = () => {
-//     logout();
-//     navigate("/login");
-//   };
-
-//   const handleSettings = () => {
-//     navigate("/settings");
-//   }
-
-//   const handleDashboard = () => {
-//     navigate("/dashboard/projects");
-//   }
-
-//   return (
-//     <div className="project-dashboard">
-//       {/* Sidebar */}
-//       <aside className="sidebar">
-//         <img src={logo} alt="Chello Logo" className="logo-img" />
-//         <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>{project.name}</h1>
-//         <nav className="nav">
-//           {[
-//             { id: "files", name: "Project Explorer", icon: <FolderIcon /> },
-//             { id: "insights", name: "Insights", icon: <InsightsIcon /> },
-//             { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
-//           ].map((section) => (
-//             <Button
-//               key={section.id}
-//               className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
-//               onClick={() => {
-//                 navigate(`/projects/${project_id}/${section.id}`);
-//                 setSelectedSection(section.id);
-//               }}
-//               startIcon={section.icon}
-//               disableRipple
-//             >
-//               {section.name}
-//             </Button>
-//           ))}
-//         </nav>
-//         <Button variant="contained" color="secondary" className="dashboard-btn" startIcon={<BackIcon />} onClick={() => handleDashboard()}>
-//           Back To Dashboard
-//         </Button>
-//         <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
-//           Settings
-//         </Button>
-//         <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
-//           Logout
-//         </Button>
-//       </aside>
-
-//       {/* Main Content */}
-//       <main className="content">
-//         {selectedSection === "files" && <ProjectTaskTree />}
-//         {selectedSection === "insights" && <ProjectTaskTree />}
-//         {selectedSection === "employees" && <ProjectTaskTree />}
-//         {/* {selectedSection === "insights" && <InsightsCards />}
-//               {selectedSection === "employees" && <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />} */}
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
 
 const ProjectDashboard = () => {
   const { project_id } = useParams();

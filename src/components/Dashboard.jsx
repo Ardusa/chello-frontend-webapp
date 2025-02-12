@@ -30,7 +30,6 @@ const Dashboard = () => {
 
     const refreshEmployees = () => {
         fetchEmployees().then((e) => {
-            getEmployee();
             setEmployees(e);
         }).catch((e) => {
             console.error(e);
@@ -71,100 +70,6 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-// const Dashboard = () => {
-//     const [projects, setProjects] = useState({});
-//     const [employees, setEmployees] = useState({});
-//     const [currentUser, setCurrentUser] = useState(null);
-//     const { section } = useParams();
-//     const [selectedSection, setSelectedSection] = useState(section || "projects");
-//     const { logout } = useAuth();
-//     const navigate = useNavigate();
-
-//     const refreshProjects = () => {
-//         fetchProjects().then((e) => {
-//             setProjects(e);
-//         }
-//         ).catch((e) => {
-//             console.error(e);
-//             if (e.status === 401) {
-//                 console.log("Session expired. Redirecting to login page.");
-//                 navigate("/login");
-//             }
-//         });
-//     };
-
-//     const refreshEmployees = () => {
-//         fetchEmployees().then((e) => {
-//             getEmployee().then(setCurrentUser);
-//             setEmployees(e);
-//         }
-//         ).catch((e) => {
-//             console.error(e);
-//             if (e.status === 401) {
-//                 console.log("Session expired. Redirecting to login page.");
-//                 navigate("/login");
-//             }
-//         });
-//     };
-
-//     useEffect(() => {
-//         refreshProjects();
-//         refreshEmployees();
-//     }, []);
-
-//     const handleLogout = () => {
-//         logout();
-//         navigate("/login");
-//     };
-
-//     const handleSettings = () => {
-//         navigate("/settings");
-//     }
-
-//     return (
-//         <div className="dashboard">
-//             {/* Sidebar */}
-//             <aside className="sidebar">
-//                 <img src={logo} alt="Chello Logo" className="logo-img" />
-//                 <h1 style={{ fontSize: "70px", color: "black", marginTop: "10px" }}>Chello</h1>
-//                 <nav className="nav">
-//                     {[
-//                         { id: "projects", name: "Projects", icon: <FolderIcon /> },
-//                         { id: "insights", name: "Insights", icon: <InsightsIcon /> },
-//                         { id: "employees", name: "Employees", icon: <AssignmentIndIcon /> },
-//                     ].map((section) => (
-//                         <Button
-//                             key={section.id}
-//                             className={`nav-item ${selectedSection === section.id ? "active" : ""}`}
-//                             onClick={() => {
-//                                 navigate(`/dashboard/${section.id}`);
-//                                 setSelectedSection(section.id);
-//                             }}
-//                             startIcon={section.icon}
-//                             disableRipple
-//                         >
-//                             {section.name}
-//                         </Button>
-//                     ))}
-//                 </nav>
-//                 <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
-//                     Settings
-//                 </Button>
-//                 <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
-//                     Logout
-//                 </Button>
-//             </aside>
-
-//             {/* Main Content */}
-//             <main className="content">
-//                 {selectedSection === "projects" && <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshEmployees={refreshEmployees} />}
-//                 {selectedSection === "insights" && <InsightsCards />}
-//                 {selectedSection === "employees" && <EmployeeCards employees={employees} refreshEmployees={refreshEmployees} />}
-//             </main>
-//         </div>
-//     );
-// };
 
 const ProjectCards = ({ projects, refreshProjects, refreshEmployees }) => {
     const [open, setOpen] = useState(false);
@@ -284,7 +189,7 @@ const InsightsCards = () => {
     );
 };
 
-const EmployeeCards = ({ employees, refreshProjects, refreshEmployees }) => {
+const EmployeeCards = ({ employees, refreshEmployees }) => {
     const [open, setOpen] = useState(false);
     const [employeeData, setNewEmployee] = useState(new EmployeeCreate());
 
@@ -322,7 +227,7 @@ const EmployeeCards = ({ employees, refreshProjects, refreshEmployees }) => {
     return (
         <div className="cards-container">
             <div className="cards">
-                {employees.map((employee) => (
+                {employees.length > 0 && employees.map((employee) => (
                     <div key={employee.id} className="card" onClick={() => window.location.href = `/employees/${employee.employee_id}/`}>
                         <h3>{employee.name}</h3>
                         <p>{employee.email}</p>
@@ -396,5 +301,3 @@ const EmployeeCards = ({ employees, refreshProjects, refreshEmployees }) => {
         </div>
     );
 };
-
-// export default Dashboard;

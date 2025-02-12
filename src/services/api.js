@@ -66,12 +66,6 @@ export class TaskCreate {
     }
 }
 
-/**
-{
-    project_id: Project,
-    ...
-}
-*/
 
 /**
  * Fetches the list of projects from the server for the current employee.

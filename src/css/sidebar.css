@@ -5,7 +5,7 @@
 }
 
 .sidebar-container .sidebar {
-    width: 350px;
+    width: 400px;
     background-color: #a1a1a1;
     color: rgb(217, 38, 38);
     display: flex;
@@ -20,9 +20,9 @@
 
 .sidebar-container .logo-img {
     align-self: first baseline;
-    margin: auto !important;
-    margin-top: 20px !important;
-    margin-bottom: 20px !important;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
     width: 300px;
     height: auto;
     margin-bottom: 0px;
@@ -43,14 +43,15 @@
     width: 100%;
     cursor: pointer;
     height: 50px;
-    transition: font-size 0.2s;
+    transition: font-size 0.2s, color 0.2s;
+    margin: 8px 0px;
 }
 
 .sidebar-container .nav-item:hover {
     background: none;
     font-size: 24px;
     color: black;
-    transition: font-size 0.2s;
+    transition: font-size 0.2s, color 0.2s;
 }
 
 .sidebar-container .nav-item.active {
@@ -112,50 +113,54 @@
 
 .sidebar-container .content {
     flex-grow: 1;
-    /* padding: 20px; */
-    /* display: flex; */
     flex-direction: column;
     align-items: center;
 }
 
-.sidebar-container .cards-container {
-    margin-top: 40px;
-    width: 92%;
-}
-
-.sidebar-container .cards {
+.sidebar-container .user-details-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.sidebar-container .cards p {
-    margin: 5px;
-    margin-left: 0px;
-}
-
-.sidebar-container .card {
-    background: #222;
-    padding: 20px;
+    align-items: center;
+    padding: 15px 0px;
+    border: 2px solid #000000;
     border-radius: 10px;
-    width: 300px;
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-    transition: transform 0.2s ease-in-out;
+    background-color: #ffffff;
+    margin: 20px 0px;
+    width: 94%;
+    justify-content: space-evenly;
+    text-align: center;
 }
 
-.sidebar-container .card:hover {
-    transform: scale(1.05);
+.sidebar-container .profile-img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    justify-content: center;
 }
 
-.sidebar-container .card h3 {
-    margin: 0;
-    margin-bottom: 10px;
-    font-size: 24px;
-    color: yellow;
+.sidebar-container .user-info, .sidebar-container .manager-info {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
 }
 
-.sidebar-container .card p {
-    margin-top: 5px;
-    font-size: 20px;
-    color: white;
+.sidebar-container .manager-info {
+    border-left: 2px solid #ccc;
+}
+
+.sidebar-container .user-info h2, .sidebar-container .manager-info h2{
+    margin: 5px 0px;
+    font-size: 16px;
+    color: #333;
+}
+
+.sidebar-container .user-info p, .sidebar-container .manager-info p{
+    margin: 3px 0 0 0;
+    font-size: 14px;
+    color: #505050;
+}
+
+.sidebar-container .user-info h3, .sidebar-container .manager-info h3 {
+    margin: 0px 0px 2px 0px;
+    font-size: 15px;
+    color: #828282;
 }
