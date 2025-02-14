@@ -65,3 +65,9 @@ button {
   box-sizing: border-box;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .centered-container {
+    transform: scale(0.8);
+  }
+}
