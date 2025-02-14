@@ -4,9 +4,12 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   // base: '/chello-js/'
-
-  // vite.config.js
   server: {
+    hmr: {
+      // TODO: Set this
+      // overlay: true,
+    },
+    // vite.config.js
     port: 8001,  // You can change this to any port you want for development
   },
   preview: {

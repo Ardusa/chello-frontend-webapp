@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../services/AuthService";
-import logo from "../assets/logo.png";
+import logo from "../assets/chello_logo.png";
 import LoginIcon from '@mui/icons-material/Login';
 import "../css/login.css";
 
@@ -15,10 +15,9 @@ const Login = () => {
         e.preventDefault(); // Prevent page refresh on form submit
         try {
             await login(email, password);
-            navigate("/dashboard/projects");
-            console.log("Login successful");
         } catch (error) {
-            console.error("Login failed:", error);
+            console.error("Login Failed:", error);
+            alert("Login failed. Please try again.");
         }
     };
 

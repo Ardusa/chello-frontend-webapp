@@ -4,11 +4,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../services/AuthService";
-import logo from '../assets/logo.png';
+import chelloLogo from '../assets/chello_logo.png';
 import { CircularProgress, Button } from "@mui/material";
+import { getAccount, fetchAccountDetails, AccountResponse, fetchLogo } from "../services/api";
 import "../css/sidebar.css";
-import { getAccount, fetchAccountDetails, AccountResponse } from "../services/api";
-
 
 /**
  * 
@@ -25,6 +24,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
     const [user, setUser] = useState(new AccountResponse({}));
     const [manager, setManager] = useState(new AccountResponse({}));
     const [loading, setLoading] = useState(true);
+    const [logo, setLogo] = useState(chelloLogo);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,6 +42,13 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
                 console.log("user: ", user)
                 setManager(manager);
             }
+
+            const logo = await fetchLogo();
+
+            if (logo) {
+                setLogo(logo);
+            }
+
             setLoading(false);
         };
 
@@ -63,7 +70,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
             <aside className="sidebar">
                 {/* <img src={user?.profile_picture} alt="Profile Picture" className="profile-img" /> */}
                 <h1 style={{ fontSize: "70px", color: "black", margin: "10px 0px" }}>Chello</h1>
-                <img src={logo} alt="Chello Logo" className="logo-img" />
+                <img src={logo} alt="Company Logo" className="logo-img" />
                 <div className="user-details-container">
                     <div className="user-info">
                         <h3 >{user.position}</h3>
