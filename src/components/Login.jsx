@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../services/AuthService";
 import logo from "../assets/logo.png";
-import "../css/styles.css";
+import LoginIcon from '@mui/icons-material/Login';
 import "../css/login.css";
 
 const Login = () => {
@@ -26,10 +26,10 @@ const Login = () => {
         <div className="login-container">
             <div className="centered-container">
                 <div className="form-container">
-                    <img src={logo} alt="Chello Logo" className="logo" />
-                    <h1>Chello</h1>
-
-                    <h2>Login</h2>
+                    <div className="header">
+                        <img src={logo} alt="Chello Logo" className="logo" />
+                        <h1>Sign-in</h1>
+                    </div>
                     <form onSubmit={handleSubmit}>
                         <input
                             type="email"
@@ -45,9 +45,12 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-
-                        <button type="submit" className="arrow forward-btn"></button>
-                        <button type="button" onClick={() => navigate("/register")} className="register-btn">Register Now!</button>
+                        <div className="button-bar">
+                            <button type="button" onClick={() => navigate("/register")} className="register-btn">Register Now!</button>
+                            <button type="submit" className="login-btn">
+                                <LoginIcon style={{ fontSize: 30 }} />
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

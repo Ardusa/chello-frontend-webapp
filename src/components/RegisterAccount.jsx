@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../css/register-account.css";
 import { createAccount, getAccount, setPassword, AccountCreate } from "../services/api.js";
+import "../css/register-account.css";
 
 
 const RegisterAccount = () => {
@@ -21,6 +21,7 @@ const RegisterAccount = () => {
             }
             await createAccount(formData);
             alert("Registration successful. Redirecting to login...");
+            console.log("Registration successful");
             navigate("/login");
         } catch (error) {
             alert(error.response?.data?.detail || "Registration failed");
