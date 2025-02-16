@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createAccount, AccountCreate, CompanyCreate, createCompany, updateAccount } from "../services/api.js";
 import { CircularProgress } from "@mui/material";
 import { useAuth } from "../services/AuthService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "../css/register-account.css";
-
 
 const RegisterAccount = () => {
     const [accountData, setAccountData] = useState(new AccountCreate());
@@ -14,6 +15,7 @@ const RegisterAccount = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const navigate = useNavigate();
     const { login } = useAuth();
+    const fileInputRef = useRef(null);
 
     const handleAccountChange = (e) => {
         setAccountData({ ...accountData, [e.target.name]: e.target.value });
@@ -53,9 +55,6 @@ const RegisterAccount = () => {
                 accountData.free_plan = true;
             }
 
-            // console.log("Account Data:", accountData);
-            // console.log("Company Data:", companyData);
-
             const user = await createAccount(accountData);
             await login(accountData.email, accountData.password);
             if (isCompany) {
@@ -64,7 +63,7 @@ const RegisterAccount = () => {
                 const company = await createCompany({ ...companyData, founding_member: user.id });
                 await updateAccount({ ...user, company_id: company.id });
             }
-            
+
             alert("Registration successful. Redirecting to login...");
             console.log("Registration successful");
             navigate("/login");
@@ -92,8 +91,7 @@ const RegisterAccount = () => {
     }
 
     const handleCompanyLogoChange = (e) => {
-        setCompanyData({ ...companyData, logo: "" });
-        const { name, files } = e.target;
+        const { files } = e.target;
         const file = files[0];
 
         if (file) {
@@ -109,119 +107,136 @@ const RegisterAccount = () => {
         setConfirmPassword(e.target.value);
     };
 
+    const handleDeleteLogo = () => {
+        setCompanyData({ ...companyData, logo: "" });
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
     return (
         <div className="register-container">
             <div className="centered-container">
+                <div className="form-container">
+                    <div className="header">
+                        <h1>Register Your Account</h1>
+                        <p>Start organizing with Chello today!</p>
+                    </div>
 
-                <div className="information-container">
-                    <h2>Account Details</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-row">
+                            <div className="form-input">
+                                <label>Account Type *</label>
+                                <select className="dropdown" name="accountType" onChange={handleAccountTypeChange} required>
+                                    <option value="personal">Personal</option>
+                                    <option value="company">Organization</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div className="forms-container">
-                        <div className="account-container">
-                            <form>
-
+                        <div className="input-row">
+                            <div className="form-input">
+                                <label>Name *</label>
+                                <input type="text" name="name" placeholder="Full Name" onChange={handleAccountChange} required autoComplete="name" />
+                            </div>
+                            <div className="form-input">
+                                <label>Email *</label>
+                                <input type="email" name="email" placeholder="user@chello.team" onChange={handleAccountChange} required autoComplete="email" />
+                            </div>
+                            {isCompany && (
                                 <div className="form-input">
-                                    <label>Account Type *</label>
-                                    <select className="dropdown" name="accountType" onChange={handleAccountTypeChange} required>
-                                        <option value="personal">Personal</option>
-                                        <option value="company">Company</option>
+                                    <label>Position Title *</label>
+                                    <input type="text" name="position" placeholder="Founder" onChange={handleAccountChange} required autoComplete="organization-title" />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="input-row">
+                            <div className="form-input">
+                                <label>Password *</label>
+                                <input type="password" name="password" placeholder="Password" onChange={handleAccountChange} required autoComplete="new-password" />
+                            </div>
+                            <div className="form-input">
+                                <label>Confirm Password *</label>
+                                <input type="password" name="confirmPassword" placeholder="Password" onChange={handleConfirmPasswordChange} required autoComplete="new-password" />
+                            </div>
+                        </div>
+
+                        <div className="input-row">
+                            {!isCompany && (
+                                <div className="form-input">
+                                    <label>Subscription Plan *</label>
+                                    <select className="dropdown" name="subscriptionType" onChange={handleSubscriptionPlanChange} required>
+                                        <option value="free">Free</option>
+                                        <option value="paid">Paid</option>
                                     </select>
                                 </div>
-
-                                <div className="form-input">
-                                    <label>Full Name *</label>
-                                    <input type="text" name="name" placeholder="Full Name" onChange={handleAccountChange} required autoComplete="name" />
+                            )}
+                            {!isFree && !isCompany && (
+                                <div className="form-input" style={{ width: 'fit-content' }}>
+                                    <label>Task Limit *</label>
+                                    <select itemType="number" className="dropdown" name="taskLimit" onChange={handleAccountTaskLimitChange} required>
+                                        <option value="1000">1,000</option>
+                                        <option value="10000">10,000</option>
+                                        <option value="100000">100,000</option>
+                                        <option value="1000000">1,000,000</option>
+                                    </select>
                                 </div>
-
-                                <div className="form-input">
-                                    <label>Email *</label>
-                                    <input type="email" name="email" placeholder="user@chello.team" onChange={handleAccountChange} required autoComplete="email" />
-                                </div>
-
-                                <div className="form-input">
-                                    <label>Password *</label>
-                                    <input type="password" name="password" placeholder={"Password"} onChange={handleAccountChange} required autoComplete="new-password" />
-                                </div>
-
-                                <div className="form-input">
-                                    <label>Confirm Password *</label>
-                                    <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleConfirmPasswordChange} required autoComplete="new-password" />
-                                </div>
-
-                                {!isCompany && (
-                                    <div className="form-input">
-                                        <label>Subscription Plan *</label>
-                                        <select className="dropdown" name="subscriptionType" onChange={handleSubscriptionPlanChange} required>
-                                            <option value="free">Free</option>
-                                            <option value="paid">Paid</option>
-                                        </select>
-                                    </div>
-                                )}
-
-                                {!isFree && !isCompany && (
-                                    <div className="form-input">
-                                        <label>Task Limit *</label>
-                                        <select itemType="number" className="dropdown" name="taskLimit" onChange={handleAccountTaskLimitChange} required>
-                                            <option value="1000">1,000</option>
-                                            <option value="10000">10,000</option>
-                                            <option value="100000">100,000</option>
-                                            <option value="1000000">1,000,000</option>
-                                        </select>
-                                    </div>
-                                )}
-
-                            </form>
+                            )}
                         </div>
 
                         {isCompany && (
-                            <div className="company-container">
-                                <form>
+                            <>
+                                <h2>Organization Details</h2>
+                                <div className="input-row">
                                     <div className="form-input">
                                         <label>Company Name *</label>
                                         <input type="text" name="name" placeholder="Company Name" onChange={handleCompanyChange} required autoComplete="organization" />
                                     </div>
-
-                                    <div className="form-input">
-                                        <label>Position Title *</label>
-                                        <input type="text" name="position" placeholder="Founder" onChange={handleAccountChange} required autoComplete="organization-title" />
+                                    <div className="form-input" style={{ width: 'fit-content' }}>
+                                        <label>Task Limit *</label>
+                                        <select itemType="number" className="dropdown" name="taskLimit" onChange={handleCompanyTaskLimitChange} required>
+                                            <option value="20000">20,000</option>
+                                            <option value="200000">200,000</option>
+                                            <option value="2000000">2,000,000</option>
+                                            <option value="20000000">20,000,000</option>
+                                        </select>
                                     </div>
-
-                                    {!isFree && !isCompany && (
-                                        <div className="form-input">
-                                            <label>Task Limit *</label>
-                                            <select itemType="number" className="dropdown" name="taskLimit" onChange={handleCompanyTaskLimitChange} required>
-                                                <option value="20000">20,000</option>
-                                                <option value="200000">200,000</option>
-                                                <option value="2000000">2,000,000</option>
-                                                <option value="20000000">20,000,000</option>
-                                            </select>
-                                        </div>
-                                    )}
-
+                                </div>
+                                <div className="input-row">
                                     <div className="form-input">
                                         <label>Company Logo</label>
-                                        <input type="file" name="logo" accept="image/*" onChange={handleCompanyLogoChange} />
+                                        <input type="file" name="logo" accept="image/*" onChange={handleCompanyLogoChange} ref={fileInputRef} />
                                     </div>
+                                </div>
+                                {companyData.logo && (
+                                    <>
+                                        <h3>Preview:
+                                            <button className="trash-btn" onClick={handleDeleteLogo}>
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                        </h3>
 
-                                    {companyData.logo ? (
-                                        <div className="img-preview">
-                                            <h3>Preview:</h3>
-                                            <div className="logo">
-                                                {companyData.logo !== "" ? (
-                                                    <img src={companyData.logo} alt="Company Logo Preview" />
-                                                ) : (
-                                                    <CircularProgress />
-                                                )}
+                                        <div className="input-row">
+                                            <div className="img-preview">
+                                                <div className="logo">
+                                                    {companyData.logo !== "" ? (
+                                                        <img src={companyData.logo} alt="Company Logo Preview" />
+                                                    ) : (
+                                                        <CircularProgress />
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    ) : null}
-                                </form>
-                            </div>
+                                    </>
+                                )}
+                            </>
                         )}
-
-                    </div>
-                    <button type="button" onClick={handleSubmit} className="register-btn">Register Account</button>
-                    <button type="button" onClick={() => navigate("/login")} className="arrow backward-btn"></button>
+                        <div className="button-rail">
+                            <button type="button" onClick={() => navigate("/login")} className="back-to-login-btn">Back to Login</button>
+                            <button type="submit" className="register-btn">Register Account</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

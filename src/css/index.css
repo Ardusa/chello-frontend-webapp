@@ -4,10 +4,15 @@
   /* Colors */
 
   /* Brand Colors */
-  --brand-color-1: #57c3f5; /* bright blue */
-  --brand-color-2: #e343c9; /* bright pink */
+  --brand-color-1: #57c3f5;
+  /* bright blue */
+  --brand-color-2: #e343c9;
+  /* bright pink */
   --background-color: linear-gradient(135deg, var(--brand-color-1), var(--brand-color-2));
-  
+
+  --translucent-container-background: rgba(59, 54, 54, 0.484);
+
+
   /* Button Colors */
   --green-button-color: #3ca332;
   --green-button-hover-color: #026f09;
@@ -29,12 +34,14 @@
   --warning-font: 'Roboto', sans-serif;
 }
 
-body, html {
+body,
+html {
   margin: 0;
   height: 100vh;
   font-family: var(--body-font);
   background: var(--background-color);
   background-size: 200% 200%;
+  color: white;
   animation: gradient-animation 4s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
 }
 
@@ -42,9 +49,11 @@ body, html {
   0% {
     background-position: 40% 40%;
   }
+
   50% {
     background-position: 60% 60%;
   }
+
   100% {
     background-position: 40% 40%;
   }
@@ -52,6 +61,7 @@ body, html {
 
 .centered-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
@@ -64,6 +74,15 @@ button {
   justify-content: center;
   box-sizing: border-box;
   cursor: pointer;
+  color: white;
+}
+
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 80px;
 }
 
 @media (max-width: 768px) {

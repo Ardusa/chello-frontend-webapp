@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    background: rgba(59, 54, 54, 0.484);
+    background: var(--translucent-container-background);
     padding: 35px 70px 70px 70px;
     border-radius: 20px;
     box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
@@ -69,9 +69,9 @@
 
 .login-container button {
     color: white;
-    border: rgba(255, 255, 255, 0.526) 1px solid;
+    border: rgba(255, 255, 255, 0.526) 2px solid;
     height: 60px;
-    width: 30%;
+    width: 40%;
     border-radius: 30px;
     font-size: 18px;
     font-family: var(--button-font);
