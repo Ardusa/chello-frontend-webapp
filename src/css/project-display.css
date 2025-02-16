@@ -9,6 +9,7 @@
     background-color: transparent;
     border: transparent;
     box-shadow: none;
+    --TreeView-itemChildrenIndentation: 35px !important;
 }
 
 .project-file-container .centered-container {

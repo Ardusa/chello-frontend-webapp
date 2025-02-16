@@ -5,7 +5,8 @@ import { SimpleTreeView, TreeItem2 } from "@mui/x-tree-view";
 import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import FolderIcon from '@mui/icons-material/Folder';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
 import "../css/project-display.css";
 import Sidebar from "./Sidebar";
 
@@ -33,13 +34,13 @@ const ProjectDashboard = () => {
   let elements = {
     files: {
       element: <ProjectTaskTree />,
-      icon: <FolderIcon />,
+      icon: <AccountTreeIcon />,
       urlPath: `/projects/${project_id}/files`,
       name: "Project Explorer",
     },
     sprints: {
       element: <div />,
-      icon: <FolderIcon />,
+      icon: <RotateRightIcon />,
       urlPath: `/projects/${project_id}/sprints`,
       name: "Sprints",
     }
@@ -227,8 +228,6 @@ const ProjectTaskTree = () => {
         <SimpleTreeView
           sx={{
             width: '100%',
-            bgcolor: 'background.paper',
-            border: '1px solid',
             borderColor: 'divider',
             borderRadius: 1,
             boxShadow: 1,
