@@ -8,6 +8,8 @@
   /* bright blue */
   --brand-color-2: #e343c9;
   /* bright pink */
+  --brand-color-3: #f2dcdc;
+  /* Cream */
   --background-color: linear-gradient(135deg, var(--brand-color-1), var(--brand-color-2));
 
   --translucent-container-background: rgba(59, 54, 54, 0.484);

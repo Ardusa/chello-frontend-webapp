@@ -133,7 +133,6 @@ const ProjectTaskTree = () => {
 
   const handleOpenDialog = (parent_id = null) => {
     setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
-    // setParentTaskId(parent_id);
     setOpen(true);
   };
 
@@ -145,7 +144,6 @@ const ProjectTaskTree = () => {
   };
 
   const handleCreateTask = async () => {
-    // newTask.parent_task_id = parentTaskId;
     try {
       await createTask(newTask);
       await handleCloseDialog();
@@ -185,7 +183,7 @@ const ProjectTaskTree = () => {
     return (
       <TreeItem2 key={node.id} itemId={node.id} label={
         <div className="task-node">
-          <span style={{ paddingLeft: "20px" }}>{node.name}</span>
+          <span className="task-name">{node.name}</span>
           <span>{assignedAccount ? assignedAccount.name : "Unassigned"}</span>
           <div>
             <div className="task-actions">
@@ -241,8 +239,9 @@ const ProjectTaskTree = () => {
         >
           {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))}
           <div className="project-btn-container">
-            <Button className="add-button" onClick={() => handleOpenDialog(null)}>+ Add Root Task</Button>
-            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)}>Delete Project</Button>
+                <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={ <FontAwesomeIcon icon={faPlus} /> } >Add Root Task</Button>
+            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={ <FontAwesomeIcon icon={faTrash} /> }>
+              Delete Project</Button>
           </div>
         </SimpleTreeView>
 
