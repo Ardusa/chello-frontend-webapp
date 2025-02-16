@@ -34,6 +34,12 @@ const ProjectDashboard = () => {
       urlPath: `/projects/${project_id}/files`,
       name: "Project Explorer",
     },
+    sprints: {
+      element: <div />,
+      icon: <FolderIcon />,
+      urlPath: `/projects/${project_id}/sprints`,
+      name: "Sprints",
+    }
   };
 
   return <Sidebar elements={elements} backLink="/dashboard/projects" useEffectFuncs={funcs} />;
@@ -53,7 +59,6 @@ const ProjectTaskTree = () => {
 
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-  // const [parentTaskId, setParentTaskId] = useState(null);
   const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
   const [accounts, setAccounts] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
@@ -183,12 +188,14 @@ const ProjectTaskTree = () => {
           <span style={{ paddingLeft: "20px" }}>{node.name}</span>
           <span>{assignedAccount ? assignedAccount.name : "Unassigned"}</span>
           <div>
-            <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-            <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(node.id); }}>
-              <FontAwesomeIcon icon={faTrash} />
-            </Button>
+            <div className="task-actions">
+              <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
+                <FontAwesomeIcon icon={faPlus} />
+              </Button>
+              <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(node.id); }}>
+                <FontAwesomeIcon icon={faTrash} />
+              </Button>
+            </div>
           </div>
         </div>
       }>
@@ -214,9 +221,10 @@ const ProjectTaskTree = () => {
           <h1>{project.name}</h1>
           <p>{project.description}</p>
         </div>
+
         <SimpleTreeView
           sx={{
-            width: '80%',
+            width: '100%',
             bgcolor: 'background.paper',
             border: '1px solid',
             borderColor: 'divider',
@@ -226,6 +234,7 @@ const ProjectTaskTree = () => {
               padding: '10px 0',
               fontSize: '1.2rem',
               justifyContent: 'space-between',
+              width: '100%',
             },
           }}
 

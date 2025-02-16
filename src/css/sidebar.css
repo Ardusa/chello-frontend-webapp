@@ -179,21 +179,21 @@
 
 .sidebar-container .user-info h2,
 .sidebar-container .manager-info h2 {
-    margin: 5px 0px;
+    margin: 3px 0px;
     font-size: 20px;
     color: #3e3838;
 }
 
 .sidebar-container .user-info p,
 .sidebar-container .manager-info p {
-    margin: 3px 0 0 0;
+    margin: 3px 0 3px 0;
     font-size: 14px;
     color: #c1aaaa;
 }
 
 .sidebar-container .user-info h3,
 .sidebar-container .manager-info h3 {
-    margin: 0px 0px 2px 0px;
+    margin: 3px 0px 2px 0px;
     font-size: 18px;
     color: #d0cece;
 }

@@ -47,10 +47,9 @@ const checkLoginStatus = async () => {
   try {
     try {
       await refreshAccessToken();
-      let response = await makeAuthenticatedRequest("/verify-login/");
+      let response = await makeAuthenticatedRequest("/verify-login");
       if (!response.ok) throw new Error("Session expired");
     } catch (error) {
-      // alert("Session expired. Please log in again.");
       console.log("User is not logged in");
       return false;
     }
