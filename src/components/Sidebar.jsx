@@ -17,7 +17,7 @@ import { getAccount, fetchAccountDetails, AccountResponse } from "../services/ap
  * @param {Function} useEffectFuncs the functions to run on useEffect
  * @returns a dashboard component with a sidebar and main content
  */
-const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
+const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElement = false }) => {
     const { section } = useParams();
     const [selectedSection, setSelectedSection] = useState(Object.keys(elements)[0]);
     const { logout } = useAuth();
@@ -110,7 +110,9 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [] }) => {
 
             {/* Main Content */}
             <main className="content">
-                {!loading && elements[selectedSection].element}
+                {!loading && !loadingElement
+                    ? elements[selectedSection].element
+                    : null}
                 {loading && <CircularProgress />}
             </main>
         </div>

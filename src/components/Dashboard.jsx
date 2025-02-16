@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { fetchProjects, fetchAccounts, getAccount, registerAccount, createProject, ProjectCreate, AccountCreate } from "../services/api.js";
+import { useState, useEffect } from "react";
+import { fetchProjects, fetchAccounts, getAccount, registerAccount, createProject, ProjectCreate, AccountCreate, AccountResponse } from "../services/api.js";
 import { useNavigate, useParams } from "react-router-dom";
 
 import FolderIcon from '@mui/icons-material/Folder';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import InsightsIcon from '@mui/icons-material/Insights';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Autocomplete } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress } from "@mui/material";
 import "../css/dashboard.css";
 import "../css/project-display.css";
 import Sidebar from "./Sidebar";
@@ -14,38 +14,43 @@ import Sidebar from "./Sidebar";
 const Dashboard = () => {
     const [projects, setProjects] = useState({});
     const [accounts, setAccounts] = useState({});
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
-    const refreshProjects = () => {
-        fetchProjects().then((e) => {
+    const refreshSelf = async () => {
+        await getAccount().then((e) => {
+            if (e.company_id) {
+                setElements((prevElements) => ({
+                    ...prevElements,
+                    employees: {
+                        element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
+                        icon: <AssignmentIndIcon />,
+                        urlPath: "/dashboard/employees",
+                        name: "Employees",
+                    },
+                }));
+            }
+        }).catch((e) => {
+            console.error(e);
+        });
+    };
+
+    const refreshProjects = async () => {
+        await fetchProjects().then((e) => {
             setProjects(e);
         }).catch((e) => {
             console.error(e);
-            if (e.status === 401) {
-                console.log("Session expired. Redirecting to login page.");
-                navigate("/login");
-            }
         });
     };
 
-    const refreshAccounts = () => {
-        fetchAccounts().then((e) => {
+    const refreshAccounts = async () => {
+        await fetchAccounts().then((e) => {
             setAccounts(e);
         }).catch((e) => {
             console.error(e);
-            if (e.status === 401) {
-                console.log("Session expired. Redirecting to login page.");
-                navigate("/login");
-            }
         });
     };
 
-    let funcs = [
-        refreshProjects,
-        refreshAccounts
-    ];
-
-    let elements = {
+    const [elements, setElements] = useState({
         projects: {
             element: <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshAccounts={refreshAccounts} />,
             icon: <FolderIcon />,
@@ -57,16 +62,21 @@ const Dashboard = () => {
             icon: <InsightsIcon />,
             urlPath: "/dashboard/insights",
             name: "Insights",
-        },
-        employees: {
-            element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
-            icon: <AssignmentIndIcon />,
-            urlPath: "/dashboard/employees",
-            name: "Employees",
-        },
-    };
+        }
+    });
 
-    return <Sidebar elements={elements} useEffectFuncs={funcs} />;
+    useEffect(() => {
+        const fetchData = async () => {
+            await refreshSelf();
+            await refreshProjects();
+            await refreshAccounts();
+            setLoading(false);
+        };
+
+        fetchData();
+    }, []);
+
+    return <Sidebar elements={elements} loading={loading} />;
 };
 
 export default Dashboard;
@@ -171,7 +181,6 @@ const ProjectCards = ({ projects, refreshProjects, refreshAccounts }) => {
 
 const InsightsCards = () => {
     const insights = [
-        // { id: 1, title: "Account Efficiency", path: "/insights/account-efficiency", description: "View the average efficiency of completing tasks based on time alloted for your accounts" },
         { id: 2, title: "Project Completion Rate", path: "/insights/project-completion", description: "View the percentage of your projects completed on time or earlier." },
         { id: 3, title: "Task Progress", path: "/insights/task-progress", description: "View the progress of your assigned tasks." },
     ];
