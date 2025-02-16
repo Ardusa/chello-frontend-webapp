@@ -137,9 +137,10 @@ const ProjectTaskTree = () => {
 
   const handleCloseDialog = async () => {
     setOpen(false);
+    setNewTask(new TaskCreate({ project_id }));
     await loadProjectDetails();
     await fetchAccountDetails();
-    setNewTask(new TaskCreate({ project_id }));
+    await fetchAccountDetails();
   };
 
   const handleCreateTask = async () => {
