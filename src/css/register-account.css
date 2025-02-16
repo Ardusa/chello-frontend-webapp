@@ -24,7 +24,7 @@
     flex-direction: column;
     text-align: center;
     background: var(--translucent-container-background);
-    padding: 40px 60px;
+    padding: 70px;
     border-radius: 20px;
     box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
     min-width: 500px;

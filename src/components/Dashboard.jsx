@@ -19,15 +19,15 @@ const Dashboard = () => {
     const refreshSelf = async () => {
         await getAccount().then((e) => {
             if (e.company_id) {
-                setElements((prevElements) => ({
-                    ...prevElements,
+                elements = {
+                    ...elements,
                     employees: {
                         element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
                         icon: <AssignmentIndIcon />,
                         urlPath: "/dashboard/employees",
                         name: "Employees",
                     },
-                }));
+                };
             }
         }).catch((e) => {
             console.error(e);
@@ -50,7 +50,7 @@ const Dashboard = () => {
         });
     };
 
-    const [elements, setElements] = useState({
+    let elements = {
         projects: {
             element: <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshAccounts={refreshAccounts} />,
             icon: <FolderIcon />,
@@ -63,7 +63,7 @@ const Dashboard = () => {
             urlPath: "/dashboard/insights",
             name: "Insights",
         }
-    });
+    };
 
     useEffect(() => {
         const fetchData = async () => {
