@@ -106,34 +106,43 @@ const ProjectTaskTree = () => {
 
   const fetchTaskDetailsRecursively = async (tasks) => {
     try {
-      const fetchTaskDetailsRecursivelyHelper = async (tasks) => {
-        for (const [taskId, task_id_or_dict] of Object.entries(tasks)) {
-          const task = await fetchTaskDetails(taskId);
-          setTaskDetails((prev) => ({ ...prev, [taskId]: task }));
-          if (task.parent_task_id) {
-            const appendTaskToSubtasksDict = (dict, parentId, task) => {
-              if (!dict[parentId]) {
-                dict[parentId] = {};
-              }
-              dict[parentId][task.id] = task;
-            };
+      const taskQueue = Object.keys(tasks);
+      const newTaskDetails = {};
+      const newSubtasksDict = {};
 
-            appendTaskToSubtasksDict(subtasksDict, task.parent_task_id, task);
-          } else {
-            if (!subtasksDict[taskId]) {
-              setSubtasksDict((prev) => ({ ...prev, [taskId]: {} }));
-            }
+      while (taskQueue.length) {
+        const taskId = taskQueue.shift();
+
+        // Avoid re-fetching if already in taskDetails
+        if (taskDetails[taskId]) continue;
+
+        const task = await fetchTaskDetails(taskId);
+        newTaskDetails[taskId] = task;
+
+        if (task.parent_task_id) {
+          if (!newSubtasksDict[task.parent_task_id]) {
+            newSubtasksDict[task.parent_task_id] = {};
           }
-
-          await fetchTaskDetailsRecursivelyHelper(task_id_or_dict);
+          newSubtasksDict[task.parent_task_id][task.id] = task;
+        } else {
+          if (!newSubtasksDict[taskId]) {
+            newSubtasksDict[taskId] = {};
+          }
         }
-      };
 
-      await fetchTaskDetailsRecursivelyHelper(tasks);
+        if (tasks[taskId]) {
+          taskQueue.push(...Object.keys(tasks[taskId]));
+        }
+      }
+
+      // Batch update state only once
+      setTaskDetails((prev) => ({ ...prev, ...newTaskDetails }));
+      setSubtasksDict((prev) => ({ ...prev, ...newSubtasksDict }));
     } catch (error) {
       console.error("Error fetching task details recursively:", error);
     }
   };
+
 
   const handleOpenDialog = (parent_id = null) => {
     setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
@@ -178,7 +187,7 @@ const ProjectTaskTree = () => {
     }));
   };
 
-  // Render the tree structure
+
   const renderTree = (nodeId) => {
     const node = taskDetails[nodeId];
     if (!node) return null;
@@ -202,10 +211,10 @@ const ProjectTaskTree = () => {
           </div>
         </div>
       }>
-        {subtasksDict[node.id] && Object.keys(subtasksDict[node.id]).map(subtaskId => {
-          return renderTree(subtaskId);
-        })}
+        {subtasksDict[node.id] &&
+          Object.keys(subtasksDict[node.id]).map((subtaskId) => renderTree(subtaskId))}
       </TreeItem2>
+
     );
   };
 
@@ -242,8 +251,8 @@ const ProjectTaskTree = () => {
         >
           {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))}
           <div className="project-btn-container">
-                <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={ <FontAwesomeIcon icon={faPlus} /> } >Add Root Task</Button>
-            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={ <FontAwesomeIcon icon={faTrash} /> }>
+            <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={<FontAwesomeIcon icon={faPlus} />} >Add Root Task</Button>
+            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={<FontAwesomeIcon icon={faTrash} />}>
               Delete Project</Button>
           </div>
         </SimpleTreeView>
