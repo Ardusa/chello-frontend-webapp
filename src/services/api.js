@@ -51,6 +51,7 @@ export class AccountResponse {
  * @param {boolean} [data.free_plan=false] - Boolean indicating if the account is on a free plan.
  * @param {number} [data.task_limit=null] - Maximum number of tasks the account can create.
  * @param {string} [data.company_id=null] - The ID of the company the account belongs to.
+ * @param {boolean} [data.create_company=false] - Boolean indicating if a new company should be created.
  */
 export class AccountCreate {
     constructor(data = {}) {
@@ -62,6 +63,7 @@ export class AccountCreate {
         this.free_plan = data.free_plan || false;
         this.task_limit = data.task_limit || null;
         this.company_id = data.company_id || null;
+        this.create_company = data.create_company || false;
     }
 }
 
@@ -196,11 +198,15 @@ export class CompanyResponse {
  * @param {Object} [data={}] - The data to initialize the company creation with.
  * @param {string} [data.name=""] - The name of the company.
  * @param {string} [data.founding_member=""] - The ID of the founding member of the company.
+ * @param {number} [data.task_limit=20000] - The maximum number of tasks the company can create.
+ * @param {string} [data.logo=""] - The logo image string of the company.
  */
 export class CompanyCreate {
     constructor(data = {}) {
         this.name = data.name || "";
         this.founding_member = data.founding_member || "";
+        this.task_limit = data.task_limit || 20000;
+        this.logo = data.logo || "";
     }
 }
 
@@ -309,11 +315,13 @@ export const registerAccount = async (accountData) => {
  * @async
  * @function createAccount
  * @param {AccountCreate} accountData - The account data to create.
+ * @param {boolean} createCompany - Boolean indicating if a new company should be created.
  * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
  */
-export const createAccount = async (accountData) => {
-    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, accountData);
-    return response;
+export const createAccount = async (account_data) => {
+    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, account_data);
+    const json = await response.data;
+    return json;
 }
 
 /**
@@ -387,4 +395,59 @@ export const deleteProject = async (project_id) => {
     });
 
     return response;
+}
+
+
+/**
+ * Fetches the logo of the user's company.
+ * @async
+ * @function fetchLogo
+ * @returns {Promise<string>} A promise that resolves to the logo image base64 string.
+ */
+export const fetchLogo = async () => {
+    const response = await makeAuthenticatedRequest("/companies/logo");
+    const json = await response.json();
+    if (json === "") {
+        return null;
+    }
+    return json;
+}
+
+// ? Company API
+
+/**
+ * Fetches the details of the currently logged-in company.
+ * @async
+ * @function getCompany
+ * @param {CompanyCreate} companyData - The data for the company to create.
+ * @returns {Promise<CompanyResponse>} A promise that resolves to the details of the company.
+ */
+export const createCompany = async (companyData) => {
+    console.log("Company Data:", companyData);
+    const response = await makeAuthenticatedRequest("/companies/create", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(companyData),
+    });
+
+    const json = await response.json();
+    return json;
+}
+
+/**
+ * Update the details of the currently logged-in account.
+ * @async
+ * @function updateAccount
+ * @param {AccountResponse} accountData - The account data to update.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the updated account data.
+ */
+export const updateAccount = async (accountData) => {
+    const response = await makeAuthenticatedRequest("/accounts/update-account", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(accountData),
+    });
+
+    const json = await response.json();
+    return json;
 }

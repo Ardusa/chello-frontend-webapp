@@ -81,7 +81,7 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-const ProjectCards = ({ projects, refreshProjects, refreshAccounts }) => {
+const ProjectCards = ({ projects, refreshProjects }) => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -110,10 +110,6 @@ const ProjectCards = ({ projects, refreshProjects, refreshAccounts }) => {
         setNewProject((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleManagerChange = (e, value) => {
-        setNewProject((prev) => ({ ...prev, project_manager: value.id }));
-    }
-
     const handleSubmit = () => {
         console.log("New Project: ", projectData);
 
@@ -138,9 +134,9 @@ const ProjectCards = ({ projects, refreshProjects, refreshAccounts }) => {
                         </div>
                     );
                 })}
-                <div className="card create-project-card" onClick={handleOpen}>
+                <div className="card add-card" onClick={handleOpen}>
                     <h3>Create Project</h3>
-                    <AddBoxOutlinedIcon style={{ fontSize: 40 }} />
+                    <AddBoxOutlinedIcon className="add-sign" />
                 </div>
             </div>
             <Dialog open={open} onClose={handleClose} PaperProps={{ style: { backgroundColor: 'lightgray' } }}>
@@ -243,12 +239,12 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                         <p>{account.position}</p>
                     </div>
                 ))}
-                <div className="card create-account-card" onClick={handleOpen}>
-                    <h3>Register Account</h3>
-                    <AddBoxOutlinedIcon style={{ fontSize: 40 }} />
+                <div className="card add-card" onClick={handleOpen}>
+                    <h3>Add Employee</h3>
+                    <AddBoxOutlinedIcon className="add-sign" />
                 </div>
             </div>
-            <Dialog open={open} onClose={handleClose} PaperProps={{ style: { backgroundColor: 'lightgray' } }}>
+            <Dialog open={open} onClose={handleClose} PaperProps={{ style: { backgroundColor: 'white' } }}>
                 <DialogTitle>Register Account</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -299,10 +295,10 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button onClick={handleClose} color="primary" style={{ fontSize: "20px", marginRight: "10px" }} >
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary">
+                    <Button onClick={handleSubmit} color="primary" style={{ fontSize: "20px" }}>
                         Submit
                     </Button>
                 </DialogActions>

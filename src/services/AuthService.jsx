@@ -47,10 +47,9 @@ const checkLoginStatus = async () => {
   try {
     try {
       await refreshAccessToken();
-      let response = await makeAuthenticatedRequest("/verify-login/");
+      let response = await makeAuthenticatedRequest("/verify-login");
       if (!response.ok) throw new Error("Session expired");
     } catch (error) {
-      // alert("Session expired. Please log in again.");
       console.log("User is not logged in");
       return false;
     }
@@ -182,27 +181,21 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ username, password }),
-      });
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username, password }),
+    });
 
-      if (!response.ok) throw new Error("Login failed");
+    if (!response.ok) throw new Error(response.statusText);
 
-      const data = await response.json();
-      if (data.access_token && data.refresh_token) {
-        localStorage.setItem("access_token", data.access_token);
-        localStorage.setItem("refresh_token", data.refresh_token);
-        setIsLoggedIn(true);
-      } else {
-        throw new Error("Invalid response format");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Login failed. Please try again.");
-      throw error;
+    const data = await response.json();
+    if (data.access_token && data.refresh_token) {
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+      setIsLoggedIn(true);
+    } else {
+      throw new Error("Invalid response format");
     }
   };
 

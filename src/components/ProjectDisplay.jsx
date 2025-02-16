@@ -37,6 +37,12 @@ const ProjectDashboard = () => {
       urlPath: `/projects/${project_id}/files`,
       name: "Project Explorer",
     },
+    sprints: {
+      element: <div />,
+      icon: <FolderIcon />,
+      urlPath: `/projects/${project_id}/sprints`,
+      name: "Sprints",
+    }
   };
 
   return <Sidebar elements={elements} backLink="/dashboard/projects" loadingElement={loading} />;
@@ -56,7 +62,6 @@ const ProjectTaskTree = () => {
 
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-  // const [parentTaskId, setParentTaskId] = useState(null);
   const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
   const [accounts, setAccounts] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
@@ -131,7 +136,6 @@ const ProjectTaskTree = () => {
 
   const handleOpenDialog = (parent_id = null) => {
     setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
-    // setParentTaskId(parent_id);
     setOpen(true);
   };
 
@@ -144,7 +148,6 @@ const ProjectTaskTree = () => {
   };
 
   const handleCreateTask = async () => {
-    // newTask.parent_task_id = parentTaskId;
     try {
       await createTask(newTask);
       await handleCloseDialog();
@@ -184,15 +187,17 @@ const ProjectTaskTree = () => {
     return (
       <TreeItem2 key={node.id} itemId={node.id} label={
         <div className="task-node">
-          <span style={{ paddingLeft: "20px" }}>{node.name}</span>
+          <span className="task-name">{node.name}</span>
           <span>{assignedAccount ? assignedAccount.name : "Unassigned"}</span>
           <div>
-            <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-            <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(node.id); }}>
-              <FontAwesomeIcon icon={faTrash} />
-            </Button>
+            <div className="task-actions">
+              <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
+                <FontAwesomeIcon icon={faPlus} />
+              </Button>
+              <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(node.id); }}>
+                <FontAwesomeIcon icon={faTrash} />
+              </Button>
+            </div>
           </div>
         </div>
       }>
@@ -218,9 +223,10 @@ const ProjectTaskTree = () => {
           <h1>{project.name}</h1>
           <p>{project.description}</p>
         </div>
+
         <SimpleTreeView
           sx={{
-            width: '80%',
+            width: '100%',
             bgcolor: 'background.paper',
             border: '1px solid',
             borderColor: 'divider',
@@ -230,14 +236,16 @@ const ProjectTaskTree = () => {
               padding: '10px 0',
               fontSize: '1.2rem',
               justifyContent: 'space-between',
+              width: '100%',
             },
           }}
 
         >
           {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))}
           <div className="project-btn-container">
-            <Button className="add-button" onClick={() => handleOpenDialog(null)}>+ Add Root Task</Button>
-            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)}>Delete Project</Button>
+                <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={ <FontAwesomeIcon icon={faPlus} /> } >Add Root Task</Button>
+            <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={ <FontAwesomeIcon icon={faTrash} /> }>
+              Delete Project</Button>
           </div>
         </SimpleTreeView>
 

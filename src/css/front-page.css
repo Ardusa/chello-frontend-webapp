@@ -5,7 +5,7 @@
     margin: 0;
 }
 
-.header {
+.front-page-container .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,12 +14,12 @@
     color: white;
 }
 
-.logo-placeholder {
+.front-page-container .logo-placeholder {
     font-size: 24px;
     font-weight: bold;
 }
 
-.nav button {
+.front-page-container .nav button {
     margin-left: 10px;
     padding: 10px 20px;
     background-color: #61dafb;
@@ -30,11 +30,11 @@
     font-weight: bold;
 }
 
-.nav button:hover {
+.front-page-container .nav button:hover {
     background-color: #21a1f1;
 }
 
-.hero-section {
+.front-page-container .hero-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,21 +42,21 @@
     background-color: #f5f5f5;
 }
 
-.hero-text {
+.front-page-container .hero-text {
     max-width: 50%;
 }
 
-.hero-text h1 {
+.front-page-container .hero-text h1 {
     font-size: 48px;
     margin-bottom: 20px;
 }
 
-.hero-text p {
+.front-page-container .hero-text p {
     font-size: 18px;
     margin-bottom: 20px;
 }
 
-.hero-text button {
+.front-page-container .hero-text button {
     padding: 10px 20px;
     background-color: #61dafb;
     border: none;
@@ -66,11 +66,11 @@
     font-weight: bold;
 }
 
-.hero-text button:hover {
+.front-page-container .hero-text button:hover {
     background-color: #21a1f1;
 }
 
-.hero-image-placeholder {
+.front-page-container .hero-image-placeholder {
     width: 40%;
     height: 300px;
     background-color: #ddd;
@@ -81,30 +81,30 @@
     color: #888;
 }
 
-.features-section {
+.front-page-container .features-section {
     padding: 50px;
     background-color: #fff;
 }
 
-.features-section h2 {
+.front-page-container .features-section h2 {
     text-align: center;
     margin-bottom: 40px;
     font-size: 36px;
 }
 
-.features {
+.front-page-container .features {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
 }
 
-.feature {
+.front-page-container .feature {
     width: 30%;
     margin-bottom: 40px;
     text-align: center;
 }
 
-.feature-image-placeholder {
+.front-page-container .feature-image-placeholder {
     width: 100%;
     height: 200px;
     background-color: #ddd;
@@ -116,16 +116,16 @@
     margin-bottom: 20px;
 }
 
-.feature h3 {
+.front-page-container .feature h3 {
     font-size: 24px;
     margin-bottom: 10px;
 }
 
-.feature p {
+.front-page-container .feature p {
     font-size: 16px;
 }
 
-.footer {
+.front-page-container .footer {
     text-align: center;
     padding: 20px;
     background-color: #282c34;
