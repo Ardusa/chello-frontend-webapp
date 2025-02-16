@@ -11,21 +11,24 @@ import Sidebar from "./Sidebar";
 
 const ProjectDashboard = () => {
   const { project_id } = useParams();
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const refreshProjectData = () => {
-    fetchProjectDetails(project_id).catch((e) => {
+  const refreshProjectData = async () => {
+    await fetchProjectDetails(project_id).catch((e) => {
       console.error(e);
       if (e.status === 401) {
         console.log("Session expired. Redirecting to login page.");
         navigate("/login");
       }
+    }).finally(() => {
+      setLoading(false);
     });
   };
 
-  let funcs = [
-    refreshProjectData,
-  ];
+  useEffect(() => {
+    refreshProjectData();
+  }, [project_id]);
 
   let elements = {
     files: {
@@ -36,7 +39,7 @@ const ProjectDashboard = () => {
     },
   };
 
-  return <Sidebar elements={elements} backLink="/dashboard/projects" useEffectFuncs={funcs} />;
+  return <Sidebar elements={elements} backLink="/dashboard/projects" loadingElement={loading} />;
 };
 
 export default ProjectDashboard;

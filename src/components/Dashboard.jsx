@@ -76,7 +76,7 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    return <Sidebar elements={elements} loading={loading} />;
+    return <Sidebar elements={elements} loadingElement={loading} />;
 };
 
 export default Dashboard;

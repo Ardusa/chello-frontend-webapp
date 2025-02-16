@@ -15,6 +15,7 @@ import { getAccount, fetchAccountDetails, AccountResponse } from "../services/ap
  * @param {Object} elements this should be in the form of { section_id : { element: <Element /, icon: <Icon /, urlPath: "/dashboard/section_id", name: "element", } }. First entry will be the default selected section
  * @param {String} backLink the link to go back to, for projects page on the dashboard it would be "/dashboard/projects"
  * @param {Function} useEffectFuncs the functions to run on useEffect
+ * @param {Boolean} loadingElement if true, will display a loading spinner instead of the element
  * @returns a dashboard component with a sidebar and main content
  */
 const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElement = false }) => {
@@ -110,10 +111,9 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
 
             {/* Main Content */}
             <main className="content">
-                {!loading && !loadingElement
+                {!loadingElement
                     ? elements[selectedSection].element
-                    : null}
-                {loading && <CircularProgress />}
+                    : <CircularProgress />}
             </main>
         </div>
     );
