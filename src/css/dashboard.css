@@ -6,7 +6,7 @@
 .cards-container .cards {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
 }
 
 .cards-container .cards p {
