@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 // import { Alert } from 'react-alert'
 
-const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
+// const API_BASE_URL = "https://chello-backend.vercel.app/";
+const API_BASE_URL = "http://127.0.0.1:8000";
 const AuthContext = createContext();
 
 // Function to make authenticated requests
