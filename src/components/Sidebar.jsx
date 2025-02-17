@@ -103,31 +103,33 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
                         </Button>
                     ))}
                 </nav>
-                {backLink && (
-                    <Button variant="contained" className={`back-btn`} startIcon={<BackIcon />} onClick={() => navigate(backLink, { replace: true })}>
-                        Back
-                    </Button>
-                )}
-                <div className={`user-details-container ${backLink ? "not-top" : ""}`}>
-                    <div className="user-info">
-                        <h3 >{user.position}</h3>
-                        <h2>{user.name}</h2>
-                        <p>{user.email}</p>
-                    </div>
-                    {manager.id &&
-                        <div className='manager-info'>
-                            <h3 >{manager.position}</h3>
-                            <h2 style={{ fontWeight: 'bold' }}>{manager.name}</h2>
-                            <p>{manager.email}</p>
+                <div className="bottom">
+                    {backLink && (
+                        <Button variant="contained" className={`back-btn`} startIcon={<BackIcon />} onClick={() => navigate(backLink, { replace: true })}>
+                            Back
+                        </Button>
+                    )}
+                    <div className={`user-details-container ${backLink ? "not-top" : ""}`}>
+                        <div className="user-info">
+                            <h3 >{user.position}</h3>
+                            <h2>{user.name}</h2>
+                            <p>{user.email}</p>
                         </div>
-                    }
+                        {manager.id &&
+                            <div className='manager-info'>
+                                <h3 >{manager.position}</h3>
+                                <h2 style={{ fontWeight: 'bold' }}>{manager.name}</h2>
+                                <p>{manager.email}</p>
+                            </div>
+                        }
+                    </div>
+                    <Button variant="contained" color="info" className={`settings-btn`} startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
+                        Settings
+                    </Button>
+                    <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
+                        Logout
+                    </Button>
                 </div>
-                <Button variant="contained" color="info" className={`settings-btn`} startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
-                    Settings
-                </Button>
-                <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>
-                    Logout
-                </Button>
             </aside>
 
             {/* Main Content */}
