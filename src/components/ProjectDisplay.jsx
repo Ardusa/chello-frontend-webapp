@@ -55,12 +55,7 @@ export default ProjectDashboard;
 const ProjectTaskTree = () => {
   const { project_id } = useParams();
   const navigate = useNavigate();
-  const [project, setProject] = useState({
-    id: "",
-    description: "",
-    name: "",
-    subtasks: {},
-  });
+  const [project, setProject] = useState({});
 
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
@@ -71,6 +66,7 @@ const ProjectTaskTree = () => {
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [editingTask, setEditingTask] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const loadData = async () => {
@@ -78,6 +74,10 @@ const ProjectTaskTree = () => {
       await loadProjectDetails();
       await fetchAccountDetails();
       setLoading(false);
+
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
     };
 
     loadData();
@@ -86,12 +86,7 @@ const ProjectTaskTree = () => {
   const loadProjectDetails = async () => {
     try {
       const projectData = await fetchProjectDetails(project_id);
-      setProject({
-        id: projectData.project.id,
-        name: projectData.project.name,
-        description: projectData.project.description,
-        subtasks: projectData.tasks,
-      });
+      setProject({ ...projectData });
 
       await fetchTaskDetailsRecursively(projectData.tasks);
     } catch (error) {
@@ -233,13 +228,18 @@ const ProjectTaskTree = () => {
     const node = taskDetails[nodeId];
     if (!node) return null;
 
-    const assignedAccount = accounts.find(emp => emp.id === node.assigned_to);
+    const assignedAccount = accounts.find(emp => emp.id === node.assigned_to) || { name: "Unassigned" };
+    const formattedDate = new Date(node.task_created).toLocaleDateString();
 
     return (
       <TreeItem2 key={node.id} itemId={node.id} label={
         <div className="task-node">
           <span className="task-name">{node.name}</span>
-          <span>{assignedAccount ? assignedAccount.name : "Unassigned"}</span>
+          <span className="task-description">{node.description}</span>
+          {node.company_id &&
+            <span>{assignedAccount.name}</span>
+          }
+          <span>{formattedDate}</span>
           <div>
             <div className="task-actions">
               <Button className="settings-button" onClick={(e) => { e.stopPropagation(); handleOpenEditDialog(node.id); }} startIcon={<SettingsIcon />}>
@@ -303,7 +303,7 @@ const ProjectTaskTree = () => {
             },
           }}
         >
-          {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId, project.subtasks))}
+          {Object.keys(project.tasks).map((subtaskId) => renderTree(subtaskId, project.tasks))}
           <div className="project-btn-container">
             <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={<FontAwesomeIcon icon={faPlus} />} >Add Root Task</Button>
             <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={<FontAwesomeIcon icon={faTrash} />}>
