@@ -98,8 +98,8 @@
     margin: auto 5px 7px 5px;
     padding: 10px 20px;
     font-size: 18px;
-    border: 3px rgb(209, 109, 2) solid;
-    background-color: rgb(209, 109, 2);
+    border: 3px var(--brand-color-2) solid;
+    background-color: var(--brand-color-2);
     border-radius: 13px;
     cursor: pointer;
     width: 95%;
@@ -107,14 +107,15 @@
 
 .sidebar-container .back-btn:hover {
     background: #ffffff;
-    color: rgb(209, 109, 2);
+    color: var(--brand-color-2);
 }
 
 .sidebar-container .settings-btn {
     margin: 7px 5px;
     padding: 10px 20px;
     font-size: 18px;
-    border: 3px rgb(2, 136, 209) solid;
+    border: 3px var(--brand-color-1) solid;
+    background-color: var(--brand-color-1);
     border-radius: 13px;
     cursor: pointer;
     width: 95%;
@@ -122,7 +123,7 @@
 
 .sidebar-container .settings-btn:hover {
     background: #ffffff;
-    color: rgb(2, 136, 209);
+    color: var(--brand-color-1);
 }
 
 .sidebar-container .logout-btn {
