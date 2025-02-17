@@ -21,6 +21,7 @@
     padding: 0px 0px 0px 10px;
     background-color: var(--brand-color-3);
     transition: all 0.2s;
+    border-radius: 10px;
 }
 
 .project-file-container .MuiTreeItem-content:hover {
