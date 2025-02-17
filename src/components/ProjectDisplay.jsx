@@ -67,11 +67,19 @@ const ProjectTaskTree = () => {
   const [accounts, setAccounts] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
   const [subtasksDict, setSubtasksDict] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    loadProjectDetails();
-    fetchAccountDetails();
-  }, [project_id]);
+    const loadData = async () => {
+      setLoading(true);
+      await loadProjectDetails();
+      await fetchAccountDetails();
+      setLoading(false);
+    };
+
+    loadData();
+  }, [project_id, refresh]);
 
   const loadProjectDetails = async () => {
     try {
@@ -106,43 +114,59 @@ const ProjectTaskTree = () => {
 
   const fetchTaskDetailsRecursively = async (tasks) => {
     try {
-      const taskQueue = Object.keys(tasks);
-      const newTaskDetails = {};
-      const newSubtasksDict = {};
-
-      while (taskQueue.length) {
-        const taskId = taskQueue.shift();
-
+      for (const [taskId, subTasks] of Object.entries(tasks)) {
         // Avoid re-fetching if already in taskDetails
         if (taskDetails[taskId]) continue;
 
-        const task = await fetchTaskDetails(taskId);
-        newTaskDetails[taskId] = task;
+        const findParentAndAssign = (task, dict) => {
+          if (task.parent_task_id === null) {
+            dict[task.id] = {};
+            return true;
+          }
 
-        if (task.parent_task_id) {
-          if (!newSubtasksDict[task.parent_task_id]) {
-            newSubtasksDict[task.parent_task_id] = {};
+          for (const [parentId, subtasks] of Object.entries(dict)) {
+            // if the parentId is the parent of the task or the subtasks has the task already, assign it
+            if (parentId === task.parent_task_id || subtasks[task.id]) {
+              dict[parentId][task.id] = {};
+              return true;
+            }
+
+            // if the subtasks is empty, skip to the next set of keys and values
+            if (Object.keys(subtasks).length === 0) {
+              continue;
+            }
+
+            if (findParentAndAssign(task, subtasks)) {
+              return true;
+            } else {
+              continue;
+            }
           }
-          newSubtasksDict[task.parent_task_id][task.id] = task;
-        } else {
-          if (!newSubtasksDict[taskId]) {
-            newSubtasksDict[taskId] = {};
-          }
+
+          return false;
+        };
+
+        const task = await fetchTaskDetails(taskId);
+        if (!task) {
+          throw new Error("Failed to fetch task details for task:", taskId);
         }
 
-        if (tasks[taskId]) {
-          taskQueue.push(...Object.keys(tasks[taskId]));
+        // console.log("Task details:", task);
+
+        setTaskDetails((prev) => ({ ...prev, [taskId]: task }));
+
+        if (!findParentAndAssign(task, subtasksDict)) {
+          throw new Error("Failed finding parent and assigning task for ", task);
+        }
+
+        if (subTasks) {
+          await fetchTaskDetailsRecursively(subTasks);
         }
       }
-
-      // Batch update state only once
-      setTaskDetails((prev) => ({ ...prev, ...newTaskDetails }));
-      setSubtasksDict((prev) => ({ ...prev, ...newSubtasksDict }));
     } catch (error) {
       console.error("Error fetching task details recursively:", error);
     }
   };
-
 
   const handleOpenDialog = (parent_id = null) => {
     setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
@@ -152,15 +176,12 @@ const ProjectTaskTree = () => {
   const handleCloseDialog = async () => {
     setOpen(false);
     setNewTask(new TaskCreate({ project_id }));
-    await loadProjectDetails();
-    await fetchAccountDetails();
-    await fetchAccountDetails();
   };
 
   const handleCreateTask = async () => {
     try {
       await createTask(newTask);
-      await handleCloseDialog();
+      setRefresh(!refresh);
     }
     catch (error) {
       console.error("Error creating task:", error);
@@ -169,9 +190,13 @@ const ProjectTaskTree = () => {
   }
 
   const handleDeleteTask = async (taskId) => {
-    await deleteTask(taskId);
-    await loadProjectDetails();
-    await fetchAccountDetails();
+    try {
+      await deleteTask(taskId);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      setError("Error deleting task.");
+    }
   };
 
   const handleDeleteProject = async (projectId) => {
@@ -187,9 +212,9 @@ const ProjectTaskTree = () => {
     }));
   };
 
-
-  const renderTree = (nodeId) => {
+  const renderTree = (nodeId, dict) => {
     const node = taskDetails[nodeId];
+    // console.log("Node:", node);
     if (!node) return null;
 
     const assignedAccount = accounts.find(emp => emp.id === node.assigned_to);
@@ -211,12 +236,17 @@ const ProjectTaskTree = () => {
           </div>
         </div>
       }>
-        {subtasksDict[node.id] &&
-          Object.keys(subtasksDict[node.id]).map((subtaskId) => renderTree(subtaskId))}
+        {dict[node.id] &&
+          Object.keys(dict[node.id]).map((subtaskId) => renderTree(subtaskId, dict[node.id]))}
       </TreeItem2>
-
     );
   };
+
+  if (loading) {
+    return <div className="centered-container">
+      <CircularProgress />
+    </div>;
+  }
 
   if (error) {
     return (
@@ -247,9 +277,8 @@ const ProjectTaskTree = () => {
               width: '100%',
             },
           }}
-
         >
-          {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId))}
+          {Object.keys(project.subtasks).map((subtaskId) => renderTree(subtaskId, project.subtasks))}
           <div className="project-btn-container">
             <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={<FontAwesomeIcon icon={faPlus} />} >Add Root Task</Button>
             <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={<FontAwesomeIcon icon={faTrash} />}>
