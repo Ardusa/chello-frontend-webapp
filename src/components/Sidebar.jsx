@@ -105,11 +105,11 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
                 </nav>
                 <div className="bottom">
                     {backLink && (
-                        <Button variant="contained" className={`back-btn`} startIcon={<BackIcon />} onClick={() => navigate(backLink, { replace: true })}>
+                        <Button variant="contained" className="back-btn" startIcon={<BackIcon />} onClick={() => navigate(backLink, { replace: true })}>
                             Back
                         </Button>
                     )}
-                    <div className={`user-details-container ${backLink ? "not-top" : ""}`}>
+                    <div className="user-details-container">
                         <div className="user-info">
                             <h3 >{user.position}</h3>
                             <h2>{user.name}</h2>
@@ -123,7 +123,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
                             </div>
                         }
                     </div>
-                    <Button variant="contained" color="info" className={`settings-btn`} startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
+                    <Button variant="contained" color="info" className="settings-btn" startIcon={<SettingsIcon />} onClick={() => handleSettings()}>
                         Settings
                     </Button>
                     <Button variant="outlined" color="error" className="logout-btn" startIcon={<LogoutIcon />} onClick={() => handleLogout()}>

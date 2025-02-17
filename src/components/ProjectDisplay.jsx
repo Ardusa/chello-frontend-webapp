@@ -37,7 +37,7 @@ const ProjectDashboard = () => {
       element: <ProjectTaskTree />,
       icon: <AccountTreeIcon />,
       urlPath: `/projects/${project_id}/files`,
-      name: "Project Explorer",
+      name: "Task Explorer",
     },
     sprints: {
       element: <div />,

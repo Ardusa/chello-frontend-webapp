@@ -53,11 +53,12 @@
 }
 
 .sidebar-container .nav-item {
+    display: flex;
     font-weight: 200;
     background: none !important;
     border: none;
     color: rgb(0, 89, 254);
-    font-size: 23px;
+    font-size: 29px;
     padding: 28px !important;
     padding-left: 120px;
     width: 100%;
@@ -67,18 +68,22 @@
     margin: 12px 0px;
 }
 
+.sidebar-container .nav-item.active,
 .sidebar-container .nav-item:hover {
-    font-size: 25px;
+    font-size: calc(1.9 * 1em);
     color: rgb(255, 255, 255);
-    transition: font-size 0.2s, color 0.2s;
 }
 
 .sidebar-container .nav-item.active {
-    font-size: 25px;
-    color: rgb(255, 255, 255);
     font-weight: 800;
     transition: font-weight 0.1s ease-in-out;
 }
+
+.sidebar-container .nav-item .MuiSvgIcon-root {
+    font-size: calc(1.1 * 1em);
+    margin-bottom: 2px;
+}
+
 
 .sidebar-container .bottom {
     display: flex;
