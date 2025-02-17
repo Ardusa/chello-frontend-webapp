@@ -65,11 +65,15 @@
 /* Styling for the tree items */
 .project-file-container .MuiTreeItem-root {
     padding: 0px !important;
-    margin: 5px 0px;
+    margin: 7px 0px 7px 0px;
     display: block;
     justify-content: space-between;
     align-items: center;
     position: relative;
+}
+
+.project-file-container .MuiCollapse-root {
+    margin: 0px 0px 15px 0px;
 }
 
 /* Make the task names aligned to the right, except for the project name */
@@ -196,6 +200,7 @@
     padding: 20px 0px;
     background-color: rgba(59, 54, 54, 0.8);
     margin-top: 20px;
+    border-radius: 10px;
 }
 
 .project-file-container .project-btn-container button {

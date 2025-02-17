@@ -66,7 +66,6 @@ const ProjectTaskTree = () => {
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [editingTask, setEditingTask] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const loadData = async () => {
@@ -74,10 +73,6 @@ const ProjectTaskTree = () => {
       await loadProjectDetails();
       await fetchAccountDetails();
       setLoading(false);
-
-      const handleResize = () => setWindowWidth(window.innerWidth);
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
     };
 
     loadData();
@@ -175,10 +170,12 @@ const ProjectTaskTree = () => {
   const handleCloseDialog = async () => {
     setOpen(false);
     setNewTask(new TaskCreate({ project_id }));
+    // setRefresh(!refresh);
   };
 
   const handleCreateTask = async () => {
     try {
+      setRefresh(!refresh);
       await createTask(newTask);
       handleCloseDialog();
       setRefresh(!refresh);
