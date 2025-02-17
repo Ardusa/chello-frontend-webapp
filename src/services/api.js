@@ -355,6 +355,24 @@ export const createTask = async (taskData) => {
 };
 
 /**
+ * Updates a task on the server.
+ * @async
+ * @function updateTask
+ * @param {Object} taskData - The task data to update.
+ * @returns {Promise<TaskResponse>} A promise that resolves to the updated task data.
+ */
+export const updateTask = async (taskData) => {
+    const response = await makeAuthenticatedRequest(`/tasks/update-task`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(taskData),
+    });
+
+    const json = await response.json();
+    return json;
+};
+
+/**
  * Deletes a task from the server.
  * @async
  * @function deleteTask

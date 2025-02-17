@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchProjectDetails, createTask, TaskCreate, fetchAccounts, getAccount, fetchTaskDetails, deleteTask, deleteProject } from "../services/api.js";
+import { fetchProjectDetails, createTask, updateTask, TaskCreate, fetchAccounts, getAccount, fetchTaskDetails, deleteTask, deleteProject } from "../services/api.js";
 import { SimpleTreeView, TreeItem2 } from "@mui/x-tree-view";
 import { CircularProgress, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -117,8 +117,10 @@ const ProjectTaskTree = () => {
   const fetchTaskDetailsRecursively = async (tasks) => {
     try {
       for (const [taskId, subTasks] of Object.entries(tasks)) {
-        // Avoid re-fetching if already in taskDetails
-        if (taskDetails[taskId]) continue;
+        const task = await fetchTaskDetails(taskId);
+        if (!task) {
+          throw new Error("Failed to fetch task details for task:", taskId);
+        }
 
         const findParentAndAssign = (task, dict) => {
           if (task.parent_task_id === null) {
@@ -147,11 +149,6 @@ const ProjectTaskTree = () => {
 
           return false;
         };
-
-        const task = await fetchTaskDetails(taskId);
-        if (!task) {
-          throw new Error("Failed to fetch task details for task:", taskId);
-        }
 
         setTaskDetails((prev) => ({ ...prev, [taskId]: task }));
 
@@ -188,6 +185,7 @@ const ProjectTaskTree = () => {
   const handleCreateTask = async () => {
     try {
       await createTask(newTask);
+      handleCloseDialog();
       setRefresh(!refresh);
     }
     catch (error) {
@@ -198,7 +196,8 @@ const ProjectTaskTree = () => {
 
   const handleEditTask = async () => {
     try {
-      await createTask(newTask);
+      await updateTask(newTask);
+      handleCloseDialog();
       setRefresh(!refresh);
     }
     catch (error) {
