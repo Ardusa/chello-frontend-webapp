@@ -68,7 +68,8 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
     }
 
     if (loading) {
-        return <div className='loading-screen'><CircularProgress /></div>;
+        return <div />;
+        // return <div className='loading-screen'><CircularProgress /></div>;
     }
 
     return (
