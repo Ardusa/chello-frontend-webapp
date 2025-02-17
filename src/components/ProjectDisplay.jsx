@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
+import SettingsIcon from '@mui/icons-material/Settings';
 import "../css/project-display.css";
 import Sidebar from "./Sidebar";
 
@@ -66,9 +67,10 @@ const ProjectTaskTree = () => {
   const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
   const [accounts, setAccounts] = useState([]);
   const [taskDetails, setTaskDetails] = useState({});
-  const [subtasksDict, setSubtasksDict] = useState({});
+  const [subtasksDict] = useState({});
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
+  const [editingTask, setEditingTask] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -151,8 +153,6 @@ const ProjectTaskTree = () => {
           throw new Error("Failed to fetch task details for task:", taskId);
         }
 
-        // console.log("Task details:", task);
-
         setTaskDetails((prev) => ({ ...prev, [taskId]: task }));
 
         if (!findParentAndAssign(task, subtasksDict)) {
@@ -170,6 +170,13 @@ const ProjectTaskTree = () => {
 
   const handleOpenDialog = (parent_id = null) => {
     setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
+    setEditingTask(false);
+    setOpen(true);
+  };
+
+  const handleOpenEditDialog = (taskId) => {
+    setNewTask((prev) => ({ ...prev, ...taskDetails[taskId] }));
+    setEditingTask(true);
     setOpen(true);
   };
 
@@ -186,6 +193,17 @@ const ProjectTaskTree = () => {
     catch (error) {
       console.error("Error creating task:", error);
       setError("Error creating task.");
+    }
+  }
+
+  const handleEditTask = async () => {
+    try {
+      await createTask(newTask);
+      setRefresh(!refresh);
+    }
+    catch (error) {
+      console.error("Error editing task:", error);
+      setError("Error editing task.");
     }
   }
 
@@ -214,7 +232,6 @@ const ProjectTaskTree = () => {
 
   const renderTree = (nodeId, dict) => {
     const node = taskDetails[nodeId];
-    // console.log("Node:", node);
     if (!node) return null;
 
     const assignedAccount = accounts.find(emp => emp.id === node.assigned_to);
@@ -226,6 +243,9 @@ const ProjectTaskTree = () => {
           <span>{assignedAccount ? assignedAccount.name : "Unassigned"}</span>
           <div>
             <div className="task-actions">
+              <Button className="settings-button" onClick={(e) => { e.stopPropagation(); handleOpenEditDialog(node.id); }} startIcon={<SettingsIcon />}>
+                Edit
+              </Button>
               <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
@@ -235,7 +255,13 @@ const ProjectTaskTree = () => {
             </div>
           </div>
         </div>
-      }>
+      }
+        sx={{
+          '& .MuiTreeItem-content:hover, & .MuiTreeItem-content:active': {
+            backgroundColor: node.is_finished ? 'lightgreen' : (node.task_start ? 'red' : 'lightyellow'),
+          },
+        }}
+      >
         {dict[node.id] &&
           Object.keys(dict[node.id]).map((subtaskId) => renderTree(subtaskId, dict[node.id]))}
       </TreeItem2>
@@ -343,7 +369,11 @@ const ProjectTaskTree = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleCreateTask} color="primary">Create Task</Button>
+            {editingTask ? (
+              <Button onClick={handleEditTask} color="primary">Edit Task</Button>
+            ) : (
+              <Button onClick={handleCreateTask} color="primary">Create Task</Button>
+            )}
           </DialogActions>
         </Dialog>
       </div>
