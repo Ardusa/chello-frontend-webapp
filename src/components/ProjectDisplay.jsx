@@ -67,16 +67,19 @@ const ProjectTaskTree = () => {
   const [refresh, setRefresh] = useState(false);
   const [editingTask, setEditingTask] = useState(false);
 
+  const [renderedTasks, setRenderedTasks] = useState(null);
+
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      await loadProjectDetails();
       await fetchAccountDetails();
+      await loadProjectDetails();
+
       setLoading(false);
     };
 
     loadData();
-  }, [project_id, refresh]);
+  }, [project_id]);
 
   const loadProjectDetails = async () => {
     try {
@@ -84,6 +87,14 @@ const ProjectTaskTree = () => {
       setProject({ ...projectData });
 
       await fetchTaskDetailsRecursively(projectData.tasks);
+      const renderedTasks = Object.keys(projectData.tasks).map((subtaskId) => {
+        const tree = renderTree(subtaskId, projectData.tasks);
+        console.log("tree", tree);
+        return tree;
+      });
+
+      setRenderedTasks(renderedTasks);
+
     } catch (error) {
       console.error("Error fetching project details:", error);
       setError("Error fetching project details.");
@@ -140,7 +151,7 @@ const ProjectTaskTree = () => {
           return false;
         };
 
-        setTaskDetails((prev) => ({ ...prev, [taskId]: task }));
+        taskDetails[taskId] = task;
 
         if (!findParentAndAssign(task, subtasksDict)) {
           throw new Error("Failed finding parent and assigning task for ", task);
@@ -223,6 +234,7 @@ const ProjectTaskTree = () => {
 
   const renderTree = (nodeId, dict) => {
     const node = taskDetails[nodeId];
+    console.log("node", node);
     if (!node) return null;
 
     const assignedAccount = accounts.find(emp => emp.id === node.assigned_to) || { name: "Unassigned" };
@@ -300,7 +312,8 @@ const ProjectTaskTree = () => {
             },
           }}
         >
-          {Object.keys(project.tasks).map((subtaskId) => renderTree(subtaskId, project.tasks))}
+          {/* {console.log("prev", Object.keys(project.tasks).map((subtaskId) => renderTree(subtaskId, project.tasks)))} */}
+          {renderedTasks}
           <div className="project-btn-container">
             <Button className="add-button" onClick={() => handleOpenDialog(null)} startIcon={<FontAwesomeIcon icon={faPlus} />} >Add Root Task</Button>
             <Button className="delete-button" onClick={() => handleDeleteProject(project_id)} startIcon={<FontAwesomeIcon icon={faTrash} />}>
