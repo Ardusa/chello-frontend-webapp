@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createRoot } from 'react-dom/client';
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchProjectDetails, createTask, updateTask, TaskCreate, fetchAccounts, getAccount, fetchTaskDetails, deleteTask, deleteProject } from "../services/api.js";
 import { SimpleTreeView, TreeItem2 } from "@mui/x-tree-view";
@@ -168,17 +169,17 @@ const ProjectTaskTree = () => {
     }
   };
 
-  const handleOpenDialog = (ref = null) => {
-    // setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
-    // setEditingTask(false);
-    // setOpen(true);
-    // console.log("tree", findTree(parent_id));
+  const handleOpenDialog = (ref, parent_id) => {
+    setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
+    setEditingTask(false);
+    setOpen(true);
+    console.log("tree", findTree(parent_id));
 
 
-    if (ref && ref.current) {
-      ref.current.remove();
-    }
-    console.log("parent_id", ref);
+    // if (ref && ref.current) {
+    //   ref.current.remove();
+    // }
+    // console.log("parent_id", ref);
   };
 
   const findTree = (nodeId) => {
@@ -267,12 +268,19 @@ const ProjectTaskTree = () => {
           }
         }
       };
-      const newTree = renderTree(task.id, findChildren(task.id, subtasksDict));
+      const newTree = (
+        <SimpleTreeView>
+          {renderTree(task.id, findChildren(task.id, subtasksDict))}
+        </SimpleTreeView>
+      );
       console.log("newTree", newTree);
       console.log("openTaskRef", openTaskRef.current);
-      
-      openTaskRef.current.replaceWith(newTree);
-      setOpenTaskRef(null);
+
+      if (openTaskRef && openTaskRef.current) {
+        const root = createRoot(openTaskRef.current);
+        root.render(newTree);
+      }
+
       handleCloseDialog();
     }
     catch (error) {
