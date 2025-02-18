@@ -13,7 +13,8 @@ const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
  * @param {string} [data.email=""] - Unique email address of the account.
  * @param {string} [data.password=""] - Password of the account.
  * @param {string} [data.manager_id=""] - Foreign key referencing the manager of the account, nullable.
- * @param {number} [data.position=0] - Position of the account within the company.
+ * @param {string} [data.position=""] - Position of the account within a company.
+ * @param {boolean} [data.manager=false] - Boolean indicating if the account is a manager.
  * @param {boolean} [data.free_plan=false] - Boolean indicating if the account is on a free plan.
  * @param {number} [data.task_limit=null] - Maximum number of tasks the account can create.
  * @param {string} [data.company_id=""] - Foreign key referencing the company the account belongs to.
@@ -30,6 +31,7 @@ export class AccountResponse {
         this.company_id = data.company_id || "";
         this.manager_id = data.manager_id || "";
         this.position = data.position || "";
+        this.manager = data.manager || false;
         this.account_created = data.account_created ? new Date(data.account_created) : new Date();
         this.last_login = data.last_login ? new Date(data.last_login) : new Date();
         this.free_plan = data.free_plan || false;

@@ -15,10 +15,13 @@ import "../css/sidebar.css";
  * @param {String} backLink the link to go back to, for projects page on the dashboard it would be "/dashboard/projects"
  * @param {Function} useEffectFuncs the functions to run on useEffect
  * @param {Boolean} loadingElement if true, will display a loading spinner instead of the element
+ * @param {Object} managerElements this should be in the form of { section_id : { element: <Element /, icon: <Icon /, urlPath: "/dashboard/section_id", name: "element", } }, for manager specific elements
+ * @param {Object} companyElements this should be in the form of { section_id : { element: <Element /, icon: <Icon /, urlPath: "/dashboard/section_id", name: "element", } }, for company specific elements
  * @returns a dashboard component with a sidebar and main content
  */
-const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElement = false }) => {
+const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElement = false, managerElements = {}, companyElements = {} }) => {
     const { section } = useParams();
+    const [displayElements, setDisplayElements] = useState(elements);
     const [selectedSection, setSelectedSection] = useState(Object.keys(elements)[0]);
     const { logout } = useAuth();
     const navigate = useNavigate();
@@ -50,12 +53,22 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
                 setLogo(logo);
             }
 
+            if (user.manager) {
+                setDisplayElements(prevElements => ({ ...prevElements, ...managerElements }));
+            }
+
+            if (user.company_id) {
+                setDisplayElements(prevElements => ({ ...prevElements, ...companyElements }));
+            }
+
             await Promise.all(useEffectFuncs.map(func => func()));
+
             setLoading(false);
         };
 
 
         fetchData();
+
     }, []);
 
     const handleLogout = () => {
@@ -69,7 +82,6 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
 
     if (loading) {
         return <div />;
-        // return <div className='loading-screen'><CircularProgress /></div>;
     }
 
     return (
@@ -87,7 +99,8 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
 
 
                 <nav className="nav">
-                    {Object.entries(elements).map(([id, element]) => (
+
+                    {Object.entries(displayElements).map(([id, element]) => (
                         <Button
                             key={id}
                             className={`nav-item ${selectedSection === id ? "active" : ""}`}
@@ -135,7 +148,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
             {/* Main Content */}
             <main className="content">
                 {!loadingElement
-                    ? elements[selectedSection].element
+                    ? displayElements[selectedSection].element
                     : <CircularProgress />}
             </main>
         </div>

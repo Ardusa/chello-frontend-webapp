@@ -17,21 +17,21 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     const refreshSelf = async () => {
-        await getAccount().then((e) => {
-            if (e.company_id) {
-                elements = {
-                    ...elements,
-                    employees: {
-                        element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
-                        icon: <AssignmentIndIcon />,
-                        urlPath: "/dashboard/employees",
-                        name: "Employees",
-                    },
-                };
-            }
-        }).catch((e) => {
-            console.error(e);
-        });
+        // await getAccount().then((e) => {
+        //     if (e.company_id) {
+        //         elements = {
+        //             ...elements,
+        //             employees: {
+        //                 element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
+        //                 icon: <AssignmentIndIcon />,
+        //                 urlPath: "/dashboard/employees",
+        //                 name: "Employees",
+        //             },
+        //         };
+        //     }
+        // }).catch((e) => {
+        //     console.error(e);
+        // });
     };
 
     const refreshProjects = async () => {
@@ -65,9 +65,18 @@ const Dashboard = () => {
         }
     };
 
+    let company_elements = {
+        employees: {
+            element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
+            icon: <AssignmentIndIcon />,
+            urlPath: "/dashboard/employees",
+            name: "Employees",
+        },
+    };
+
     useEffect(() => {
         const fetchData = async () => {
-            await refreshSelf();
+            // await refreshSelf();
             await refreshProjects();
             await refreshAccounts();
             setLoading(false);
@@ -76,7 +85,7 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    return <Sidebar elements={elements} loadingElement={loading} />;
+    return <Sidebar elements={elements} companyElements={company_elements} loadingElement={loading} />;
 };
 
 export default Dashboard;
