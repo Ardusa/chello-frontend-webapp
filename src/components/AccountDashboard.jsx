@@ -12,17 +12,6 @@ import "../css/project-display.css";
 import Sidebar from "./Sidebar.jsx";
 
 const Dashboard = () => {
-    const [accounts, setAccounts] = useState({});
-    const [loading, setLoading] = useState(true);
-
-    const refreshAccounts = async () => {
-        await fetchAccounts().then((e) => {
-            setAccounts(e);
-        }).catch((e) => {
-            console.error(e);
-        });
-    };
-
     let elements = {
         projects: {
             element: <ProjectCards/>,
@@ -40,23 +29,14 @@ const Dashboard = () => {
 
     let company_elements = {
         employees: {
-            element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
+            element: <AccountCards/>,
             icon: <AssignmentIndIcon />,
             urlPath: "/dashboard/employees",
             name: "Employees",
         },
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await refreshAccounts();
-            setLoading(false);
-        };
-
-        fetchData();
-    }, []);
-
-    return <Sidebar elements={elements} companyElements={company_elements} loadingElement={loading} />;
+    return <Sidebar elements={elements} companyElements={company_elements} loadingElement={false} />;
 };
 
 export default Dashboard;
@@ -187,9 +167,19 @@ const InsightsCards = () => {
     );
 };
 
-const AccountCards = ({ accounts, refreshAccounts }) => {
+const AccountCards = () => {
+    const [accounts, setAccounts] = useState({});
     const [open, setOpen] = useState(false);
     const [accountData, setNewAccount] = useState(new AccountCreate());
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const accounts = await fetchAccounts();
+            setAccounts(accounts);
+        }
+
+        fetchData();
+    }, []);
 
     const handleOpen = () => {
         getAccount()
@@ -219,7 +209,11 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
         registerAccount(accountData)
             .then(() => handleClose())
             .catch(console.error);
-        refreshAccounts();
+        fetchAccounts().then((e) => {
+            setAccounts(e);
+        }).catch((e) => {
+            console.error(e);
+        });
     };
 
     const isFormValid = accountData.name && accountData.email && accountData.password && accountData.position;
