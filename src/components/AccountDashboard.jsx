@@ -12,17 +12,8 @@ import "../css/project-display.css";
 import Sidebar from "./Sidebar.jsx";
 
 const Dashboard = () => {
-    const [projects, setProjects] = useState({});
     const [accounts, setAccounts] = useState({});
     const [loading, setLoading] = useState(true);
-
-    const refreshProjects = async () => {
-        await fetchProjects().then((e) => {
-            setProjects(e);
-        }).catch((e) => {
-            console.error(e);
-        });
-    };
 
     const refreshAccounts = async () => {
         await fetchAccounts().then((e) => {
@@ -34,7 +25,7 @@ const Dashboard = () => {
 
     let elements = {
         projects: {
-            element: <ProjectCards projects={projects} refreshProjects={refreshProjects} refreshAccounts={refreshAccounts} />,
+            element: <ProjectCards/>,
             icon: <FolderIcon />,
             urlPath: "/dashboard/projects",
             name: "Projects",
@@ -58,7 +49,6 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await refreshProjects();
             await refreshAccounts();
             setLoading(false);
         };
@@ -71,11 +61,21 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-const ProjectCards = ({ projects, refreshProjects }) => {
+const ProjectCards = () => {
+    const [projects, setProjects] = useState({});
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
     const [projectData, setNewProject] = useState(new ProjectCreate());
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const projects = await fetchProjects();
+            setProjects(projects);
+        }
+
+        fetchData();
+    }, []);
 
     const handleOpen = () => {
         getAccount()
@@ -105,7 +105,6 @@ const ProjectCards = ({ projects, refreshProjects }) => {
 
         createProject(projectData)
             .then((createdProject) => {
-                refreshProjects();
                 handleClose();
                 navigate(`/projects/${createdProject.id}/files/`);
             })
