@@ -70,12 +70,15 @@ const ProjectTaskTree = () => {
   const [openTaskRef, setOpenTaskRef] = useState(null);
 
   const [renderedTasks, setRenderedTasks] = useState([]);
+  const [expandedItems, setExpandedItems] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       await fetchAccountDetails();
       await loadProjectDetails();
+
+      setExpandedItems(Object.keys(taskDetails));
 
       setLoading(false);
     };
@@ -89,6 +92,7 @@ const ProjectTaskTree = () => {
       setProject({ ...projectData });
 
       await fetchTaskDetailsRecursively(projectData.tasks);
+
 
       const tasks = Object.keys(projectData.tasks).map((subtaskId) => {
         const tree = renderTree(subtaskId, projectData.tasks);
@@ -169,17 +173,11 @@ const ProjectTaskTree = () => {
     }
   };
 
-  const handleOpenDialog = (ref, parent_id) => {
+  const handleOpenDialog = (ref = null, parent_id) => {
     setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
     setEditingTask(false);
     setOpen(true);
-    console.log("tree", findTree(parent_id));
-
-
-    // if (ref && ref.current) {
-    //   ref.current.remove();
-    // }
-    // console.log("parent_id", ref);
+    setOpenTaskRef(ref);
   };
 
   const findTree = (nodeId) => {
@@ -236,12 +234,39 @@ const ProjectTaskTree = () => {
 
   const handleCloseDialog = async () => {
     setOpen(false);
-    setNewTask(new TaskCreate({ project_id }));
+    setNewTask(new TaskCreate({ project_id, assigned_to: newTask.assigned_to }));
+    setEditingTask(false);
+    setOpenTaskRef(null);
   };
 
   const handleCreateTask = async () => {
     try {
-      await createTask(newTask);
+      const task = await createTask(newTask);
+      await loadProjectDetails();
+
+      const findChildren = (nodeId, dict) => {
+        if (dict[nodeId]) {
+          return dict[nodeId];
+        } else {
+          for (const [parentId, subtasks] of Object.entries(dict)) {
+            if (findChildren(nodeId, subtasks)) {
+              return subtasks;
+            }
+          }
+        }
+      };
+
+      if (openTaskRef && openTaskRef.current) {
+        const root = createRoot(openTaskRef.current);
+        const parentTree = findTree(newTask.parent_task_id);
+        if (parentTree) {
+          parentTree.props.children.push(renderTree(task.id, findChildren(task.id, subtasksDict)));
+          root.render(parentTree);
+        }
+      }
+
+      setExpandedItems((prev) => [...new Set([...prev, newTask.parent_task_id, task.id])]);
+
       handleCloseDialog();
     }
     catch (error) {
@@ -268,13 +293,12 @@ const ProjectTaskTree = () => {
           }
         }
       };
+      
       const newTree = (
         <SimpleTreeView>
           {renderTree(task.id, findChildren(task.id, subtasksDict))}
         </SimpleTreeView>
       );
-      console.log("newTree", newTree);
-      console.log("openTaskRef", openTaskRef.current);
 
       if (openTaskRef && openTaskRef.current) {
         const root = createRoot(openTaskRef.current);
@@ -312,6 +336,10 @@ const ProjectTaskTree = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleExpandedItemsChange = (event, itemIds) => {
+    setExpandedItems(itemIds);
   };
 
   const renderTree = (nodeId, dict) => {
@@ -382,6 +410,8 @@ const ProjectTaskTree = () => {
         </div>
 
         <SimpleTreeView
+          expandedItems={expandedItems}
+          onExpandedItemsChange={handleExpandedItemsChange}
           sx={{
             width: '100%',
             borderColor: 'divider',

@@ -52,7 +52,7 @@
     background-color: var(--brand-color-3);
     transition: all 0.2s;
     border-radius: 10px;
-    margin-top: 10px;
+    margin-top: 0px;
 }
 
 .project-file-container .MuiTreeItem-content:hover {
@@ -98,7 +98,7 @@
 }
 
 .project-file-container .MuiCollapse-wrapperInner {
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
 .project-file-container .MuiDialogActions-root .MuiButton-root {
@@ -126,13 +126,13 @@
     width: fit-content;
     margin: 0px 0px 0px 0px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
 }
 
 .project-file-container .task-node span.task-description {
     margin: 0px auto 0px 0px;
-    width: 20vw;
+    /* width: 20vw; */
+    width: 30%;
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
