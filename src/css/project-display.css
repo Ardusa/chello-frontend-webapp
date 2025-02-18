@@ -1,9 +1,44 @@
-
 .project-file-container {
     text-align: center;
     color: black;
 }
 
+.project-file-container .centered-container {
+    flex-direction: column;
+    width: 97%;
+}
+
+.project-file-container .project-header-container {
+    margin-bottom: 60px;
+    color: white;
+}
+
+.project-file-container .project-header-container h1 {
+    font-family: var(--title-font);
+    margin: 5px 0pc;
+    font-size: 80px;
+}
+
+.project-file-container .project-header-container p {
+    margin: 5px 0px;
+    font-size: 30px;
+}
+
+.project-file-container .project-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 80px;
+    padding: 20px 0px;
+    background-color: rgba(59, 54, 54, 0.8);
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.project-file-container .project-btn-container button {
+    transition: all 0.2s ease-in-out !important;
+}
 
 .project-file-container .MuiSimpleTreeView-root {
     background-color: transparent;
@@ -12,22 +47,64 @@
     --TreeView-itemChildrenIndentation: 35px !important;
 }
 
-.project-file-container .centered-container {
-    flex-direction: column;
-    width: 97%;
-}
-
 .project-file-container .MuiTreeItem-content {
     padding: 0px 0px 0px 10px;
     background-color: var(--brand-color-3);
     transition: all 0.2s;
     border-radius: 10px;
+    margin-top: 10px;
 }
 
 .project-file-container .MuiTreeItem-content:hover {
     background-color: white;
 }
 
+.project-file-container .MuiTreeItem-root {
+    padding: 0px !important;
+    margin: 7px 0px 7px 0px;
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.project-file-container .MuiCollapse-root {
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.project-file-container .MuiTreeItem2-label {
+    font-size: 2rem;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.project-file-container .MuiButton-root {
+    font-size: 1.2rem;
+    padding: 0px;
+    margin-left: 20px;
+}
+
+.project-file-container .MuiDialog-paper {
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.project-file-container .MuiTextField-root {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.project-file-container .MuiCollapse-wrapperInner {
+    margin-bottom: 5px;
+}
+
+.project-file-container .MuiDialogActions-root .MuiButton-root {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+}
 
 .project-file-container .task-node {
     display: flex;
@@ -62,28 +139,6 @@
     white-space: nowrap;
 }
 
-/* Styling for the tree items */
-.project-file-container .MuiTreeItem-root {
-    padding: 0px !important;
-    margin: 7px 0px 7px 0px;
-    display: block;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-}
-
-.project-file-container .MuiCollapse-root {
-    margin: 0px 0px 15px 0px;
-}
-
-/* Make the task names aligned to the right, except for the project name */
-.project-file-container .MuiTreeItem2-label {
-    font-size: 2rem;
-    text-align: left;
-    flex-grow: 1;
-}
-
-/* Styling for the trash can icon */
 .project-file-container .trash-icon {
     font-size: 1.5rem;
     color: #555;
@@ -92,56 +147,10 @@
     margin-left: 10px;
 }
 
-/* Hover effect for the trash icon */
 .project-file-container .MuiTreeItem-root:hover .trash-icon {
     color: white;
     transform: scale(1.2);
     background-color: #ffcccc;
-}
-
-/* Tree item button styling */
-.project-file-container .MuiButton-root {
-    font-size: 1.2rem;
-    /* Increase font size for the add task button */
-    /* padding: 10px 20px; */
-    padding: 0px;
-    margin-left: 20px;
-}
-
-/* Dialog box styling */
-.project-file-container .MuiDialog-paper {
-    width: 90%;
-    max-width: 600px;
-    border-radius: 10px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-/* Text fields inside the dialog box */
-.project-file-container .MuiTextField-root {
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-}
-
-/* Make buttons inside the dialog box larger */
-.project-file-container .MuiDialogActions-root .MuiButton-root {
-    font-size: 1.2rem;
-    padding: 10px 20px;
-}
-
-.project-file-container .project-header-container {
-    margin-bottom: 60px;
-    color: white;
-}
-
-.project-file-container .project-header-container h1 {
-    font-family: var(--title-font);
-    margin: 5px 0pc;
-    font-size: 80px;
-}
-
-.project-file-container .project-header-container p {
-    margin: 5px 0px;
-    font-size: 30px;
 }
 
 .project-file-container .task-actions {
@@ -189,20 +198,4 @@
 .project-file-container .task-actions .delete-button {
     margin: 0px auto;
     padding: 10px 0px;
-}
-
-.project-file-container .project-btn-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    gap: 80px;
-    padding: 20px 0px;
-    background-color: rgba(59, 54, 54, 0.8);
-    margin-top: 20px;
-    border-radius: 10px;
-}
-
-.project-file-container .project-btn-container button {
-    transition: all 0.2s ease-in-out !important;
 }
