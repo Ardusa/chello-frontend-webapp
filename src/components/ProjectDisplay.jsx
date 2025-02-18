@@ -315,9 +315,15 @@ const ProjectTaskTree = () => {
 
   const handleDeleteTask = async (ref, taskId) => {
     try {
+      const details = taskDetails[taskId];
+      
       await deleteTask(taskId);
-      if (ref && ref.current) {
-        ref.current.remove();
+      await loadProjectDetails();
+
+      const parentTree = findTree(details.parent_task_id);
+      if (parentTree) {
+        const root = createRoot(parentTree.ref.current);
+        root.render(renderTree(details.parent_task_id, subtasksDict));
       }
     } catch (error) {
       console.error("Error deleting task:", error);
