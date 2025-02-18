@@ -369,8 +369,8 @@ const ProjectTaskTree = () => {
     <div className="project-file-container">
       <div className="centered-container">
         <div className="project-header-container">
-          <h1>{project.name}</h1>
-          <p>{project.description}</p>
+          <h1>{project.project.name}</h1>
+          <p>{project.project.description}</p>
         </div>
 
         <SimpleTreeView
