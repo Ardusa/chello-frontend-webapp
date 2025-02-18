@@ -61,10 +61,9 @@ const ProjectTaskTree = () => {
   const [open, setOpen] = useState(false);
   const [newTask, setNewTask] = useState(new TaskCreate({ project_id }));
   const [accounts, setAccounts] = useState([]);
-  const [taskDetails, setTaskDetails] = useState({});
+  const [taskDetails] = useState({});
   const [subtasksDict] = useState({});
   const [loading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState(false);
   const [editingTask, setEditingTask] = useState(false);
 
   const [renderedTasks, setRenderedTasks] = useState(null);
@@ -87,14 +86,13 @@ const ProjectTaskTree = () => {
       setProject({ ...projectData });
 
       await fetchTaskDetailsRecursively(projectData.tasks);
-      const renderedTasks = Object.keys(projectData.tasks).map((subtaskId) => {
+
+      setRenderedTasks(Object.keys(projectData.tasks).map((subtaskId) => {
         const tree = renderTree(subtaskId, projectData.tasks);
         console.log("tree", tree);
         return tree;
-      });
-
-      setRenderedTasks(renderedTasks);
-
+      }));
+      
     } catch (error) {
       console.error("Error fetching project details:", error);
       setError("Error fetching project details.");
@@ -181,15 +179,12 @@ const ProjectTaskTree = () => {
   const handleCloseDialog = async () => {
     setOpen(false);
     setNewTask(new TaskCreate({ project_id }));
-    // setRefresh(!refresh);
   };
 
   const handleCreateTask = async () => {
     try {
-      setRefresh(!refresh);
       await createTask(newTask);
       handleCloseDialog();
-      setRefresh(!refresh);
     }
     catch (error) {
       console.error("Error creating task:", error);
@@ -201,7 +196,6 @@ const ProjectTaskTree = () => {
     try {
       await updateTask(newTask);
       handleCloseDialog();
-      setRefresh(!refresh);
     }
     catch (error) {
       console.error("Error editing task:", error);
@@ -212,7 +206,6 @@ const ProjectTaskTree = () => {
   const handleDeleteTask = async (taskId) => {
     try {
       await deleteTask(taskId);
-      setRefresh(!refresh);
     } catch (error) {
       console.error("Error deleting task:", error);
       setError("Error deleting task.");
@@ -234,7 +227,6 @@ const ProjectTaskTree = () => {
 
   const renderTree = (nodeId, dict) => {
     const node = taskDetails[nodeId];
-    console.log("node", node);
     if (!node) return null;
 
     const assignedAccount = accounts.find(emp => emp.id === node.assigned_to) || { name: "Unassigned" };
