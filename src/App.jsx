@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./services/AuthService";
 import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
+import AccountDashboard from "./components/AccountDashboard";
 import RegisterEmployee from "./components/RegisterEmployee";
 import ProjectDisplay from "./components/ProjectDisplay";
 import Settings from "./components/Settings";
@@ -21,7 +21,7 @@ const AppRoutes = () => {
       <Route path="/set-password/:id" element={<RegisterEmployee new_account={false} set_password={true} />} />
 
       {/* Protected Routes */}
-      <Route path="/dashboard/:section" element={<ProtectedRoute Component={Dashboard} />} />
+      <Route path="/dashboard/:section" element={<ProtectedRoute Component={AccountDashboard} />} />
       <Route path="/settings" element={<ProtectedRoute Component={Settings} />} />
       <Route path="/projects/:project_id/:section" element={<ProtectedRoute Component={ProjectDisplay} />} />
     </Routes>

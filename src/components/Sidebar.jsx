@@ -88,7 +88,7 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
         <div className="sidebar-container">
             {/* Sidebar */}
             <aside className="sidebar">
-                <div className="header" style={logo ? { marginBottom: '10px' } : {}}>
+                <div className="header">
                     <img src={chelloLogo} alt="Company Logo" className="logo-img" />
                     <h1 className='title'>hello</h1>
                 </div>

@@ -9,30 +9,12 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress } from "@mui/material";
 import "../css/dashboard.css";
 import "../css/project-display.css";
-import Sidebar from "./Sidebar";
+import Sidebar from "./Sidebar.jsx";
 
 const Dashboard = () => {
     const [projects, setProjects] = useState({});
     const [accounts, setAccounts] = useState({});
     const [loading, setLoading] = useState(true);
-
-    const refreshSelf = async () => {
-        // await getAccount().then((e) => {
-        //     if (e.company_id) {
-        //         elements = {
-        //             ...elements,
-        //             employees: {
-        //                 element: <AccountCards accounts={accounts} refreshAccounts={refreshAccounts} />,
-        //                 icon: <AssignmentIndIcon />,
-        //                 urlPath: "/dashboard/employees",
-        //                 name: "Employees",
-        //             },
-        //         };
-        //     }
-        // }).catch((e) => {
-        //     console.error(e);
-        // });
-    };
 
     const refreshProjects = async () => {
         await fetchProjects().then((e) => {
@@ -76,7 +58,6 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            // await refreshSelf();
             await refreshProjects();
             await refreshAccounts();
             setLoading(false);
@@ -131,6 +112,8 @@ const ProjectCards = ({ projects, refreshProjects }) => {
             .catch(console.error);
     };
 
+    const isFormValid = projectData.name && projectData.description;
+
     return (
         <div className="cards-container">
             <div className="cards">
@@ -148,7 +131,7 @@ const ProjectCards = ({ projects, refreshProjects }) => {
                     <AddBoxOutlinedIcon className="add-sign" />
                 </div>
             </div>
-            <Dialog open={open} onClose={handleClose} PaperProps={{ style: { backgroundColor: 'lightgray' } }}>
+            <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Create Project</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -160,6 +143,7 @@ const ProjectCards = ({ projects, refreshProjects }) => {
                         fullWidth
                         value={projectData.name}
                         onChange={handleChange}
+                        required
                     />
                     <TextField
                         margin="dense"
@@ -169,14 +153,15 @@ const ProjectCards = ({ projects, refreshProjects }) => {
                         fullWidth
                         value={projectData.description}
                         onChange={handleChange}
+                        required
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary">
-                        Submit
+                    <Button onClick={handleSubmit} color="primary" disabled={!isFormValid} aria-required="true">
+                        Create Project
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -238,6 +223,8 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
         refreshAccounts();
     };
 
+    const isFormValid = accountData.name && accountData.email && accountData.password && accountData.position;
+
     return (
         <div className="cards-container">
             <div className="cards">
@@ -253,7 +240,7 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                     <AddBoxOutlinedIcon className="add-sign" />
                 </div>
             </div>
-            <Dialog open={open} onClose={handleClose} PaperProps={{ style: { backgroundColor: 'white' } }}>
+            <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Register Account</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -265,6 +252,7 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                         fullWidth
                         value={accountData.name}
                         onChange={handleChange}
+                        required
                     />
                     <TextField
                         margin="dense"
@@ -274,6 +262,7 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                         fullWidth
                         value={accountData.email}
                         onChange={handleChange}
+                        required
                     />
                     <TextField
                         margin="dense"
@@ -283,8 +272,9 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                         fullWidth
                         value={accountData.password}
                         onChange={handleChange}
+                        required
                     />
-                    <TextField
+                    {/* <TextField
                         margin="dense"
                         name="manager_id"
                         label="Manager ID"
@@ -292,7 +282,8 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                         fullWidth
                         value={accountData.manager_id}
                         onChange={handleChange}
-                    />
+                        required
+                    /> */}
                     <TextField
                         margin="dense"
                         name="position"
@@ -301,13 +292,14 @@ const AccountCards = ({ accounts, refreshAccounts }) => {
                         fullWidth
                         value={accountData.position}
                         onChange={handleChange}
+                        required
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary" style={{ fontSize: "20px", marginRight: "10px" }} >
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary" style={{ fontSize: "20px" }}>
+                    <Button onClick={handleSubmit} color="primary" style={{ fontSize: "20px" }} disabled={!isFormValid}>
                         Submit
                     </Button>
                 </DialogActions>
