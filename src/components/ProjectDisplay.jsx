@@ -64,9 +64,11 @@ const ProjectTaskTree = () => {
   const [taskDetails] = useState({});
   const [subtasksDict] = useState({});
   const [loading, setLoading] = useState(true);
-  const [editingTask, setEditingTask] = useState(false);
 
-  const [renderedTasks, setRenderedTasks] = useState(null);
+  const [editingTask, setEditingTask] = useState(false);
+  const [openTaskRef, setOpenTaskRef] = useState(null);
+
+  const [renderedTasks, setRenderedTasks] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -87,12 +89,14 @@ const ProjectTaskTree = () => {
 
       await fetchTaskDetailsRecursively(projectData.tasks);
 
-      setRenderedTasks(Object.keys(projectData.tasks).map((subtaskId) => {
+      const tasks = Object.keys(projectData.tasks).map((subtaskId) => {
         const tree = renderTree(subtaskId, projectData.tasks);
-        console.log("tree", tree);
+        // console.log("tree", tree);
         return tree;
-      }));
-      
+      });
+
+      setRenderedTasks(tasks);
+
     } catch (error) {
       console.error("Error fetching project details:", error);
       setError("Error fetching project details.");
@@ -164,15 +168,68 @@ const ProjectTaskTree = () => {
     }
   };
 
-  const handleOpenDialog = (parent_id = null) => {
-    setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
-    setEditingTask(false);
-    setOpen(true);
+  const handleOpenDialog = (ref = null) => {
+    // setNewTask((prev) => ({ ...prev, parent_task_id: parent_id }));
+    // setEditingTask(false);
+    // setOpen(true);
+    // console.log("tree", findTree(parent_id));
+
+
+    if (ref && ref.current) {
+      ref.current.remove();
+    }
+    console.log("parent_id", ref);
   };
 
-  const handleOpenEditDialog = (taskId) => {
+  const findTree = (nodeId) => {
+    // given nodeId, find the tree element that is the node. this includes all the subtask elements
+    // will be recursive
+
+    console.log("renderedTasks", renderedTasks);
+
+    for (const task of renderedTasks) {
+      console.log("task", task);
+    }
+
+    const node = taskDetails[nodeId];
+    if (!node) return null;
+
+    const recursiveTreeSearch = (nodeId, dict, parentTree) => {
+      console.log("nodeId", nodeId);
+      console.log("dict", dict);
+      console.log("parentTree", parentTree);
+
+      if (nodeId === parentTree.key) {
+        return parentTree;
+      }
+
+      for (const [subtaskId, subtasks] of Object.entries(dict)) {
+        for (const child of parentTree.props.children) {
+          if (child.key === subtaskId) {
+            return child;
+          }
+          if (recursiveTreeSearch(nodeId, subtasks, child)) {
+            return parentTree.children;
+          }
+        }
+      }
+
+      return null;
+    };
+
+    // return recursiveTreeSearch(nodeId, subtasksDict, renderedTasks);
+    // for (const task of renderedTasks) {
+    //   if (recursiveTreeSearch(nodeId, subtasksDict, task)) {
+    //     return task;
+    //   }
+    // }
+
+  };
+
+  const handleOpenEditDialog = (ref, taskId) => {
     setNewTask((prev) => ({ ...prev, ...taskDetails[taskId] }));
     setEditingTask(true);
+    setOpenTaskRef(ref);
     setOpen(true);
   };
 
@@ -194,7 +251,28 @@ const ProjectTaskTree = () => {
 
   const handleEditTask = async () => {
     try {
-      await updateTask(newTask);
+      const task = await updateTask(newTask);
+      console.log("task", task);
+
+      taskDetails[task.id] = task;
+
+      const findChildren = (nodeId, dict) => {
+        if (dict[nodeId]) {
+          return dict[nodeId];
+        } else {
+          for (const [parentId, subtasks] of Object.entries(dict)) {
+            if (findChildren(nodeId, subtasks)) {
+              return subtasks;
+            }
+          }
+        }
+      };
+      const newTree = renderTree(task.id, findChildren(task.id, subtasksDict));
+      console.log("newTree", newTree);
+      console.log("openTaskRef", openTaskRef.current);
+      
+      openTaskRef.current.replaceWith(newTree);
+      setOpenTaskRef(null);
       handleCloseDialog();
     }
     catch (error) {
@@ -203,9 +281,12 @@ const ProjectTaskTree = () => {
     }
   }
 
-  const handleDeleteTask = async (taskId) => {
+  const handleDeleteTask = async (ref, taskId) => {
     try {
       await deleteTask(taskId);
+      if (ref && ref.current) {
+        ref.current.remove();
+      }
     } catch (error) {
       console.error("Error deleting task:", error);
       setError("Error deleting task.");
@@ -232,8 +313,9 @@ const ProjectTaskTree = () => {
     const assignedAccount = accounts.find(emp => emp.id === node.assigned_to) || { name: "Unassigned" };
     const formattedDate = new Date(node.task_created).toLocaleDateString();
 
+    const taskRef = React.createRef();
     return (
-      <TreeItem2 key={node.id} itemId={node.id} label={
+      <TreeItem2 key={node.id} itemId={node.id} ref={taskRef} label={
         <div className="task-node">
           <span className="task-name">{node.name}</span>
           <span className="task-description">{node.description}</span>
@@ -243,13 +325,13 @@ const ProjectTaskTree = () => {
           <span>{formattedDate}</span>
           <div>
             <div className="task-actions">
-              <Button className="settings-button" onClick={(e) => { e.stopPropagation(); handleOpenEditDialog(node.id); }} startIcon={<SettingsIcon />}>
+              <Button className="settings-button" onClick={(e) => { e.stopPropagation(); handleOpenEditDialog(taskRef, node.id); }} startIcon={<SettingsIcon />}>
                 Edit
               </Button>
-              <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(node.id); }}>
+              <Button className="add-button" onClick={(e) => { e.stopPropagation(); handleOpenDialog(taskRef, node.id); }}>
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
-              <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(node.id); }}>
+              <Button className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteTask(taskRef, node.id); }}>
                 <FontAwesomeIcon icon={faTrash} />
               </Button>
             </div>
@@ -262,6 +344,7 @@ const ProjectTaskTree = () => {
           },
         }}
       >
+        {/* {console.log("taskRef", taskRef)} */}
         {dict[node.id] &&
           Object.keys(dict[node.id]).map((subtaskId) => renderTree(subtaskId, dict[node.id]))}
       </TreeItem2>
