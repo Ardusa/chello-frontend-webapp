@@ -21,6 +21,7 @@ const API_BASE_URL = "http://127.0.0.1:8000"; // Adjust based on your backend
  * @param {Date} [data.account_created=new Date()] - Date and time the account was created.
  * @param {Date} [data.last_login=new Date()] - Date and time the account was last logged into.
  * @param {number} [data.efficiency_score=0.0] - Score indicating the efficiency of the account.
+ * @param {Array} [data.workHours=[]] - Array of work hours for each day of the week.
  */
 export class AccountResponse {
     constructor(data = {}) {
@@ -37,8 +38,17 @@ export class AccountResponse {
         this.free_plan = data.free_plan || false;
         this.task_limit = data.task_limit || null;
         this.efficiency_score = data.efficiency_score || 0.0;
+        this.workHours = data.workHours || [
+            { day: 'Monday', start: '', end: '' },
+            { day: 'Tuesday', start: '', end: '' },
+            { day: 'Wednesday', start: '', end: '' },
+            { day: 'Thursday', start: '', end: '' },
+            { day: 'Friday', start: '', end: '' },
+            { day: 'Saturday', start: '', end: '' },
+            { day: 'Sunday', start: '', end: '' },
+        ];
     }
-}
+} 
 
 
 /**
@@ -212,27 +222,65 @@ export class CompanyCreate {
     }
 }
 
+// Account API
 
 /**
- * Fetches the list of projects from the server for the current account.
+ * Registers a new account.
  * @async
- * @function fetchProjects
- * @returns {Promise<Object>} A promise that resolves to a dictionary of projects where the key is the project_id and the value is a {@link ProjectResponse} object.
+ * @function registerAccount
+ * @param {Object} accountData - The account data to create.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
  */
-export const fetchProjects = async () => {
-    const response = await makeAuthenticatedRequest("/projects/get-projects");
-    const json = await response.json();
+export const registerAccount = async (accountData) => {
+    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, accountData);
+    return response;
+}
 
-
-    // ! Debugging
-    // console.log("Projects:", json);
-
+/**
+ * Creates a new account for a completely new company.
+ * @async
+ * @function createAccount
+ * @param {AccountCreate} accountData - The account data to create.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
+ */
+export const createAccount = async (accountData) => {
+    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, accountData);
+    const json = await response.data;
     return json;
-};
+}
+
+/**
+ * Updates the details of the currently logged-in account.
+ * @async
+ * @function updateAccount
+ * @param {AccountResponse} accountData - The account data to update.
+ * @returns {Promise<AccountResponse>} A promise that resolves to the updated account data.
+ */
+export const updateAccount = async (accountData) => {
+    const response = await makeAuthenticatedRequest("/accounts/update-account", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(accountData),
+    });
+
+    const json = await response.json();
+    return json;
+}
+
+/**
+ * Sets a password for an existing account.
+ * @async
+ * @function setPassword
+ * @param {Object} accountData - The account data to create.
+ * @returns {Promise<Object>} A promise that resolves to the created account data.
+ */
+export const setPassword = async (accountData) => {
+    const response = await axios.post(`${API_BASE_URL}/set-password`, accountData);
+    return response;
+}
 
 /**
  * Fetches the list of accounts from the server.
- *
  * @async
  * @function fetchAccounts
  * @returns {Promise<Object>} A promise that resolves to a dictionary of accounts where the key is the account_id and the value is an AccountResponse object.
@@ -243,7 +291,6 @@ export const fetchAccounts = async () => {
     return json;
 }
 
-
 /**
  * Fetches the details of a specific account from the server.
  * @async
@@ -253,37 +300,6 @@ export const fetchAccounts = async () => {
  */
 export const fetchAccountDetails = async (account_id) => {
     const response = await makeAuthenticatedRequest(`/accounts/${account_id}`);
-    const json = await response.json();
-    return json;
-}
-
-/**
- * Fetches the details of a specific project from the server.
- * @async
- * @function fetchProjectDetails
- * @param {string} project_id - The ID of the project to fetch.
- * @returns {Promise<Object>} A promise that resolves to the details of the project.
- */
-export const fetchProjectDetails = async (project_id) => {
-    const response = await makeAuthenticatedRequest(`/projects/${project_id}/`);
-    const json = await response.json();
-    return json;
-}
-
-/**
- * Creates a new project on the server.
- * @async
- * @function createProject
- * @param {ProjectCreate} projectData - The project data to create.
- * @returns {Promise<ProjectResponse>} A promise that resolves to the created project data.
- */
-export const createProject = async (projectData) => {
-    const response = await makeAuthenticatedRequest("/projects/create", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(projectData),
-    });
-
     const json = await response.json();
     return json;
 }
@@ -300,43 +316,7 @@ export const getAccount = async () => {
     return json;
 }
 
-/**
- * Put a new account into the company database.
- * @async
- * @function registerAccount
- * @param {Object} accountData - The account data to create.
- * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
- */
-export const registerAccount = async (accountData) => {
-    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, accountData);
-    return response;
-}
-
-/**
- * Create a new account for a completely new company.
- * @async
- * @function createAccount
- * @param {AccountCreate} accountData - The account data to create.
- * @param {boolean} createCompany - Boolean indicating if a new company should be created.
- * @returns {Promise<AccountResponse>} A promise that resolves to the created account data.
- */
-export const createAccount = async (account_data) => {
-    const response = await axios.put(`${API_BASE_URL}/accounts/register-account`, account_data);
-    const json = await response.data;
-    return json;
-}
-
-/**
- * Set a password for an existing account.
- * @async
- * @function setPassword
- * @param {Object} accountData - The account data to create.
- * @returns {Promise<Object>} A promise that resolves to the created account data.
- */
-export const setPassword = async (accountData) => {
-    const response = await axios.post(`${API_BASE_URL}/set-password`, accountData);
-    return response;
-}
+// Task API
 
 /**
  * Creates a new task on the server.
@@ -402,6 +382,26 @@ export const fetchTaskDetails = async (task_id) => {
     return json;
 }
 
+// Project API
+
+/**
+ * Creates a new project on the server.
+ * @async
+ * @function createProject
+ * @param {ProjectCreate} projectData - The project data to create.
+ * @returns {Promise<ProjectResponse>} A promise that resolves to the created project data.
+ */
+export const createProject = async (projectData) => {
+    const response = await makeAuthenticatedRequest("/projects/create", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(projectData),
+    });
+
+    const json = await response.json();
+    return json;
+}
+
 /**
  * Deletes a project from the server.
  * @async
@@ -417,6 +417,50 @@ export const deleteProject = async (project_id) => {
     return response;
 }
 
+/**
+ * Fetches the list of projects from the server for the current account.
+ * @async
+ * @function fetchProjects
+ * @returns {Promise<Object>} A promise that resolves to a dictionary of projects where the key is the project_id and the value is a {@link ProjectResponse} object.
+ */
+export const fetchProjects = async () => {
+    const response = await makeAuthenticatedRequest("/projects/get-projects");
+    const json = await response.json();
+    return json;
+};
+
+/**
+ * Fetches the details of a specific project from the server.
+ * @async
+ * @function fetchProjectDetails
+ * @param {string} project_id - The ID of the project to fetch.
+ * @returns {Promise<Object>} A promise that resolves to the details of the project.
+ */
+export const fetchProjectDetails = async (project_id) => {
+    const response = await makeAuthenticatedRequest(`/projects/${project_id}/`);
+    const json = await response.json();
+    return json;
+}
+
+// Company API
+
+/**
+ * Creates a new company on the server.
+ * @async
+ * @function createCompany
+ * @param {CompanyCreate} companyData - The data for the company to create.
+ * @returns {Promise<CompanyResponse>} A promise that resolves to the details of the company.
+ */
+export const createCompany = async (companyData) => {
+    const response = await makeAuthenticatedRequest("/companies/create", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(companyData),
+    });
+
+    const json = await response.json();
+    return json;
+}
 
 /**
  * Fetches the logo of the user's company.
@@ -430,44 +474,5 @@ export const fetchLogo = async () => {
     if (json === "") {
         return null;
     }
-    return json;
-}
-
-// ? Company API
-
-/**
- * Fetches the details of the currently logged-in company.
- * @async
- * @function getCompany
- * @param {CompanyCreate} companyData - The data for the company to create.
- * @returns {Promise<CompanyResponse>} A promise that resolves to the details of the company.
- */
-export const createCompany = async (companyData) => {
-    console.log("Company Data:", companyData);
-    const response = await makeAuthenticatedRequest("/companies/create", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(companyData),
-    });
-
-    const json = await response.json();
-    return json;
-}
-
-/**
- * Update the details of the currently logged-in account.
- * @async
- * @function updateAccount
- * @param {AccountResponse} accountData - The account data to update.
- * @returns {Promise<AccountResponse>} A promise that resolves to the updated account data.
- */
-export const updateAccount = async (accountData) => {
-    const response = await makeAuthenticatedRequest("/accounts/update-account", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(accountData),
-    });
-
-    const json = await response.json();
     return json;
 }

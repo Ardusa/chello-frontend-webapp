@@ -39,10 +39,11 @@
 body,
 html {
   margin: 0;
-  height: 100vh;
+  height: 100%;
   font-family: var(--body-font);
   background: var(--background-color);
   background-size: 200% 200%;
+  background-attachment: fixed;
   color: white;
   animation: gradient-animation 4s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
 }

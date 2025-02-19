@@ -157,10 +157,6 @@ const AuthProvider = ({ children }) => {
     return false;
   });
 
-  const isLoggedInFunction = async () => {
-    return await checkLoginStatus();
-  }
-
   useEffect(() => {
     const fetchLoginStatus = async () => {
       const status = await checkLoginStatus();
@@ -168,17 +164,6 @@ const AuthProvider = ({ children }) => {
     };
 
     fetchLoginStatus();
-
-    // const handleStorageChange = async () => {
-    //   const isLoggedIn = await checkLoginStatus();
-    //   setIsLoggedIn(isLoggedIn);
-    //   console.log("Storage changed, isLoggedIn:", isLoggedIn);
-    // };
-
-    // window.addEventListener("storage", handleStorageChange);
-    // return () => {
-    //   window.removeEventListener("storage", handleStorageChange);
-    // };
   }, []);
 
   const login = async (username, password) => {
@@ -207,7 +192,7 @@ const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, isLoggedInFunction }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

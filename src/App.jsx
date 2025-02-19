@@ -19,6 +19,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<RegisterAccount />} />
       <Route path="/register-company" element={<RegisterAccount company={true} />} />
       <Route path="/set-password/:id" element={<RegisterEmployee new_account={false} set_password={true} />} />
+      <Route path="/settings-weak" element={<Settings />} />
 
       {/* Protected Routes */}
       <Route path="/dashboard/:section" element={<ProtectedRoute Component={AccountDashboard} />} />

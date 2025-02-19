@@ -1,20 +1,139 @@
-.settings-container .settings-form {
-    max-width: 800px;
-    margin: 50px auto;
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-left: 300px;
+}
+
+.settings-container .setting-container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: 20px 0px;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-.settings-container button.save-btn {
-    background-color: var(--green-button-color);
-    color: white;
-    padding: 10px 50px;
+    background-color: var(--translucent-container-background);
     border-radius: 5px;
-    width: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    justify-content: center;
 }
 
-.settings-container button.save-btn:hover {
-    background-color: var(--green-button-hover-color);
+.settings-container .setting-container.first {
+    margin-top: 50px;
+}
+
+.settings-container .setting-container h1 {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.settings-container .sidebar {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0px 20px 20px 0px;
+    padding: 0px 20px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in, color 0.3s ease-in-out;
+    overflow: hidden;
+    z-index: 1;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.settings-container .sidebar .nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto;
+    overflow: hidden;
+    padding: 0px 30px;
+}
+
+.settings-container .sidebar.open {
+    background-color: #00000059;
+    width: 240px;
+    font-size: 20px;
+    color: white
+}
+
+.settings-container .sidebar.closed {
+    background-color: rgba(255, 255, 255, 0.534);
+    width: 50px;
+    font-size: 40px;
+    color: black
+}
+
+.settings-container .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 20px;
+    overflow: hidden;
+}
+
+.settings-container .sidebar ul li {
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.sidebar .bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    gap: 12px;
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.sidebar .back-btn {
+    padding: 10px 20px;
+    font-size: 18px !important;
+    border: 3px #e343c9 solid;
+    background-color: #e343c855;
+    border-radius: 13px;
+    cursor: pointer;
+    width: 95%;
+    transition: width 0.2s, background-color 0.2s, color 0.2s;
+    overflow: hidden;
+    height: 60px;
+}
+
+.sidebar .back-btn:hover {
+    background: #ffffff;
+    color: var(--brand-color-2);
+}
+
+.sidebar .logout-btn {
+    padding: 10px 20px;
+    font-size: 18px !important;
+    border: 3px #E04343 solid;
+    border-radius: 13px;
+    cursor: pointer;
+    width: 95%;
+    background-color: rgba(255, 0, 0, 0.135);
+    transition: width 0.2s, background-color 0.2s, color 0.2s;
+    overflow: hidden;
+    height: 60px;
+}
+
+.sidebar .logout-btn:hover {
+    background: #E04343;
+    color: white;
+}
+
+.sidebar .MuiButton-root,
+.sidebar .MuiSvgIcon-root {
+    margin: 0px;
+    font-size: 30px;
 }
