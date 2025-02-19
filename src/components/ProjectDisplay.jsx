@@ -222,24 +222,12 @@ const ProjectTaskTree = () => {
     const currentOrder = task.order;
     const newOrder = currentOrder + direction;
     const siblingCount = Object.keys(siblingTasks).length;
-    // const siblingTaskId = Object.keys(siblingTasks).find(key => taskDetails[key].order === newOrder);
-
     const siblingTaskId = siblingTasks.find(key => {
       const details = taskDetails[key];
-      // console.log("details", details);
       const order = details.order;
-      // console.log("order", order);
       const bool = order === newOrder;
-      // console.log("bool", bool);
       return bool;
     });
-
-    console.log("task", task);
-    console.log("siblingTasks", siblingTasks);
-    console.log("currentOrder", currentOrder);
-    console.log("newOrder", newOrder);
-    console.log("siblingCount", siblingCount);
-    console.log("siblingTaskId", siblingTaskId);
 
     if (newOrder < 0 || newOrder > (siblingCount - 1)) return;
 
@@ -251,6 +239,8 @@ const ProjectTaskTree = () => {
       await updateTask(taskDetails[taskId]);
 
       await loadProjectDetails();
+
+      setExpandedItems((prev) => prev.filter((id) => id !== task.id && id !== siblingTaskId));
 
       if (ref && ref.current) {
         const root = createRoot(ref.current);
