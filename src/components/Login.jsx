@@ -12,12 +12,12 @@ const Login = () => {
     const { login } = useAuth();
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent page refresh on form submit
+        e.preventDefault();
         try {
             await login(email, password);
         } catch (error) {
             console.error("Login Failed:", error);
-            alert("Login failed. Please try again.");
+            alert("Email or password is incorrect. Please try again.");
         }
     };
 
