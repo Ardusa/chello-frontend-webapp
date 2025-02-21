@@ -52,6 +52,7 @@
     display: flex;
     flex-direction: column;
     margin: auto 0px;
+    gap: 24px;
 }
 
 .sidebar-container .nav-item {
@@ -67,7 +68,6 @@
     cursor: pointer;
     height: 50px;
     transition: font-size 0.2s, color 0.2s;
-    margin: 12px 0px;
 }
 
 .sidebar-container .nav-item.active,

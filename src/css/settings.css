@@ -85,7 +85,7 @@
     overflow: hidden;
 }
 
-.sidebar .bottom {
+.settings-container .sidebar .bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,7 +96,7 @@
     margin-bottom: 20px;
 }
 
-.sidebar .back-btn {
+.settings-container .sidebar .back-btn {
     padding: 10px 20px;
     font-size: 18px !important;
     border: 3px #e343c9 solid;
@@ -109,12 +109,12 @@
     height: 60px;
 }
 
-.sidebar .back-btn:hover {
+.settings-container .sidebar .back-btn:hover {
     background: #ffffff;
     color: var(--brand-color-2);
 }
 
-.sidebar .logout-btn {
+.settings-container .sidebar .logout-btn {
     padding: 10px 20px;
     font-size: 18px !important;
     border: 3px #E04343 solid;
@@ -127,13 +127,13 @@
     height: 60px;
 }
 
-.sidebar .logout-btn:hover {
+.settings-container .sidebar .logout-btn:hover {
     background: #E04343;
     color: white;
 }
 
-.sidebar .MuiButton-root,
-.sidebar .MuiSvgIcon-root {
+.settings-container .sidebar .MuiButton-root,
+.settings-container .sidebar .MuiSvgIcon-root {
     margin: 0px;
     font-size: 30px;
 }
