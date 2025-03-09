@@ -7,18 +7,16 @@
 .sidebar-container .sidebar {
     width: 350px;
     min-width: 350px;
-    background-color: #8f82826f;
+    color: gray;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 5px;
-    border-radius: 0px 40px 20px 0px;
-    margin-right: 50px;
-    border-right: rgba(255, 255, 255, 0.225) 5px solid;
+    border-right: rgba(84, 84, 84, 0.743) 5px solid;
 }
 
-.sidebar-container .header {
+.sidebar-container .sidebar .header {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -26,6 +24,14 @@
     width: 100%;
     margin: 30px 0px 30px 0px;
     gap: 10px;
+}
+
+.sidebar-container .content {
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--brand-color-light);
+    padding: 20px;
 }
 
 .sidebar-container h1 {
@@ -60,7 +66,7 @@
     font-weight: 200;
     background: none !important;
     border: none;
-    color: rgb(0, 89, 254);
+    color: var(--brand-color-light);
     font-size: 29px;
     padding: 28px !important;
     padding-left: 120px;
@@ -68,17 +74,18 @@
     cursor: pointer;
     height: 50px;
     transition: font-size 0.2s, color 0.2s;
+    text-align: left;
 }
 
 .sidebar-container .nav-item.active,
 .sidebar-container .nav-item:hover {
     font-size: calc(1.9 * 1em);
-    color: rgb(255, 255, 255);
+    color: var(--brand-color-dark);
 }
 
 .sidebar-container .nav-item.active {
     font-weight: 800;
-    transition: font-weight 0.1s ease-in-out;
+    transition: font-weight 0.1s;
 }
 
 .sidebar-container .nav-item .MuiSvgIcon-root {
@@ -86,6 +93,10 @@
     margin-bottom: 2px;
 }
 
+.sidebar-container .nav-item.active .MuiSvgIcon-root {
+    color: var(--brand-color-2);
+    transition: color 0.2s;
+}
 
 .sidebar-container .bottom {
     display: flex;
@@ -141,12 +152,6 @@
 .sidebar-container .logout-btn:hover {
     background: #E04343;
     color: white;
-}
-
-.sidebar-container .content {
-    flex-grow: 1;
-    flex-direction: column;
-    align-items: center;
 }
 
 .sidebar-container .user-details-container {

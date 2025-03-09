@@ -4,12 +4,20 @@
   /* Colors */
 
   /* Brand Colors */
-  --brand-color-1: #57c3f5;
+
+  /* dark color (gray) */
+  --brand-color-dark: #3b3636;
+
+  /* light color (light gray) */
+  --brand-color-light: #9c9c9c;
+
   /* bright blue */
-  --brand-color-2: #e343c9;
+  --brand-color-1: #57c3f5;
   /* bright pink */
-  --brand-color-3: #f2dcdc;
+  --brand-color-2: #e343c9;
   /* Cream */
+  --brand-color-3: #f2dcdc;
+
   --background-color: linear-gradient(135deg, var(--brand-color-1), var(--brand-color-2));
 
   --translucent-container-background: rgba(59, 54, 54, 0.484);
@@ -40,26 +48,9 @@ body,
 html {
   margin: 0;
   height: 100%;
-  font-family: var(--body-font);
-  background: var(--background-color);
-  background-size: 200% 200%;
-  background-attachment: fixed;
   color: white;
-  animation: gradient-animation 4s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
-}
-
-@keyframes gradient-animation {
-  0% {
-    background-position: 40% 40%;
-  }
-
-  50% {
-    background-position: 60% 60%;
-  }
-
-  100% {
-    background-position: 40% 40%;
-  }
+  font-family: var(--body-font);
+  background: white;
 }
 
 .centered-container {
@@ -78,6 +69,10 @@ button {
   box-sizing: border-box;
   cursor: pointer;
   color: white;
+}
+
+.MuiButtonBase-root {
+  text-transform: none !important;
 }
 
 .loading-screen {
