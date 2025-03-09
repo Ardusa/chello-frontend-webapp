@@ -4,13 +4,13 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    margin-left: 300px;
+    margin-left: 90px;
 }
 
 .settings-container .setting-container {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 67%;
     margin: 20px 0px;
     padding: 20px;
     background-color: var(--translucent-container-background);
@@ -54,35 +54,51 @@
     width: 100%;
     margin-top: auto;
     overflow: hidden;
-    padding: 0px 30px;
+    padding: 10px 30px;
+    gap: 30px;
 }
 
+.settings-container .sidebar .nav-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 25px;
+    overflow: hidden;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: clip;
+    color: black;
+    text-transform: none;
+    background-color: transparent;
+    border: white 0px solid;
+    border-radius: 20px;
+    transition: border 0.2s;
+    position:relative
+}
+
+.settings-container .sidebar .nav-item button {
+    padding: 10px 20px;
+}
+
+.settings-container .sidebar .nav-item button:hover {
+    /* color: white; */
+    border-width: 5px;
+}
+
+
 .settings-container .sidebar.open {
-    background-color: #00000059;
+    background-color: #c8c8c8bd;
     width: 240px;
-    font-size: 20px;
+    /* font-size: 20px; */
     color: white
 }
 
 .settings-container .sidebar.closed {
-    background-color: rgba(255, 255, 255, 0.534);
+    background-color: rgba(255, 255, 255, 0.303);
     width: 50px;
-    font-size: 40px;
+    /* font-size: 40px; */
     color: black
-}
-
-.settings-container .sidebar ul {
-    list-style-type: none;
-    padding: 0;
-    font-size: 20px;
-    overflow: hidden;
-}
-
-.settings-container .sidebar ul li {
-    cursor: pointer;
-    padding: 10px 0;
-    font-size: 16px;
-    overflow: hidden;
 }
 
 .settings-container .sidebar .bottom {
@@ -132,8 +148,8 @@
     color: white;
 }
 
-.settings-container .sidebar .MuiButton-root,
-.settings-container .sidebar .MuiSvgIcon-root {
+.settings-container .bottom .MuiButton-root,
+.settings-container .bottom .MuiSvgIcon-root {
     margin: 0px;
     font-size: 30px;
 }

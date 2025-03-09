@@ -66,12 +66,12 @@ const Settings = () => {
     });
 
     const sidebarSections = {
-        'Account Settings': { id: 'account-settings', icon: <AccountCircleIcon /> },
-        'Organization Settings': { id: 'organization-settings', icon: <BusinessIcon /> },
-        'Integration Settings': { id: 'integration-settings', icon: <IntegrationInstructionsIcon /> },
-        'Notifications Settings': { id: 'notifications-settings', icon: <NotificationsIcon /> },
-        'Security Settings': { id: 'security-settings', icon: <SecurityIcon /> },
-        'Billing Settings': { id: 'billing-settings', icon: <PaymentIcon /> },
+        'Account': { id: 'account-settings', icon: <AccountCircleIcon /> },
+        'Organization': { id: 'organization-settings', icon: <BusinessIcon /> },
+        'Integration': { id: 'integration-settings', icon: <IntegrationInstructionsIcon /> },
+        'Notifications': { id: 'notifications-settings', icon: <NotificationsIcon /> },
+        'Security': { id: 'security-settings', icon: <SecurityIcon /> },
+        'Billing': { id: 'billing-settings', icon: <PaymentIcon /> },
     };
 
     const handleWorkHoursChange = (index, field, value) => {
@@ -110,7 +110,9 @@ const Settings = () => {
     };
 
     const scrollToSection = (id) => {
-        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        const element = document.getElementById(id);
+        const offset = element.offsetTop - (window.innerHeight / 2) + (element.clientHeight / 2);
+        window.scrollTo({ top: offset, behavior: 'smooth' });
     };
 
     return (
@@ -118,28 +120,25 @@ const Settings = () => {
             <aside
                 className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}
                 onMouseEnter={() => setIsSidebarOpen(true)}
-                onMouseLeave={() => setIsSidebarOpen(false)}
+                // onMouseLeave={() => setIsSidebarOpen(false)}
             >
                 <div className='nav'>
-                    <ul>
-                        {Object.keys(sidebarItems).map((section) => (
-                            <li key={section} onClick={() => scrollToSection(sidebarSections[section].id)}>
-                                {sidebarSections[section].icon}
-                                {isSidebarOpen && (
-                                    <div style={{ fontSize: '20px', transition: 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        <strong>{section}</strong>
-                                        <ul style={{ padding: '0px', fontSize: '16px' }}>
-                                            {sidebarItems[section].map((item) => (
-                                                <li key={item.id} onClick={() => scrollToSection(item.id)} style={{ padding: '2px' }}>
-                                                    {item.name}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
+                    {Object.keys(sidebarSections).map((section) => (
+                        <div className='nav-item'>
+                            {/* {sidebarSections[section].icon}
+                            {isSidebarOpen && (
+                                <strong>{section}</strong>
+                            )} */}
+                            <Button
+                                className='nav-item'
+                                onClick={() => scrollToSection(sidebarSections[section].id)}
+                                startIcon={isSidebarOpen ? sidebarSections[section].icon : null}
+                                disableRipple
+                            >
+                                {isSidebarOpen ? section : sidebarSections[section].icon}
+                            </Button>
+                        </div>
+                    ))}
                 </div>
                 {isSidebarOpen ? (
                     <div className='bottom'>
