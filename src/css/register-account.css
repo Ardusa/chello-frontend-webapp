@@ -27,13 +27,11 @@
 }
 
 .register-container .header h1 {
-    font-family: var(--title-font);
     margin: 0px;
     font-size: 35px;
 }
 
 .register-container .header p {
-    font-family: var(--header-font);
     margin: 10px 0px 0px 0px;
     font-size: 15px;
 }
@@ -48,7 +46,6 @@
     box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
     min-width: 500px;
     align-items: center;
-    font-family: var(--body-font);
 }
 
 .register-container .input-row {
@@ -152,7 +149,6 @@
     width: 40%;
     border-radius: 30px;
     font-size: 18px;
-    font-family: var(--button-font);
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.5s ease, border 0.3s ease;
 }
