@@ -90,7 +90,6 @@ const Sidebar = ({ elements, backLink = null, useEffectFuncs = [], loadingElemen
             <aside className="sidebar">
                 <div className="header">
                     <img src={chelloLogo} alt="Company Logo" className="logo-img" />
-                    <h1 className='title'>hello</h1>
                 </div>
 
                 {logo && (
